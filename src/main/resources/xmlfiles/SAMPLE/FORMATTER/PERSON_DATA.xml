@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data division="1" name="포매터 테스트" widths="20:80">
+	<userJs/>
+	<userHtml>
+		<html position="title"><span>타이틀에 들어가는 userHtml</span></html>
+		<html position="caption"><span class="caption">* 새 줄로 들어가는 userHtml</span></html>
+		<html position="bottom"><button type="text" class="k-button">유저버튼</button></html>
+	</userHtml>
+	<table>tnts_person_test</table>
+	<object>person_id</object>
+	<columns>
+		<col align="center" id="person_id" type="text" width="100%" init="sq_person.next_value">사람ID</col>
+		<col align="center" id="person_nm" type="text" width="100%">사람이름</col>
+		<col align="center" id="ssn" type="mask" width="100%" formatter="ssn">주민번호</col>
+		<col align="center" id="phone_no" type="mask" width="100%" formatter="phone_no">핸드폰번호</col>
+		<col align="center" id="email" type="mask" width="100%" formatter="email">이메일</col>
+		<col align="center" id="address" type="text" width="100%">주소</col>
+		<col align="center" id="cash" type="num" width="100%" formatter="price">소지금</col>
+		<col align="center" id="temp_num" type="num" width="100%">그냥 숫자</col>
+		<col align="center" id="use_yn" type="checkbox" groupLabel="그룹1" default="Y" width="100%">사용여부</col>
+		<col align="center" id="live_yn" type="checkbox" groupLabel="그룹1" default="Y" width="100%">생존여부</col>
+		<col align="center" id="contact2" type="checkbox" default="Y" width="100%">연락</col>
+		<col align="center" id="contact_yn" type="checkbox" groupLabel="그룹2" default="Y" width="100%">연락여부</col>
+		<col align="center" id="temp_yn" type="checkbox" groupLabel="그룹2" default="Y" width="100%">임시여부</col>
+		<col align="center" id="person_desc" type="editor" width="100%">비고(에디터)</col>
+	</columns>
+	<event>
+		<insert/>
+		<update/>
+		<delete/>
+		<selected/>
+	</event>
+	<sql>
+		SELECT
+			person_id,
+			person_nm,
+			ssn,
+			phone_no,
+			email,
+			address,
+			cash,
+			temp_num,
+			use_yn,
+			live_yn,
+			contact_yn,
+			contact_yn as contact2,
+			temp_yn,
+			person_desc
+		FROM
+			tnts_person_test
+	</sql>
+	<desc>
+	data의 화면설명 시작
+	화면설명1
+	화면설명2
+	화면설명 종료
+	</desc>
+</data>

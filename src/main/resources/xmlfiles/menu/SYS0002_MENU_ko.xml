@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu type="top">
+	<item url="/layout.do?xn=WBS_LAYOUT">WBS</item>
+	<item url="/layout.do?xn=TAB_TEST_LAYOUT">TAB_TEST</item>
+	<item url="/layout.do?xn=LAYER3_LAYOUT">다단화면
+		<item url="/layout.do?xn=LAYER3_LAYOUT">3단화면</item>
+		<item url="/layout.do?xn=ONLY1_LAYOUT">데이터ONLY</item>
+		<item url="/layout.do?xn=LAYER1_LAYOUT">1단화면</item>
+		<item url="/layout.do?xn=LAYER4_LAYOUT">4단화면</item>
+	</item>
+	<item url="/layout.do?xn=JOIN_LAYOUT">조인DATA</item>
+	<item url="/layout.do?xn=BLANKTREE_LAYOUT">샘플트리</item>
+	<item url="/layout.do?xn=BLANKCHART_LAYOUT">샘플차트</item>
+	<item url="/layout.do?xn=WBSCHART_LAYOUT">메뉴별 투입공수 차트</item>
+	<item url="/layout.do?xn=FILE_LAYOUT">파일업로드</item>
+	<item url="/layout.do?xn=TYPE4_LAYOUT">타입4화면</item>
+	<item url="/layout.do?xn=TYPE5_LAYOUT">타입5화면</item>
+	<item url="/layout.do?xn=TYPE6_LAYOUT">타입6화면</item>
+	<item url="/layout.do?xn=PERSON_LAYOUT">포매터</item>
+	<item url="/layout.do?xn=BLANKTREE_LAYOUT">샘플트리</item>
+</menu>

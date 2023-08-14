@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data name="코드리스트" division="2" widths="15:35;15:35">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tcsy_code_cls</table>
+	<object>code_cls</object>
+	<columns>
+		<col id="code_cls" type="text" width="100%" align="center">코드그룹ID</col>
+		<col id="code_cls_nm" type="text" width="100%" align="center">코드그룹명</col>
+		<col id="code_cls_desc" type="text" width="100%" align="center" tooltip="코드내용 툴팁팁팁">코드내용</col>		
+		<blank/>
+		<line>아래는 비고</line>
+		<col id="use_yn" type="radio" width="100%" align="left" default="N" tooltip="라디오 툴팁" formatter="{type:'array',array:'Y:Y;N:N'}">사용여부</col>
+		<col id="yn" type="radio" width="100%" align="left" default="Y" tooltip="라디오 툴팁" formatter="{type:'array',array:'Y:Y;N:N'}">DETAIL사용여부</col>
+		<col id="sort_seq" type="num" width="100%" align="center" default="순서를 참조해서 입력하세요.">순서</col>		
+	</columns>
+	
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+	</event>
+	<sql>
+		select a.code_cls,
+			code_cls_nm,
+			code_cls_desc,
+			a.use_yn ,
+			b.use_yn as yn, 
+			a.sort_seq 
+		from tcsy_code_cls a, tcsy_code_list b
+		where a.code_cls = b.code_cls
+		and rownum = 1
+		order by a.code_cls,a.sort_seq
+	</sql>
+</data>

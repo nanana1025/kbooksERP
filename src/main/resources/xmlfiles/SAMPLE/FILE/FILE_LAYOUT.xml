@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="file">
+	<area id="FILE_LIST" url="/list.do?xn=FILE_LIST" width="100%" height="100%" collapsible="N" resiizable="N">파일업로드</area>
+</layout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<chart title="WBS" type="column">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<series name=" " label="" value="" useTooltip="">
+		<tooltipTemplate></tooltipTemplate>
+	</series>
+	<event>
+		<seriesClick></seriesClick>
+	</event>
+	<sql>
+	</sql>
+</chart>

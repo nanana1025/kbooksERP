@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<tree name="WBS">
+	<userJs></userJs>
+	<userHtml>
+		<html position="button"><input type="button" class="k-button" value="버튼테스트"/></html>
+		<html position="bottom"><input type="button" class="k-button" value="하단테스트"/></html>
+		<!-- <html position="title"><span>타이틀에 들어가는 userHtml</span></html> -->
+		<html position="caption"><span>새 줄로 들어가는 userHtml</span></html>
+	</userHtml>
+	<column>
+		<child>child_cnt</child>
+		<display>wbsnm</display>
+		<object>exewbsid</object>
+		<parent>upprwbsid</parent>
+		<iconId>iconId</iconId>
+	</column>
+	<icons>
+		<icon id="red_circle">/codebase/imgs/red_circle2.png</icon>
+		<icon id="blue_circle">/codebase/imgs/blue_circle2.png</icon>
+		<icon id="green_circle">/codebase/imgs/green_circle2.png</icon>
+	</icons>
+	<event>
+		<expand>onExpand</expand>
+		<select>onSelect</select>
+	</event>
+	<kendoExtend></kendoExtend>
+	<sql>
+		<![CDATA[
+		SELECT 
+			  upprwbsid
+			, exewbsid
+			, wbsnm
+			, CASE 
+				WHEN takedays >= 30 THEN null
+				WHEN takedays >= 20 THEN 'blue_circle'
+				WHEN takedays >=10 THEN 'green_circle'
+				ELSE 'red_circle' 
+			END as iconId
+			, exewbsid as treeid
+			, DECODE((select count(*) from tead_exewbs where upprwbsid=a.exewbsid),'0',null,(select count(*) from tead_exewbs where upprwbsid=a.exewbsid)) as items
+		FROM tead_exewbs a
+		WHERE upprwbsid = NVL(#{upprwbsid},'0') 
+		]]>
+	</sql>
+	<data>
+	</data>
+	<desc>
+	tree의 화면설명
+	화면설명a
+	화면설명b
+	화면설명 종료
+	</desc>
+</tree>

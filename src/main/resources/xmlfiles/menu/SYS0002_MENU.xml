@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu type="top">
+	<home url="/layout.do?xn=WBS_LAYOUT">홈</home>
+	<item url="/layout.do?xn=WBS_LAYOUT">WBS</item>
+	<item url="/layout.do?xn=TAB_TEST_LAYOUT">TAB_TEST</item>
+	<item url="/layout.do?xn=ONLY1_LAYOUT">데이터
+		<item url="/layout.do?xn=ONLY1_LAYOUT">데이터ONLY</item>
+		<item url="/layout.do?xn=JOIN_LAYOUT">조인DATA</item>
+	</item>
+	<item url="/layout.do?xn=BLANKTREE_LAYOUT">트리/차트
+		<item url="/layout.do?xn=BLANKTREE_LAYOUT">샘플트리</item>
+		<item url="/layout.do?xn=BLANKCHART_LAYOUT">샘플차트</item>
+		<item url="/layout.do?xn=WBSCHART_LAYOUT">메뉴별 투입공수 차트</item>
+		<item url="/layout.do?xn=L3CHART_LAYOUT">트리->차트</item>
+		<item url="/layout.do?xn=LITOCH_LAYOUT">리스트->차트</item>
+	</item>
+	<item url="/layout.do?xn=FILE_LAYOUT">파일업로드</item>
+	<item url="/layout.do?xn=TYPE4_LAYOUT">타입별
+		<item url="/layout.do?xn=LAYER1_LAYOUT">1단화면</item>
+		<item url="/layout.do?xn=LAYER3_LAYOUT">3단(자식 두개)</item>
+		<item url="/layout.do?xn=TYPE4_LAYOUT">타입4화면</item>
+		<item url="/layout.do?xn=TYPE5_LAYOUT">타입5화면</item>
+		<item url="/layout.do?xn=TYPE6_LAYOUT">타입6화면</item>
+		<item url="/layout.do?xn=LAYER4_LAYOUT">타입8화면</item>
+		<item url="/layout.do?xn=DANLO_LAYOUT">주의테스트 타입4</item>
+	</item>
+	<item url="/layout.do?xn=PERSON_LAYOUT">포매터</item>
+	<item url="/layout.do?xn=INLINE_LAYOUT">인라인
+		<item url="/layout.do?xn=INLINE_LAYOUT">인라인</item>
+		<item url="/layout.do?xn=WBS_INLINE_LAYOUT">WBS_인라인</item>
+		<item url="/layout.do?xn=BATCH_LAYOUT">배치그리드</item>
+		<item url="/layout.do?xn=COPY_LAYOUT">복사테스트</item>
+	</item>
+	<item url="/layout.do?xn=P2_LAYOUT">REF_TEST
+		<item url="/layout.do?xn=P2_LAYOUT">부모가 둘</item>
+	</item>
+</menu>

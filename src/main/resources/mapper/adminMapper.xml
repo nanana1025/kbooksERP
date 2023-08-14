@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbook.admin.AdminMapper">
+
+	<select id="insertUser" parameterType="java.util.Map" resultType="int">
+       /* UserMapper.insertUser */
+    	INSERT INTO TN_USER_MST
+    	(
+    		 USER_ID
+			, PASSWD
+			, USER_NM
+			, USER_TYPE_CD
+			, STATE_CD
+			, COMPANY_CD
+			, DEPT_CD
+			, EMAIL
+			, MOBILE
+			, TEL
+			, RECOMMENDER_ID
+			, CREATE_DT
+			, UPDATE_DT
+    	)
+    	VALUES
+    	(
+    		#{USER_ID}
+    		, #{PASSWD}
+    		, #{USER_NM}
+			, #{USER_TYPE_CD}  /* 사용자구분 (CD0201)  */
+			, #{STATE_CD}
+			, #{COMPANY_CD}
+			, #{DEPT_CD}
+			, #{EMAIL}
+			, #{MOBILE}
+			, #{TEL}
+			, #{RECOMMENDER_ID}
+			, SYSDATE
+			, SYSDATE
+    	)
+    </select>
+
+    <select id="getAuthInfo" parameterType="java.util.Map" resultType="java.util.Map">
+    /*UserMapper.getAuthInfo*/
+        SELECT
+            AUTH_ID
+          , AUTH_NM
+          , AUTH_DESC
+          , CREATE_ID
+          , TO_CHAR(CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT
+        FROM TEAD_AUTH
+    </select>
+
+    <select id="getMenuAuth" parameterType="java.util.Map" resultType="java.util.Map">
+      /*UserMapper.getMenuAuth*/
+        SELECT
+            MAIN_MENU_ID
+          , SUB_MENU_ID
+          , URL
+          , AUTH_ID
+          , AUTH_TYPE
+          , MENU_ID
+        FROM TESY_MENU_AUTH
+        WHERE AUTH_ID = #{searchAuthId}
+    </select>
+
+    <insert id="saveMenuAuth" parameterType="java.util.Map">
+    /*UserMapper.saveMenuAuth*/
+        INSERT INTO TESY_MENU_AUTH (
+            MAIN_MENU_ID
+          , SUB_MENU_ID
+          , URL
+          , MENU_NM
+          , AUTH_ID
+          , AUTH_TYPE
+          , MENU_ID
+        ) VALUES (
+            #{mid}
+          , #{sid}
+          , #{url}
+          , #{text}
+          , #{authId}
+          , #{authTp}
+          , SQ_MENU_AUTH.NEXTVAL
+        )
+    </insert>
+
+    <update id="updateMenuAuth" parameterType="java.util.Map">
+     /*UserMapper.updateMenuAuth*/
+        UPDATE TESY_MENU_AUTH SET
+            MAIN_MENU_ID  = #{mid}
+          , SUB_MENU_ID   = #{sid}
+          , URL           = #{url}
+          , AUTH_ID       = #{authId}
+          , AUTH_TYPE     = #{authTp}
+    </update>
+
+    <delete id="deleteMenuAuth" parameterType="java.util.Map">
+     /*UserMapper.deleteMenuAuth*/
+        DELETE FROM TESY_MENU_AUTH WHERE AUTH_ID = #{authId}
+    </delete>
+
+    <update id="updateUserAuth" parameterType="java.util.Map">
+      /*UserMapper.updateUserAuth*/
+        UPDATE TESY_USER SET
+          AUTH_ID = #{authId}
+        WHERE 1=1
+            AND USER_ID = #{userId}
+    </update>
+
+	<insert id="codeClsInsert" parameterType="java.util.Map">
+    	 /*UserMapper.codeClsInsert*/
+    	INSERT INTO TCSY_CODE_CLS (
+    		  CODE_CLS
+    		, UP_CODE_CLS
+    		, CODE_CLS_NM
+    		, CODE_CLS_DESC
+    		, SORT_SEQ
+    		, USE_YN
+  			, CREATE_ID
+			, CREATE_DT
+		)
+		VALUES (
+			#{CODE_CLS}
+		  , #{UP_CODE_CLS}
+		  , #{CODE_CLS_NM}
+		  , #{CODE_CLS_DESC}
+		  , #{SORT_SEQ}
+		  , 'Y'
+		  , #{USER_ID}
+		  , ${SYSDATETIME}
+		)
+    </insert>
+
+    <update id="codeClsUpdate" parameterType="java.util.Map">
+    	 /*UserMapper.codeClsUpdate*/
+    	UPDATE TCSY_CODE_CLS
+    	SET	UP_CODE_CLS = #{UP_CODE_CLS}
+    		, CODE_CLS_NM = #{CODE_CLS_NM}
+    		, CODE_CLS_DESC = #{CODE_CLS_DESC}
+    		, SORT_SEQ = #{SORT_SEQ}
+  			, UPDATE_ID = #{USER_ID}
+			, UPDATE_DT = ${SYSDATETIME}
+		WHERE CODE_CLS = #{CODE_CLS}
+    </update>
+
+    <delete id="codeClsDelete" parameterType="java.util.Map">
+
+    	 /*UserMapper.codeClsDelete*/
+    	DELETE FROM TCSY_CODE_CLS
+		WHERE CODE_CLS = #{CODE_CLS}
+    </delete>
+
+    <delete id="codeClsSubDelete" parameterType="java.util.Map">
+    	/* UserMapper.codeClsSubDelete */
+    	DELETE FROM TCSY_CODE_LIST
+		WHERE CODE_CLS = #{CODE_CLS}
+    </delete>
+
+	<select id="codeClsInfo" resultType="lowerkeymap" parameterType="java.util.Map">
+	/*UserMapper.codeClsInfo*/
+	    SELECT
+	        CODE_CLS,
+	        UP_CODE_CLS,
+	        CODE_CLS_NM,
+	        CODE_CLS_DESC,
+	        SORT_SEQ,
+	        USE_YN
+	    FROM TCSY_CODE_CLS
+	    WHERE CODE_CLS = #{CODE_CLS}
+    </select>
+
+    <select id="getUserInfoById" resultType="int" parameterType="java.util.Map">
+    /*UserMapper.getUserInfoById*/
+    SELECT
+        COUNT(*) AS CNT
+    FROM TESY_USER
+    WHERE LOGIN_ID = #{login_id}
+    </select>
+
+    <select id="getUserInfoByUserId" resultType="kbookERP.util.vo.User" parameterType="java.util.Map">
+    /*UserMapper.getUserInfoByUserId*/
+    SELECT
+         USER_ID
+       , LOGIN_ID
+       , USER_NM
+       , PASSWD
+       , JOB_RANK_CD
+       , PHONE_NO
+       , STATE_CD
+       , AUTH_ID
+       , USE_YN
+       , DATE_FORMAT(CREATE_DT, '%Y-%m-%d') AS CREATE_DT
+    FROM TESY_USER
+    WHERE USER_ID = #{USER_ID}
+    </select>
+
+    <update id="pwInit" parameterType="java.util.Map">
+     /*UserMapper.pwInit*/
+        UPDATE TESY_USER SET
+          PASSWD = #{passwd}
+        WHERE USER_ID = #{user_id}
+    </update>
+
+     <select id="getAdminInfo" resultType="kbookERP.util.vo.User" parameterType="String">
+	   /*AdminMapper.getAdminInfo*/
+	    SELECT
+	        A.USER_ID
+			, A.PASSWD
+			, A.USER_NM
+			, A.USER_TYPE_CD
+			, A.STATE_CD
+			, A.COMPANY_CD
+			, A.DEPT_CD
+			, A.EMAIL
+			, A.MOBILE
+			, A.TEL
+			, A.RECOMMENDER_ID
+			, DATE_FORMAT(A.CREATE_DT, '%Y-%m-%d') AS CREATE_DT
+	    FROM TN_USER_MST A
+	    WHERE A.USER_ID = #{LOGINID}
+    </select>
+
+    <select id="getAuthById" resultType="java.util.Map" parameterType="java.util.Map">
+	   /*AdminMapper.getAuthById*/
+	    SELECT USER_TYPE_CD, USER_NM
+	 	FROM TN_USER_MST
+	    WHERE USER_ID = #{adminId}
+    </select>
+
+<!--      <select id="getAdminInfo" resultType="com.dacare.util.vo.User" parameterType="String"> -->
+<!-- 	    SELECT -->
+<!-- 	          USER_ID -->
+<!-- 	        , LOGIN_ID -->
+<!-- 	        , USER_NM -->
+<!-- 	        , passwd -->
+<!-- 	        , JOB_RANK_CD -->
+<!-- 	        , PHONE_NO -->
+<!-- 	        , STATE_CD -->
+<!-- 	        , AUTH_ID -->
+<!-- 	        , USE_YN -->
+<!-- 	        , DATE_FORMAT(CREATE_DT, '%Y-%m-%d') AS CREATE_DT -->
+<!-- 	    FROM TESY_USER A -->
+<!-- 	    WHERE LOGIN_ID = #{LOGINID} -->
+<!-- 	      AND AUTH_ID = '4' -->
+<!--     </select> -->
+
+    <insert id="setUserInsert" parameterType="java.util.Map">
+    	  /*AdminMapper.setUserInsert*/
+    	INSERT INTO TESY_USER (
+    		  USER_ID
+    		, BUYER_CD
+    		, AUTH_ID
+    		, LOGIN_ID
+    		, passwd
+    		, USER_NM
+  			, JOB_RANK_CD
+			, PHONE_NO
+			, STATE_CD
+			, USE_YN
+			, CREATE_ID
+			, CREATE_DT
+		)
+		VALUES (
+			  #{user_id}
+    		, #{buyer_cd}
+    		, #{auth_id}
+    		, #{login_id}
+    		, #{passwd}
+    		, #{user_nm}
+  			, #{job_rank_cd}
+			, #{phone_no}
+			, #{state_cd}
+			, #{use_yn}
+			, #{create_id}
+			, ${create_dt}
+		)
+    </insert>
+
+    <update id="setUserUpdate" parameterType="java.util.Map">
+    	/*AdminMapper.setUserUpdate*/
+    	UPDATE TESY_USER
+    	SET	BUYER_CD = #{buyer_cd}
+    		, AUTH_ID = #{auth_id}
+    		, PASSWD = #{passwd}
+    		, USER_NM = #{user_nm}
+    		, JOB_RANK_CD = #{job_rank_cd}
+    		, PHONE_NO = #{phone_no}
+    		, STATE_CD = #{state_cd}
+    		, USE_YN = #{use_yn}
+  			, UPDATE_ID = #{update_id}
+			, UPDATE_DT = ${update_dt}
+		WHERE USER_ID = #{user_id}
+    </update>
+</mapper>

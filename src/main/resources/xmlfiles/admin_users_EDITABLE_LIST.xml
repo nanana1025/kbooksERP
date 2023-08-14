@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<listObject> 
+	<listitem>
+		<title>사용자정보</title>
+		<sid>admin_users_EDITABLE</sid>
+		<gridinline>Y</gridinline>
+		<select>
+			<column id="1">
+				<selcol>user_id</selcol>
+				<coltype>id</coltype>
+				<ordno/>
+				<width>0</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting/>
+				<hiddenyn>Y</hiddenyn>
+				<label></label>
+				<insert_condition>sq_user.NEXT_VALUE</insert_condition>
+			</column>
+			<column id="2">
+				<selcol>login_id</selcol>
+				<coltype>ed</coltype>
+				<ordno>2</ordno>
+				<width>8</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype>Y</searchtype>
+				<searchcondition></searchcondition>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>사용자ID</label>
+				<condition/>
+				<required>Y</required>
+			</column>
+			<column id="3">
+				<selcol>user_nm</selcol>
+				<coltype>ed</coltype>
+				<ordno>3</ordno>
+				<width>8</width>
+				<colalign>center</colalign>
+				<searchyn>Y</searchyn>
+				<searchtype/>
+				<searchcondition/>
+				<colsorting>int</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>사용자명</label>
+				<condition></condition>
+			</column>
+			<column id="4">
+				<selcol>job_rank_cd</selcol>
+				<coltype>select_sql</coltype>
+				<ordno>4</ordno>
+				<width>7</width>
+				<colalign>center</colalign>
+				<searchyn>Y</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>직급</label>
+				<select_sql>select code_cd as [value], code_nm as text from tcsy_code_list where code_cls='CDM01'</select_sql>
+			</column>
+			<column id="5">
+				<selcol>buyer_cd</selcol>
+				<coltype>select_sql</coltype>
+				<ordno>5</ordno>
+				<width>7</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>회사명</label>
+				<select_sql>select buyer_cd as [value], buyer_nm as text from tnba_buyer_mst where use_yn='Y'</select_sql>
+			</column>
+			<column id="6">
+				<selcol>phone_no</selcol>
+				<coltype>ed</coltype>
+				<ordno>6</ordno>
+				<width>7</width>
+				<colalign>left</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>연락처</label>
+				<condition/>
+			</column>
+			<column id="7">
+				<selcol>auth_id</selcol>
+				<coltype>select_sql</coltype>
+				<ordno>7</ordno>
+				<width>8</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>권한</label>
+				<select_sql>select auth_id as [value], auth_nm as text from tead_auth</select_sql>
+			</column>
+			<column id="9">
+				<selcol>state_cd</selcol>
+				<coltype>select_sql</coltype>
+				<ordno>9</ordno>
+				<width>7</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>상태</label>
+				<select_sql>select code_cd as [value], code_nm as text from tcsy_code_list where code_cls='CDS01'</select_sql>
+			</column>
+			<column id="10">
+				<selcol>use_yn</selcol>
+				<coltype>checkbox</coltype>
+				<ordno>10</ordno>
+				<width>3</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>상태</label>
+			</column>
+			<column id="11">
+				<selcol>price</selcol>
+				<coltype>price</coltype>
+				<ordno>11</ordno>
+				<width>5</width>
+				<colalign>right</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>test1</label>
+				<condition>2000000</condition>
+				<excludequery>Y</excludequery>
+			</column>
+			<column id="12">
+				<selcol>dt</selcol>
+				<coltype>calendar</coltype>
+				<ordno>10</ordno>
+				<width>5</width>
+				<colalign>center</colalign>
+				<searchyn>N</searchyn>
+				<searchtype/>
+				<colsorting>str</colsorting>
+				<hiddenyn>N</hiddenyn>
+				<label>test2</label>
+				<condition>to_char(sysdate, 'YYYY-MM-DD')</condition>
+				<excludequery>Y</excludequery>
+			</column>
+		</select>
+		<from>tesy_user</from>
+		<where/>
+		<groupby/>
+		<orderby>user_id desc</orderby>
+		<objectid>user_id</objectid>
+	</listitem>
+</listObject>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="TAB_TEST">
+	<area id="WBS_TAB" url="/tab.do?xn=TAB_TEST_LAYOUT" width="50%" height="100%" collapsible="N" resizable="N">WBS_TAB
+		<tab id="TAB_A" url="/list.do?xn=TAB_A_LIST" refAreaId="WBS_TAB">TAB_A</tab>	
+		<tab id="TAB_B" url="/list.do?xn=TAB_A_LIST" refAreaId="WBS_TAB">TAB_B</tab>	
+		<tab id="TAB_C" url="/data.do?xn=WBS_DATA" refAreaId="WBS_TAB">TAB_C</tab>	
+	</area>
+</layout>

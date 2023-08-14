@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list editable="Y" type="">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tnts_upload_test</table>
+	<object>id</object>
+	<columns>
+		<col id="id" type="text" width="30%" align="center" search="N">업로드ID</col>
+		<col id="col_nm" type="text" width="40%" align="center" search="N">컬럼명</col>
+		<col id="upload_file_id" type="file" width="15%" align="center" search="N">파일</col>
+		<col id="upload_file_id2" type="file" width="15%" align="center" search="N">파일2</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		select id,
+			col_nm,
+			(select GROUP_CONCAT(file_id || '|' || file_seq || '|' || file_nm || '|' || file_type SEPARATOR '/') from tesy_file where file_id=a.upload_file_id) as upload_file_id,
+			(select GROUP_CONCAT(file_id || '|' || file_seq || '|' || file_nm || '|' || file_type SEPARATOR '/') from tesy_file where file_id=a.upload_file_id2) as upload_file_id2
+		from tnts_upload_test a
+		order by id desc
+	</sql>
+</list>

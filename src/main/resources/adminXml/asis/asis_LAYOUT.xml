@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="asis">
+	<area id="asis_list" url="/list.do?xn=asis_LIST" width="100%" height="100%" collapsible="N" resizable="N">ASIS 리스트</area>
+</layout>

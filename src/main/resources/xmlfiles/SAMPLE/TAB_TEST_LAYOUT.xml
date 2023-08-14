@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="TAB_TEST">
+	<area id="WBS_TAB" url="/tab.do?xn=TAB_TEST_LAYOUT" width="50%" height="100%" collapsible="N" resizable="N">WBS_TAB
+		<tab id="TAB_A" url="/list.do?xn=TAB_A_LIST">TAB_A</tab>	
+		<tab id="TAB_B" url="/list.do?xn=TAB_A_LIST">TAB_B</tab>	
+		<tab id="TAB_C" url="/data.do?xn=WBS_DATA">TAB_C</tab>	
+		<tab id="TAB_C" url="/tree.do?xn=WBS_TREE">TAB_D</tab>	
+	</area>
+</layout>

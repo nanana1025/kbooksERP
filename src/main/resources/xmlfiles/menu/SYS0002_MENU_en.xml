@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu type="top">
+	<item url="/layout.do?xn=en_WBS_LAYOUT">WBS</item>
+	<item url="/layout.do?xn=en_TAB_TEST_LAYOUT">TAB_TEST</item>
+	<item url="/layout.do?xn=en_LAYER3_LAYOUT">MULTI LAYOUT
+		<item url="/layout.do?xn=en_LAYER3_LAYOUT">LAYER3 LAYOUT</item>
+		<item url="/layout.do?xn=en_ONLY1_LAYOUT">DATA ONLY</item>
+		<item url="/layout.do?xn=en_LAYER1_LAYOUT">LAYER1 LAYOUT</item>
+		<item url="/layout.do?xn=en_LAYER4_LAYOUT">LAYER4 LAYOUT</item>
+	</item>
+	<item url="/layout.do?xn=en_JOIN_LAYOUT">JOIN DATA</item>
+	<item url="/layout.do?xn=en_BLANKTREE_LAYOUT">SAMPLE TREE</item>
+	<item url="/layout.do?xn=en_BLANKCHART_LAYOUT">SAMPLE CHART</item>
+	<item url="/layout.do?xn=en_WBSCHART_LAYOUT">WBS CHART</item>
+	<item url="/layout.do?xn=en_FILE_LAYOUT">FILE UPLOAD</item>
+	<item url="/layout.do?xn=en_TYPE4_LAYOUT">TYPE4 LAYOUT</item>
+	<item url="/layout.do?xn=en_TYPE5_LAYOUT">TYPE5 LAYOUT</item>
+	<item url="/layout.do?xn=en_TYPE6_LAYOUT">TYPE6 LAYOUT</item>
+	<item url="/layout.do?xn=en_PERSON_LAYOUT">FORMATTER</item>
+	<item url="/layout.do?xn=en_BLANKTREE_LAYOUT">SAMPLE TREE</item>
+</menu>

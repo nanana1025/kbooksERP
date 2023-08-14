@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="4" name="TYPE4">
+	<area id="WBS_TREE" url="/tree.do?xn=WBS_TREE" width="50%" height="100%" collapsible="N" resizable="N">WBS</area>
+	<area id="WBS_LIST1" url="/list.do?xn=WBS_LIST" width="50%" height="50%" collapsible="N" resizable="N" refAreaId="WBS_TREE">WBS2</area>
+	<area id="WBS_DATA1" url="/data.do?xn=WBS_DATA" width="50%" height="50%" collapsible="N" resizable="N" refAreaId="WBS_LIST1">WBS3</area>
+</layout>

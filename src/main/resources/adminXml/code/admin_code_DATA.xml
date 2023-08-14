@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data name="코드정보" division="2" widths="10:*;10:*">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>TCSY_CODE_LIST</table>
+	<object>CODE_CLS,CODE_CD</object><!-- object 2개 이상 적을때, ','사이에 공백이 없어야 한다!!! -->
+	<columns>
+		<col id="CODE_CLS" type="select" width="100%" align="center" required="Y" formatter="{type:&quot;sql&quot;,sql:&quot;SELECT CODE_CLS AS VALUE, CONCAT('[', CODE_CLS, ']', CODE_CLS_NM) AS TEXT FROM TCSY_CODE_CLS WHERE UP_CODE_CLS IS NOT NULL&quot;}">코드그룹</col>
+		<col id="CODE_CD" type="text" width="100%" align="center" required="Y" >코드ID</col>
+		<col id="CODE_NM" type="text" width="100%" align="center" required="Y">코드명</col>
+		<col id="SORT_SEQ" type="num" width="100%" align="center" required="Y">코드순서</col>
+		<col id="CODE_CONTENT" type="text" width="100%" align="center" required="N" colSpan="Y">코드내용</col>
+		<col id="USE_YN" type="select" width="100%" align="center" required="N" formatter="{type=&quot;array&quot;,array:&quot;Y:Y;N:N&quot;}">사용여부</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		SELECT CODE_CLS,
+			CODE_CD,
+			CODE_NM,
+			SORT_SEQ,
+			CODE_CONTENT,
+			USE_YN
+		FROM TCSY_CODE_LIST A
+	</sql>
+</data>

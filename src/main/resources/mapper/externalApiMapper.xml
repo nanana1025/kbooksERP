@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbook.custom.api.external.ExternalApiMapper">
+
+	<select id="getAccessToken" parameterType="java.util.Map" resultType="java.util.Map">
+		/*ExternalApiMapper.getAccessToken*/
+		SELECT * FROM  API_KEY WHERE APIKEY = #{APIKEY} AND USE_FLAG = 'Y'
+	</select>
+
+	<select id="checkSimReceiptInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*ExternalApiMapper.checkSimReceiptInfo*/
+		SELECT *  FROM ESIM_MST WHERE RECEIPT_ID = #{RECEIPT_ID} AND SELLER_CODE = #{SELLER_CODE} LIMIT 1
+	</select>
+
+
+	<insert id="inserteSimRequest" parameterType="java.util.Map" >
+	   	/* ExternalApiMapper.inserteSimRequest */
+
+			INSERT INTO ESIM_MST
+			(RECEIPT_ID, RECEIPT_STATE, RENTAL_MGMT_NUM, RENTAL_DAYS, RENTAL_SCHD_STA_DTM, RENTAL_SCHD_END_DTM,
+			RENTAL_SCHD_STA_DT, RENTAL_SCHD_END_DT, RENTAL_SALE_ORG_ID, DOM_CNTC_NUM, CUST_TEL,
+			EMAIL_ADDR, RSV_RCV_DTM, RSV_RCV_DT, ORDER_TIME, ROMING_PASSPORT_NUM, APPELLATION, CUST_NM,
+			NATION_CD, NATION_NM, RCMNDR_ID, TOTAL_CNT, REQUEST_TIME, ITEM_DES, ITEM_URL, ITEM_NM,
+			SELLER_CODE, ESIM_ORDER_TYPE, DES, CREATE_USER_ID, CREATE_DT, UPDATE_USER_ID, UPDATE_DT
+			<if test='SIM_TYPE != null'>,SIM_TYPE</if>
+			<if test='RTN_SALE_ORG_ID != null'>,RTN_SALE_ORG_ID</if>
+			<if test='RENTAL_BOOTH_ORG_ID != null'>,RENTAL_BOOTH_ORG_ID</if>
+			)
+	        VALUES
+	        (#{RECEIPT_ID}, #{RECEIPT_STATE}, #{RENTAL_MGMT_NUM}, #{RENTAL_DAYS}, #{RENTAL_SCHD_STA_DTM}, #{RENTAL_SCHD_END_DTM},
+			<choose><when test='RENTAL_SCHD_STA_DT.equals("")'>NULL,</when><otherwise>#{RENTAL_SCHD_STA_DT},</otherwise></choose>
+			<choose><when test='RENTAL_SCHD_END_DT.equals("")'>NULL,</when><otherwise>#{RENTAL_SCHD_END_DT},</otherwise></choose>
+	        #{RENTAL_SALE_ORG_ID}, #{DOM_CNTC_NUM}, #{CUST_TEL},
+	        #{EMAIL_ADDR}, #{RSV_RCV_DTM},
+			<choose><when test='RSV_RCV_DT.equals("")'>NULL,</when><otherwise>#{RSV_RCV_DT},</otherwise></choose>
+			<choose><when test='ORDER_TIME.equals("")'>NULL,</when><otherwise>#{ORDER_DTM},</otherwise></choose>
+	        #{ROMING_PASSPORT_NUM}, #{APPELLATION}, #{CUST_NM},
+	        #{NATION_CD}, #{NATION_NM}, #{RCMNDR_ID}, #{TOTAL_CNT}, NOW(), #{ITEM_DES}, #{ITEM_URL}, #{ITEM_NM},
+	        #{SELLER_CODE}, #{ESIM_ORDER_TYPE}, #{DES}, #{USER_ID}, NOW(), #{USER_ID}, NOW()
+	        <if test='SIM_TYPE != null'>,#{SIM_TYPE}</if>
+			<if test='RTN_SALE_ORG_ID != null'>,#{RTN_SALE_ORG_ID}</if>
+			<if test='RENTAL_BOOTH_ORG_ID != null'>,#{RENTAL_BOOTH_ORG_ID}</if>
+			)
+
+	 </insert>
+
+
+	<insert id="inserteSimReturn" parameterType="java.util.Map" >
+	   	/* ExternalApiMapper.inserteSimReturn */
+
+			INSERT INTO ESIM_INFO
+			(MST_ID, RENTAL_MST_NUM, ROMING_TYP_CD, RSV_VOU_NUM, RENTAL_FEE_PROD_ID, EQP_MDL_CD, ESIM_MAPPING_ID,
+			EQP_SER_NUM, ROMING_PHON_NUM, ROMING_NUM, CREATE_USER_ID, CREATE_DT, UPDATE_USER_ID, UPDATE_DT)
+	        VALUES
+	        <foreach collection="LIST_DATA" item="item" separator=",">
+	        (#{MST_ID}, #{item.RENTAL_MST_NUM}, #{item.ROMING_TYP_CD}, #{RSV_VOU_NUM}, #{item.RENTAL_FEE_PROD_ID}, #{item.EQP_MDL_CD}, #{item.ESIM_MAPPING_ID},
+	        #{item.EQP_SER_NUM}, #{item.ROMING_PHON_NUM}, #{item.ROMING_NUM}, #{USER_ID}, NOW(), #{USER_ID}, NOW())
+			</foreach>
+	 </insert>
+
+
+
+
+	 <update id="updateSimRequest" parameterType="java.util.Map">
+	   	/* ExternalApiMapper.updateSimRequest */
+		UPDATE ESIM_MST SET
+
+			<if test='RECEIPT_STATE != null'>RECEIPT_STATE = #{RECEIPT_STATE},</if>
+			<if test='STATE_DES != null'>STATE_DES = #{STATE_DES},</if>
+			<if test='RENTAL_MGMT_NUM != null'>RENTAL_MGMT_NUM = #{RENTAL_MGMT_NUM},</if>
+			<if test='RENTAL_DAYS != null'>RENTAL_DAYS = #{RENTAL_DAYS},</if>
+			<if test='RENTAL_SCHD_STA_DT != null'>RENTAL_SCHD_STA_DT = #{RENTAL_SCHD_STA_DT},</if>
+			<if test='RENTAL_SCHD_END_DT != null'>RENTAL_SCHD_END_DT = #{RENTAL_SCHD_END_DT},</if>
+			<if test='RENTAL_SALE_ORG_ID != null'>RENTAL_SALE_ORG_ID = #{RENTAL_SALE_ORG_ID},</if>
+			<if test='RTN_SALE_ORG_ID != null'>RTN_SALE_ORG_ID = #{RTN_SALE_ORG_ID},</if>
+			<if test='RENTAL_BOOTH_ORG_ID != null'>RENTAL_BOOTH_ORG_ID = #{RENTAL_BOOTH_ORG_ID},</if>
+			<if test='DOM_CNTC_NUM != null'>DOM_CNTC_NUM = #{DOM_CNTC_NUM},</if>
+			<if test='RCMNDR_ID != null'>RCMNDR_ID = #{RCMNDR_ID},</if>
+			<if test='EMAIL_STATE != null'>EMAIL_STATE = #{EMAIL_STATE},</if>
+			<if test='EMAIL_CNT != null'>EMAIL_CNT = #{EMAIL_CNT},</if>
+			<if test='EMAIL_DES != null'>EMAIL_DES = #{EMAIL_DES},</if>
+
+			UPDATE_USER_ID = #{USER_ID},
+			UPDATE_DT = NOW()
+
+		WHERE
+		<choose>
+			<when  test='RECEIPT_ID != null'>RECEIPT_ID = #{RECEIPT_ID}</when>
+			<otherwise>MST_ID = #{MST_ID}</otherwise>
+		</choose>
+
+	 </update>
+
+	 <update id="updateSimInfo" parameterType="java.util.Map">
+	   	/* ExternalApiMapper.updateSimInfo */
+		UPDATE ESIM_INFO SET
+
+			<if test='PDF_PATH != null'>PDF_PATH = #{PDF_PATH},</if>
+			<if test='PDF_NM != null'>PDF_NM = #{PDF_NM},</if>
+			<if test='QR_PATH != null'>QR_PATH = #{QR_PATH},</if>
+			<if test='QR_NM != null'>QR_NM = #{QR_NM},</if>
+			<if test='EMAIL_STATE != null'>EMAIL_STATE = #{EMAIL_STATE},</if>
+			<if test='EMAIL_CNT != null'>EMAIL_CNT = #{EMAIL_CNT},</if>
+			<if test='EMAIL_DES != null'>EMAIL_DES = #{EMAIL_DES},</if>
+
+			UPDATE_USER_ID = #{USER_ID},
+			UPDATE_DT = NOW()
+
+		WHERE
+		<choose>
+			<when  test='INFO_ID != null'>INFO_ID = #{INFO_ID}</when>
+			<otherwise>MST_ID = #{MST_ID}</otherwise>
+		</choose>
+	 </update>
+
+	 <select id="getSimReceiptInfo" parameterType="java.util.Map" resultType="lowerkeymap">
+		/*ExternalApiMapper.getSimReceiptInfo*/
+
+		SELECT
+			A.MST_ID
+			, A.SIM_TYPE AS GOODS_TYPE
+			, IFNULL(A.RECEIPT_ID, '') AS RSV_VOL_NUM
+			, IFNULL(A.RECEIPT_STATE, 0) AS STATE
+			, A.RENTAL_MGMT_NUM
+			, A.RENTAL_DAYS
+			, A.RENTAL_SCHD_STA_DTM
+			, A.RENTAL_SCHD_END_DTM
+			, IF(A.ORDER_TIME IS NOT NULL, DATE_FORMAT(A.ORDER_TIME, '%Y%m%d%H%i%s'), '') AS ORDER_DTM
+			, A.RENTAL_SALE_ORG_ID
+			, A.TOTAL_CNT
+			, A.CUST_NM
+			, A.EMAIL_ADDR
+			, A.CUST_TEL
+			, A.RSV_RCV_DTM
+			, A.ROMING_PASSPORT_NUM
+			, A.NATION_CD
+			, A.ITEM_NM
+			, IFNULL(A.RTN_SALE_ORG_ID, '') AS RTN_SALE_ORG_ID
+			, IFNULL(A.RENTAL_BOOTH_ORG_ID, '') AS RENTAL_BOOTH_ORG_ID
+
+		FROM ESIM_MST A
+		WHERE  A.RECEIPT_ID = #{RECEIPT_ID} AND A.SELLER_CODE = #{SELLER_CODE} LIMIT 1
+
+	</select>
+
+	<select id="getSimReceiptSubInfo" parameterType="java.util.Map" resultType="lowerkeymap">
+		/*ExternalApiMapper.getSimReceiptSubInfo*/
+
+		SELECT
+			 A.RENTAL_MST_NUM
+			, A.ROMING_TYP_CD
+			, A.RENTAL_FEE_PROD_ID
+			, A.EQP_MDL_CD
+			, A.ESIM_MAPPING_ID
+			, A.EQP_SER_NUM
+			, A.ROMING_PHON_NUM
+			, A.ROMING_NUM
+
+		FROM ESIM_INFO A
+		WHERE  A.MST_ID = #{MST_ID}
+
+	</select>
+
+
+</mapper>

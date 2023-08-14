@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="코드리스트" editable="Y" gridxscrollyn="N">
+	<userJs>../custom/codeDetail.jsp</userJs>
+	<userHtml></userHtml>
+	<table>tcsy_code_list</table>
+	<object>code_cls,code_cd</object>
+	<columns>
+		<col id="code_cls" groupLabel="" type="text" width="10%" align="center" search="N">코드그룹ID</col>
+		<col id="code_cd" groupLabel="a1" type="select" width="10%" align="center" search="Y" hidden="N" formatter="{type: 'sql', sql:'SELECT code_cd as [value], code_nm text FROM tcsy_code_list WHERE code_cls = \'CDM01\''}">코드ID</col>
+		<col id="code_nm" groupLabel="a1" type="text" width="10%" align="center" search="N" tooltip="이것은 툴팁입니다.">코드명</col>
+		<col id="code_content" groupLabel="a2" type="text" width="10%" align="center" search="N">코드내용</col>
+		<col id="use_yn" groupLabel="a2" type="text" width="10%" align="center" search="N">사용여부</col>
+		<col id="sort_seq" groupLabel="a3" type="num" width="10%" align="center" search="N">순서</col>
+		<col id="temp1" groupLabel="a3" type="num" width="10%" align="center" search="N">temp1</col>
+		<col id="temp2" groupLabel="a4" type="num" width="10%" align="center" search="N">temp2</col>
+		<col id="temp3" groupLabel="a4" type="num" width="10%" align="center" search="N">temp3</col>
+		<col id="temp4" groupLabel="a5" type="num" width="10%" align="center" search="N">temp4</col>
+		<col id="temp5" groupLabel="a5" type="num" width="10%" align="center" search="N">temp5</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		select code_cls,
+			code_cd,
+			code_nm,
+			code_content,
+			use_yn ,
+			sort_seq 
+		from tcsy_code_list a
+		order by code_cls,code_cd,sort_seq
+	</sql>
+</list>

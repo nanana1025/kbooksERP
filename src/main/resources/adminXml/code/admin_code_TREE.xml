@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<tree name="코드분류">
+	<userJs>/WEB-INF/views/core/admin/admCodeTree.jsp</userJs>
+	<userHtml></userHtml>
+	<column>
+		<child>child_cnt</child>
+		<display>code_cls_nm</display>
+		<object>code_cls</object>
+		<parent>up_code_cls</parent>
+		<iconId></iconId>
+	</column>
+	<icons>
+		<icon></icon>
+	</icons>
+	<event>
+		<expand></expand>
+		<select></select>
+	</event>
+	<sql>TreeMapper.codeTree</sql>
+</tree>

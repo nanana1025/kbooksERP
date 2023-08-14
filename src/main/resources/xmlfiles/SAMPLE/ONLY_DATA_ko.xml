@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data division="1" name="코드리스트" widths="20:80">
+	<userJs/>
+	<userHtml/>
+	<table>tcsy_code_list</table>
+	<object>code_cls,code_cd</object>
+	<value>CDS05,D</value>
+	<columns>
+		<col align="center" id="code_cls_nm" type="text" width="100%">코드분류명</col>
+		<col align="center" id="code_cls_desc" type="text" width="100%">코드분류설명</col>
+		<col align="center" formatter="{type:'sql',sql:'select code_cls [value], \'[\'||code_cls||\']\'||code_cls_nm text from tcsy_code_cls'}" id="code_cls" type="select" width="100%" tooltip="셀렉트 툴팁">코드그룹ID</col>
+		<col align="center" id="code_cd" type="text" width="100%" formatter="{type:'url', url:'/layoutSelectP.do?xn=JOIN_LAYOUT'}">코드ID</col>
+		<col align="center" id="code_nm" type="text" width="100%">코드명</col>
+		<col align="center" id="code_content" type="text" width="100%">코드내용</col>
+		<col align="center" id="use_yn" type="text" width="100%">사용여부</col>
+		<col align="center" id="sort_seq" type="num" width="100%" formatter="seq">순서</col>
+	</columns>
+	<event>
+		<insert/>
+		<update/>
+		<delete/>
+		<selected/>
+	</event>
+	<sql>
+		select a.code_cls,
+			a.code_cd,
+			a.code_nm,
+			a.code_content,
+			a.use_yn ,
+			a.sort_seq,
+			b.code_cls_nm,
+			b.code_cls_desc
+		from tcsy_code_list a, tcsy_code_cls b
+		where a.code_cls = b.code_cls
+		order by a.code_cls,code_cd,a.sort_seq
+	</sql>
+</data>

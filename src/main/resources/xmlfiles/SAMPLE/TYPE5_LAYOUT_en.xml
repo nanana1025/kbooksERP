@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="5" name="TYPE5">
+	<area id="WBS_TREE" url="/tree.do?xn=WBS_TREE_en" width="20%" height="100%" collapsible="N" resizable="N">WBS</area>
+	<area id="WBS_TAB" url="/tab.do?xn=TYPE5_LAYOUT_en" width="60%" height="100%" collapsible="N" resizable="N">WBS_TAB
+		TAB
+		<tab id="TAB_A" url="/list.do?xn=TAB_A_LIST_en" refAreaId="WBS_TREE">TAB_A</tab>
+	</area>
+	<area id="WBS_DATA1" url="/data.do?xn=WBS_DATA_en" width="20%" height="100%" collapsible="N" resizable="N" refAreaId="TAB_A">WBS3</area>
+</layout>

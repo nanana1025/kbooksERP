@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="인라인테스트" editable="Y" type="inline">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tnts_person_test</table>
+	<object>person_id</object>
+	<columns>
+		<col id="person_id" type="text" width="10%" align="center" search="N" init="sq_person.next_value">사람ID</col>
+		<col id="person_nm" type="text" width="10%" align="center" search="Y">사람이름</col>
+		<col id="ssn" type="mask" width="10%" align="center" search="N" formatter="ssn">주민번호</col>
+		<col id="phone_no" type="mask" width="10%" align="center" search="N" formatter="phone_no">핸드폰번호</col>
+		<col id="email" type="mask" width="10%" align="center" search="N" formatter="email">이메일</col>
+		<col id="address" type="text" width="20%" align="center" search="N">주소</col>
+		<col id="cash" type="num" width="10%" align="center" search="N" formatter="price">소지금</col>
+		<col id="contact_yn" type="checkbox" width="10%" align="center" search="N" default="Y">연락여부</col>
+		<col id="temp_num" type="num" width="10%" align="center" search="N" formatter="percent">그냥 숫자</col>
+		<col id="update_id" type="select" width="10%" align="center" search="N" formatter="{type:'sql',sql:'select user_id [value], user_nm text from tesy_user'}">수정자</col>
+		<col id="join_dt" type="date" width="10%" align="center" search="N">가입일</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<select></select>
+	</event>
+	<sql>
+		SELECT
+			person_id,
+			person_nm,
+			ssn,
+			phone_no,
+			email,
+			address,
+			cash,
+			contact_yn,
+			temp_num,
+			update_id,
+			to_char(join_dt, 'yyyy-mm-dd') as join_dt
+		FROM
+			tnts_person_test
+	</sql>
+</list>

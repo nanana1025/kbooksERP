@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data name="파일업로드" division="1" widths="30:70">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tnts_upload_test</table>
+	<object>id</object>
+	<columns>
+		<col id="id" type="text" width="100%" align="center" init="sq_upload_id.next_value">코드그룹ID</col>
+		<col id="col_nm" type="text" width="100%" align="center">컬럼명</col>
+		<col id="upload_file_id" type="file" width="100%" align="center">파일</col>
+		<col id="upload_file_id2" type="file" width="100%" align="center">파일2</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+	</event>
+	<sql>
+		select id,
+			col_nm,
+			upload_file_id,
+			upload_file_id2
+		from tnts_upload_test a
+	</sql>
+</data>

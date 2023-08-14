@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<data division="1" widths="30:70">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tead_exewbs</table>
+	<object>exewbsid</object>
+	<columns>
+		<col id="exewbsid" colSpan="" width="100%" align="center" type="text" search="N" hidden="Y" required="Y" init="sq_wbsid.next_value">WBSID</col>
+		<col id="wbstp" colSpan="" width="100%" align="center" type="text" search="N" hidden="N">구분</col>
+		<col id="wbsnm" colSpan="" width="100%" align="center" type="text" search="Y" hidden="N">공정명</col>
+		<col id="prcrnm" colSpan="" width="100%" align="center" type="text" search="N" hidden="N">산출물명</col>
+		<col id="takedays" colSpan="" width="100%" align="center" type="num" search="N" hidden="N">소요일</col>
+		<col id="planstrtdt" colSpan="" width="100%" align="center" type="date" search="Y" hidden="N" formatter="date" tooltip="달력 툴팁">시작일</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		select exewbsid,
+			wbstp,
+			wbsnm,
+			prcrnm,
+			takedays,
+			to_char(planstrtdt,'YYYY-MM-DD') as planstrdt 
+		from tead_exewbs
+	</sql>
+</data>

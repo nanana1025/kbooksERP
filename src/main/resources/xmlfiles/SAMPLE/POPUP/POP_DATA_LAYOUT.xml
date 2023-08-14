@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="2" name="POP_SAVE">
+	<area id="POP_LIST" url="/list.do?xn=WBS_LIST" width="100%" height="50%" collapsible="N" resizable="N">팝업1</area>
+	<area id="POP_DATA" url="/data.do?xn=WBS_DATA" width="100%" height="50%" collapsible="N" resizable="N" refAreaId="POP_LIST">팝업2</area>
+</layout>

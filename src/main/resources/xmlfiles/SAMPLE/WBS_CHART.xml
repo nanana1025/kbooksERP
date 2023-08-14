@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<chart title="WBS" defaultType="column">
+	<userJs></userJs>
+	<userHtml>
+		<html position="button"><input type="button" class="k-button" value="버튼테스트"/></html>
+		<html position="bottom"><input type="button" class="k-button" value="하단테스트"/></html>
+		<html position="title"><span>타이틀에 들어가는 userHtml</span></html>
+		<html position="caption"><span>새 줄로 들어가는 userHtml</span></html>
+	</userHtml>
+	<table>tead_exewbs</table>
+	<object>exewbsid</object>
+	<series name="메뉴별 투입공수" label="wbsnm" value="takedays" useTooltip="Y">
+		<tooltipTemplate>#= category #: #= value #</tooltipTemplate>
+	</series>
+	<event>
+		<seriesClick></seriesClick>
+	</event>
+	<kendoExtend>{title: {text: "kendoExtend로 넣은 타이틀" } }</kendoExtend>
+	<sql>
+	select
+	    exewbsid
+		, wbsnm
+		, takedays
+	from
+		tead_exewbs
+	where wbsnm is not null and takedays is not null
+	</sql>
+	<desc>차트 설명시작
+	차트설명1111
+	차트설명2222
+	차트설명3333
+	차트 설명 종료
+	</desc>
+</chart>

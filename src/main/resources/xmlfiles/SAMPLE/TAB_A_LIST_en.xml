@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="WBS" type="" editable="N" gridxscrollyn="N">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>tead_exewbs</table>
+	<object>exewbsid</object>
+	<columns>
+		<col id="exewbsid" groupid="" width="10%" align="center" type="" search="N" hidden="Y" required="Y" init="seq_wbsid.next_value"></col>
+		<col id="wbstp" groupid="" width="7%" align="center" type="text" search="N" hidden="N">Type</col>
+		<col id="wbsnm" groupid="" width="10%" align="center" type="text" search="Y" hidden="N">Wbs name</col>
+		<col id="prcrnm" groupid="" width="10%" align="center" type="text" search="N" hidden="N">Output name</col>
+		<col id="takedays" groupid="" width="10%" align="center" type="num" search="N" hidden="N">Day requied</col>
+		<col id="planstrtdt" groupid="" width="10%" align="center" type="date" search="Y" hidden="N" formatter="date">Start date</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		select exewbsid,
+			wbstp,
+			wbsnm,
+			prcrnm,
+			takedays,
+			to_char(planstrtdt,'YYYY-MM-DD') as planstrtdt 
+		from tead_exewbs
+	</sql>
+</list>

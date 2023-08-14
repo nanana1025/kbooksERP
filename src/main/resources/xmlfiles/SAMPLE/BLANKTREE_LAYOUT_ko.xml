@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="샘플트리">
+	<area id="BLANKTREE_TREE" url="/tree.do?xn=BLANK_TREE" width="100%" height="100%" collapsible="N" resiizable="N">샘플트리</area>
+</layout>

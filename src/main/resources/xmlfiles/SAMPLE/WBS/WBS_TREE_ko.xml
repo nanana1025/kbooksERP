@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<tree name="WBS">
+	<userJs></userJs>
+	<userHtml>
+		<html position="button"><input type="button" class="k-button" value="버튼테스트"/></html>
+		<html position="bottom"><input type="button" class="k-button" value="하단테스트"/></html>
+		<html position="title"><span>타이틀에 들어가는 userHtml</span></html>
+		<html position="caption"><div style="margin-top:20px;">새 줄로 들어가는 userHtml</div></html>
+	</userHtml>
+	<column>
+		<child>child_cnt</child>
+		<display>wbsnm</display>
+		<object>exewbsid</object>
+		<parent>upprwbsid</parent>
+		<iconId>iconId</iconId>
+	</column>
+	<icons>
+		<icon id="red_circle">/codebase/imgs/red_circle2.png</icon>
+		<icon id="blue_circle">/codebase/imgs/blue_circle2.png</icon>
+		<icon id="green_circle">/codebase/imgs/green_circle2.png</icon>
+	</icons>
+	<event>
+		<expand>onExpand</expand>
+		<select>onSelect</select>
+	</event>
+	<sql>
+		SELECT upprwbsid, exewbsid, wbsnm,
+					CASE WHEN takedays &gt;= 30 THEN null
+					WHEN takedays &gt;= 20 THEN 'blue_circle'
+					WHEN takedays &gt;=10 THEN 'green_circle'
+					ELSE 'red_circle' END as iconId
+		FROM tead_exewbs
+		START WITH upprwbsid = 0
+		CONNECT BY PRIOR exewbsid = upprwbsid
+	</sql>
+	<data>
+	</data>
+</tree>

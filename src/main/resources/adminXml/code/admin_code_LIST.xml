@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="코드리스트" editable="Y" gridxscrollyn="N">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table>TCSY_CODE_LIST</table>
+	<object>CODE_CLS,CODE_CD</object>
+	<columns>
+		<col id="CODE_CLS" type="text" width="10%" align="center" search="N">코드그룹ID</col>
+		<col id="CODE_CLS_NM" type="text" width="10%" align="center" search="N">코드그룹명</col>
+		<col id="CODE_CD" type="text" width="10%" align="center" search="N">코드ID</col>
+		<col id="CODE_NM" type="text" width="10%" align="center" search="N">코드명</col>
+		<col id="CODE_CONTENT" type="text" width="10%" align="center" search="N">코드내용</col>
+		<col id="SORT_SEQ" type="num" width="10%" align="center" search="N">순서</col>
+		<col id="USE_YN" type="num" width="10%" align="center" search="N" hidden="Y">사용여부</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+		SELECT
+			@ROWNUM1:=@ROWNUM1+1 AS NO1,
+			CODE_CLS,
+			(SELECT CODE_CLS_NM FROM TCSY_CODE_CLS WHERE CODE_CLS = A.CODE_CLS) AS CODE_CLS_NM,
+			CODE_CD,
+			CODE_NM,
+			CODE_CONTENT,
+			SORT_SEQ,
+			USE_YN
+		FROM TCSY_CODE_LIST A
+		, (SELECT @ROWNUM1:=0) TMP
+		ORDER BY CODE_CLS, SORT_SEQ
+	</sql>
+</list>

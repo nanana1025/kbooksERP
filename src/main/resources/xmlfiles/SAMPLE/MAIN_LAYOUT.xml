@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1">
+	<area id="area1" url="/list.do?sid=MAIN" width="100%" collapsible="N" resizable="N">MAIN</area>
+</layout>

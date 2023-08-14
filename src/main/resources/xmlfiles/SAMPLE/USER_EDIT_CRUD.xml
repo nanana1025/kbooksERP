@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<crudObject>
+	<cruditem>
+		<title>사용자정보</title>
+		<sid>USER_EDIT</sid>
+		<labelwidth>150</labelwidth>
+		<inputwidth>600</inputwidth>
+		<view>
+			<column id="1">
+				<selcol>user_id</selcol>
+				<keyyn>Y</keyyn>
+				<ordno>1</ordno>
+				<coltype>input</coltype>
+				<required>Y</required>
+				<label>사용자ID</label>
+				<hiddenyn>Y</hiddenyn>
+				<insert_condition>sq_user.NEXT_VALUE</insert_condition>
+			</column>
+			<column id="2">
+				<selcol>user_nm</selcol>
+				<keyyn></keyyn>
+				<ordno>2</ordno>
+				<coltype>input</coltype>
+				<required>Y</required>
+				<label>사용자명</label>
+				<condition></condition>
+			</column>
+			<column id="4">
+				<selcol>passwd</selcol>
+				<keyyn>N</keyyn>
+				<ordno>4</ordno>
+				<coltype>password</coltype>
+				<required>N</required>
+				<label>비밀번호</label>
+				<condition>('')</condition>
+			</column>
+<!-- 			<column id="5"> -->
+<!-- 				<selcol>passwd_confirm</selcol> -->
+<!-- 				<keyyn>N</keyyn> -->
+<!-- 				<ordno>5</ordno> -->
+<!-- 				<coltype>password</coltype> -->
+<!-- 				<required>N</required> -->
+<!-- 				<excludequery>Y</excludequery> -->
+<!-- 				<label>비밀번호확인</label> -->
+<!-- 				<condition></condition> -->
+<!-- 			</column> -->
+			<column id="6">
+				<selcol>job_rank_cd</selcol>
+				<keyyn></keyyn>
+				<ordno>6</ordno>
+				<coltype>select_sql</coltype>
+				<label>직급</label>
+				<condition></condition>
+				<select_sql>select code_cd as [value], code_nm as text from tcsy_code_list where code_cls='CDM01'</select_sql>
+			</column>
+			<column id="7">
+				<selcol>phone_no</selcol>
+				<keyyn></keyyn>
+				<ordno>8</ordno>
+				<coltype>input</coltype>
+				<label>연락처</label>
+				<condition></condition>
+			</column>
+			<column id="8">
+				<selcol>state_cd</selcol>
+				<keyyn></keyyn>
+				<ordno>10</ordno>
+				<coltype>input</coltype>
+				<label>상태</label>
+				<hiddenyn>Y</hiddenyn>
+				<condition></condition>
+				<insert_condition>'Y'</insert_condition>
+			</column>
+		</view>
+		<from>tesy_user</from>
+		<objectid>user_id</objectid>
+		<custom_function>
+		</custom_function>
+		<custom_methods>
+		<methods>
+			<type>before</type>
+				<target>insert</target>
+				<name>beforeJoinSave</name>
+				<parameter_type>map</parameter_type>
+				<result_type>map</result_type>
+			</methods>
+			<methods>
+				<type>before</type>
+				<target>update</target>
+				<name>beforeUserUpdate</name>
+				<parameter_type>map</parameter_type>
+				<result_type>map</result_type>
+			</methods>
+			<methods>
+				<type>after</type>
+				<target>insert</target>
+				<name>afterJoinSave</name>
+				<parameter_type>map</parameter_type>
+				<result_type>void</result_type>
+			</methods>
+		</custom_methods>
+
+		<pre_function_js>
+			function preFunction() {
+				console.log('pre_function start!!!!');
+				if($('#passwd').val() == ""){
+					GochigoAlert('비밀번호를 입력해주세요.');
+					$('#passwd').focus();
+					return false;
+				}
+				var match = false;
+				$.ajax({
+					url : '/admin/pwCheck.json',
+					async : false,
+					data : {
+							user_id : $('#user_id').val(),
+							passwd : $('#passwd').val(),
+						},
+					success : function(data) {
+						if(data.success) {
+							console.log('pw right!!!');
+							match = true;
+						} else {
+							GochigoAlert(data.rtnMsg);
+							match = false;
+							$('#login_id').val('').focus();
+						}
+					}
+				});
+				if(match){
+					return true;
+				} else {
+					return false;
+				}
+				console.log('pre_function end!!!');
+			}
+		</pre_function_js>
+		<post_function_js>
+			function postFunction() {
+			}
+		</post_function_js>
+	</cruditem>
+</crudObject>

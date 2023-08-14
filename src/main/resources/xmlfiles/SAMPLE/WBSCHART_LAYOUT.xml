@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="메뉴별 투입공수 차트">
+	<area id="WBS_CHART" url="/chart.do?xn=WBS_CHART" width="100%" height="100%" collapsible="N" resiizable="N">메뉴별 투입공수 차트</area>
+</layout>

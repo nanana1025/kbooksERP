@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<chart title="WBS" defaultType="column">
+	<userJs></userJs>
+	<userHtml>
+		<html position="button"><input type="button" class="k-button" value="버튼테스트"/></html>
+		<html position="bottom"><input type="button" class="k-button" value="하단테스트"/></html>
+		<html position="title"><span>userHtml into Title</span></html>
+		<html position="caption"><span>userHtml into newline</span></html>
+	</userHtml>
+	<series name="메뉴별 투입공수" label="wbsnm" value="takedays" useTooltip="Y">
+		<tooltipTemplate>#= category #: #= value #</tooltipTemplate>
+	</series>
+	<event>
+		<seriesClick></seriesClick>
+	</event>
+	<sql>
+	select
+		wbsnm
+		, takedays
+	from
+		tead_exewbs
+	where wbsnm is not null and takedays is not null
+	</sql>
+</chart>

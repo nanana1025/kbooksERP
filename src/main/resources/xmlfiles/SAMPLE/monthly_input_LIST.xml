@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="monthly_input_list" editable="Y">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<table></table>
+	<object></object>
+	<columns>
+		<col id="code1" type="text" width="10%" align="center" search="N">투입인력</col>
+		<col id="code2" type="num" groupLabel="1월" width="5%" align="center" search="N">21</col>
+		<col id="code3" type="num" groupLabel="2월" width="5%" align="center" search="N">21</col>
+		<col id="code4" type="num" groupLabel="3월" width="5%" align="center" search="N">22</col>
+		<col id="code5" type="num" groupLabel="4월" width="5%" align="center" search="N">20</col>
+		<col id="code6" type="num" groupLabel="5월" width="5%" align="center" search="N">21</col>
+		<col id="code7" type="num" groupLabel="6월" width="5%" align="center" search="N">21</col>
+		<col id="code8" type="num" groupLabel="7월" width="5%" align="center" search="N">21</col>
+		<col id="code9" type="num" groupLabel="8월" width="5%" align="center" search="N">21</col>
+		<col id="code10" type="num" groupLabel="9월" width="5%" align="center" search="N">19</col>
+		<col id="code11" type="num" groupLabel="10월" width="5%" align="center" search="N">21</col>
+		<col id="code12" type="num" groupLabel="11월" width="5%" align="center" search="N">21</col>
+		<col id="code13" type="num" groupLabel="12월" width="5%" align="center" search="N">21</col>
+
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<selected></selected>
+	</event>
+	<sql>
+       </sql>
+</list>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="ASIS 리스트" editable="N" type="normal">
+	<userJs>../custom/asis/asis.jsp</userJs>
+	<userHtml>
+
+		</userHtml>
+	<table>TN_ASIS</table>
+	<object>ASIS_ID</object>
+	<columns>
+			<col id="NO" type="num" width="4%" align="center" search="N" formatter="n0">NO</col>
+		   <col id="BARCODE" type="text" width="7%" align="center"  search="Y" >관리번호</col>
+	       <col id="UNIQUE_ID" type="text" width="5%" align="center" search="Y" >UID</col>
+	       <col id="TYPE" type="text" width="5%" align="center" search="Y">TYPE</col>
+	       <col id="URL" type="text" width="51%" align="center" search="N" onclick="Y">URL</col>
+	       <col id="CREATE_USER_ID" type="text" width="7%" align="center" search="N">CREATE USER</col>
+           <col id="CREATE_DT" type="text" width="7%" align="center" search="N" hidden = "N">생성일</col>
+            <col id="UPDATE_USER_ID" type="text" width="7%" align="center" search="N">UPDATE USER</col>
+           <col id="UPDATE_DT" type="text" width="7%" align="center" search="N" hidden = "N" >수정일</col>
+	</columns>
+	<event>
+		<insert>
+		</insert>
+		<update>
+		</update>
+		<delete></delete>
+		<select></select>
+	</event>
+	<sql>
+	SELECT
+		@ROWNUM1:=@ROWNUM1+1 AS NO1,
+		B.BARCODE,
+		A.UID AS UNIQUE_ID,
+		A.TYPE,
+		A.URL,
+		A.CREATE_USER_ID,
+		A.UPDATE_USER_ID,
+		DATE_FORMAT(A.CREATE_DT, '%Y.%m.%d') AS CREATE_DT,
+		DATE_FORMAT(A.UPDATE_DT, '%Y.%m.%d') AS UPDATE_DT
+
+		FROM TN_ASIS A
+			LEFT JOIN TN_INVENTORY B ON (A.INVENTORY_ID = B.INVENTORY_ID)
+			, (SELECT @ROWNUM1:=0) TMP
+
+		ORDER BY A.ASIS_ID DESC
+
+	</sql>
+</list>

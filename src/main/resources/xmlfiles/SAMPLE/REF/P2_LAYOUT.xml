@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="5" name="부모가 둘인 화면">
+	<area id="P_TREE" url="/tree.do?xn=WBS_TREE" width="20%" height="100%" collapsible="N" resizable="N">부모1(공정명LIKE)</area>
+	<area id="P_LIST" url="/list.do?xn=WBS_LIST" width="40%" height="100%" collapsible="N" resizable="N">부모2(소요일기준)</area>
+	<area id="C_LIST" url="/list.do?xn=WBS_LIST" width="40%" height="100%" collapsible="N" resizable="N" refAreaId="P_TREE.wbsnm*;P_LIST.wbsnm,takedays">자식1(추가PARAM)</area>
+</layout>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="1" name="포매터">
+	<area id="PERSON_LIST" url="/list.do?xn=PERSON_LIST" width="100%" height="100%" collapsible="N" resizable="N">포매터 테스트</area>
+</layout>

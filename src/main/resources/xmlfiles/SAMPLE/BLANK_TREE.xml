@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<tree name="WBS">
+	<userJs></userJs>
+	<userHtml></userHtml>
+	<column>
+		<child></child>
+		<display></display>
+		<object></object>
+		<parent></parent>
+		<iconid></iconid>
+	</column>
+	<icons>
+		<icon></icon>
+	</icons>
+	<event>
+		<expand></expand>
+		<select></select>
+	</event>
+	<sql>
+
+	</sql>
+	<data>
+		 { text: "입력 트리", icon: "/codebase/imgs/red_circle2.png", 
+		   items: [
+              { text: "사용자가 입력" },
+              { text: "data에서 입력한 내용" },
+              { text: "직접 입력한 내용입니다." }
+          ] }
+	</data>
+</tree>

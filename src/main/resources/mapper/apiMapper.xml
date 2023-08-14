@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbook.custom.api.ApiMapper">
+
+	<select id="getLastAutoIncreasedId"  resultType="long">
+    	/* APIMapper."getLastAutoIncreasedId" */
+		SELECT LAST_INSERT_ID() AS ID;
+    </select>
+
+	<select id="getEmailFilterCd" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getEmailFilterCd*/
+
+		SELECT CATEGORY, KEYWORD, SENDER, PARSING_CD, SELLER_CD FROM EMAIL_PARSING_CD
+
+	</select>
+
+	<select id="getParsingCol" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getParsingCol*/
+
+		SELECT COL_EMAIL, COL_DB FROM EMAIL_PARSING_COL WHERE PARSING_CD = #{PARSING_CD}
+
+	</select>
+
+	<select id="getNationCd" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getNationCd*/
+
+		SELECT NAME_ENG, NAME_KOR, CODE  FROM NATION_CD WHERE NAME_ENG = #{NATION_NM} OR KEY1 = #{NATION_NM} OR KEY2 = #{NATION_NM} OR KEY3 = #{NATION_NM}
+
+	</select>
+
+	<select id="geteSimReceiptInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.geteSimReceiptInfo*/
+
+		SELECT MST_ID  FROM ESIM_MST WHERE RECEIPT_ID = #{RECEIPT_ID}
+
+	</select>
+
+	<select id="get_eSimMstInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.get_eSimMstInfo*/
+		SELECT * FROM ESIM_MST WHERE MST_ID = #{MST_ID}<if test='SELLER_CODE != null'> AND SELLER_CODE = #{SELLER_CODE}</if>
+	</select>
+
+	<select id="get_SimMstInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.get_SimMstInfo*/
+		SELECT * FROM ESIM_MST WHERE RENTAL_MGMT_NUM = #{RENTAL_MGMT_NUM}<if test='SELLER_CODE != null'> AND SELLER_CODE = #{SELLER_CODE}</if>
+	</select>
+
+	<select id="getOrgInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getOrgInfo*/
+
+		SELECT *  FROM ORG_INFO WHERE TYPE = #{TYPE}
+
+	</select>
+
+	<select id="getRomingItem" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getRomingItem*/
+
+		SELECT *  FROM ROAMING_ITEM_INFO WHERE TYPE = #{TYPE} AND KEYWORD = #{KEYWORD} LIMIT 1
+
+	</select>
+
+	<select id="getMailStartInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getMailStartInfo*/
+
+		SELECT MAIL_ID, APP_PASWORD, FOLDER_NM, DATE_FORMAT(START_DT,'%Y-%m-%d %T') AS START_DT, SEND_SUBJECT  FROM MAIL_INFO WHERE TYPE = #{TYPE}
+
+	</select>
+
+	<update id="updateMailStartInfo" parameterType="java.util.Map">
+	   	/* APIMapper.updateMailStartInfo */
+		UPDATE MAIL_INFO SET
+			START_DT = #{START_DT},
+			UPDATE_DT = NOW()
+		WHERE TYPE = #{TYPE}
+	 </update>
+
+	<insert id="inserteSimRequest" parameterType="java.util.Map" >
+	   	/* APIMapper.inserteSimRequest */
+
+			INSERT INTO ESIM_MST
+			(RECEIPT_ID, RECEIPT_STATE, RENTAL_MGMT_NUM, RENTAL_DAYS, RENTAL_SCHD_STA_DTM, RENTAL_SCHD_END_DTM,
+			RENTAL_SCHD_STA_DT, RENTAL_SCHD_END_DT, RENTAL_SALE_ORG_ID, DOM_CNTC_NUM, CUST_TEL,
+			EMAIL_ADDR, RSV_RCV_DTM, RSV_RCV_DT, ROMING_PASSPORT_NUM, APPELLATION, CUST_NM,
+			NATION_CD, NATION_NM, RCMNDR_ID, TOTAL_CNT, REQUEST_TIME, ITEM_DES, ITEM_URL, ITEM_NM, FROM_EMAIL,
+			SELLER_CODE, ESIM_ORDER_TYPE, ORDER_TIME, SUBJECT, DES, STATE_DES, CREATE_USER_ID, CREATE_DT, UPDATE_USER_ID, UPDATE_DT)
+	        VALUES
+	        (#{RECEIPT_ID}, #{RECEIPT_STATE}, #{RENTAL_MGMT_NUM}, #{DAYS}, #{RENTAL_SCHD_STA_DTM}, #{RENTAL_SCHD_END_DTM},
+			<choose><when test='RENTAL_SCHD_STA_DT.equals("")'>NULL,</when><otherwise>#{RENTAL_SCHD_STA_DT},</otherwise></choose>
+			<choose><when test='RENTAL_SCHD_END_DT.equals("")'>NULL,</when><otherwise>#{RENTAL_SCHD_END_DT},</otherwise></choose>
+	        #{RENTAL_SALE_ORG_ID}, #{DOM_CNTC_NUM}, #{CUST_TEL},
+	        #{EMAIL_ADDR}, #{RSV_RCV_DTM},
+			<choose><when test='RSV_RCV_DT.equals("")'>NULL,</when><otherwise>#{RSV_RCV_DT},</otherwise></choose>
+	        #{ROMING_PASSPORT_NUM}, #{APPELLATION}, #{CUST_NM},
+	        #{NATION_CD}, #{NATION_NM}, #{RCMNDR_ID}, #{TOTAL_CNT}, #{REQUEST_TIME}, #{ITEM_DES}, #{ITEM_URL}, #{ITEM_NM}, #{FROM_EMAIL},
+	        #{SELLER_CD}, #{ESIM_ORDER_TYPE}, #{ORDER_TIME}, #{SUBJECT}, #{DES}, #{STATE_DES}, #{USER_ID}, NOW(), #{USER_ID}, NOW())
+
+	 </insert>
+
+
+	<insert id="inserteSimReturn" parameterType="java.util.Map" >
+	   	/* APIMapper.inserteSimReturn */
+
+			INSERT INTO ESIM_INFO
+			(MST_ID, RENTAL_MST_NUM, ROMING_TYP_CD, RSV_VOU_NUM, RENTAL_FEE_PROD_ID, EQP_MDL_CD, ESIM_MAPPING_ID,
+			EQP_SER_NUM, ROMING_PHON_NUM, ROMING_NUM, CREATE_USER_ID, CREATE_DT, UPDATE_USER_ID, UPDATE_DT<if test='STATE != null'>, STATE</if>)
+	        VALUES
+	        <foreach collection="LIST_DATA" item="item" separator=",">
+	        (#{MST_ID}, #{item.RENTAL_MST_NUM}, #{item.ROMING_TYP_CD}, #{item.RSV_VOU_NUM}, #{item.RENTAL_FEE_PROD_ID}, #{item.EQP_MDL_CD}, #{item.ESIM_MAPPING_ID},
+	        #{item.EQP_SER_NUM}, #{item.ROMING_PHON_NUM}, #{item.ROMING_NUM}, #{USER_ID}, NOW(), #{USER_ID}, NOW()<if test='STATE != null'>, #{STATE}</if>)
+			</foreach>
+	 </insert>
+
+
+
+
+	 <update id="updateSimRequest" parameterType="java.util.Map">
+	   	/* APIMapper.updateSimRequest */
+		UPDATE ESIM_MST SET
+
+			<if test='RECEIPT_STATE != null'>RECEIPT_STATE = #{RECEIPT_STATE},</if>
+			<if test='STATE_DES != null'>STATE_DES = #{STATE_DES},</if>
+			<if test='RENTAL_MGMT_NUM != null'>RENTAL_MGMT_NUM = #{RENTAL_MGMT_NUM},</if>
+			<if test='RENTAL_DAYS != null'>RENTAL_DAYS = #{RENTAL_DAYS},</if>
+			<if test='RENTAL_SCHD_STA_DT != null'>RENTAL_SCHD_STA_DT = #{RENTAL_SCHD_STA_DT},</if>
+			<if test='RENTAL_SCHD_END_DT != null'>RENTAL_SCHD_END_DT = #{RENTAL_SCHD_END_DT},</if>
+			<if test='RENTAL_SALE_ORG_ID != null'>RENTAL_SALE_ORG_ID = #{RENTAL_SALE_ORG_ID},</if>
+			<if test='DOM_CNTC_NUM != null'>DOM_CNTC_NUM = #{DOM_CNTC_NUM},</if>
+			<if test='RCMNDR_ID != null'>RCMNDR_ID = #{RCMNDR_ID},</if>
+			<if test='EMAIL_STATE != null'>EMAIL_STATE = #{EMAIL_STATE},</if>
+			<if test='EMAIL_CNT != null'>EMAIL_CNT = #{EMAIL_CNT},</if>
+			<if test='EMAIL_DES != null'>EMAIL_DES = #{EMAIL_DES},</if>
+
+			UPDATE_USER_ID = #{USER_ID},
+			UPDATE_DT = NOW()
+
+		WHERE
+		<choose>
+			<when  test='RECEIPT_ID != null'>RECEIPT_ID = #{RECEIPT_ID}</when>
+			<otherwise>MST_ID = #{MST_ID}</otherwise>
+		</choose>
+
+	 </update>
+
+	 <update id="updateSimInfo" parameterType="java.util.Map">
+	   	/* APIMapper.updateSimInfo */
+		UPDATE ESIM_INFO SET
+
+			<if test='RECEIPT_STATE != null'>RECEIPT_STATE = #{RECEIPT_STATE},</if>
+			<if test='STATE != null'>STATE = #{STATE},</if>
+			<if test='PDF_PATH != null'>PDF_PATH = #{PDF_PATH},</if>
+			<if test='PDF_NM != null'>PDF_NM = #{PDF_NM},</if>
+			<if test='QR_PATH != null'>QR_PATH = #{QR_PATH},</if>
+			<if test='QR_NM != null'>QR_NM = #{QR_NM},</if>
+			<if test='EMAIL_STATE != null'>EMAIL_STATE = #{EMAIL_STATE},</if>
+			<if test='EMAIL_CNT != null'>EMAIL_CNT = #{EMAIL_CNT},</if>
+			<if test='EMAIL_DES != null'>EMAIL_DES = #{EMAIL_DES},</if>
+
+			UPDATE_USER_ID = #{USER_ID},
+			UPDATE_DT = NOW()
+
+		WHERE INFO_ID = #{INFO_ID}
+
+	 </update>
+
+	 <update id="updateSimInfoByMasterId" parameterType="java.util.Map">
+	   	/* APIMapper.updateSimInfoByMasterId */
+		UPDATE ESIM_INFO SET
+
+			<if test='RECEIPT_STATE != null'>RECEIPT_STATE = #{RECEIPT_STATE},</if>
+			<if test='STATE != null'>STATE = #{STATE},</if>
+			<if test='PDF_PATH != null'>PDF_PATH = #{PDF_PATH},</if>
+			<if test='PDF_NM != null'>PDF_NM = #{PDF_NM},</if>
+			<if test='QR_PATH != null'>QR_PATH = #{QR_PATH},</if>
+			<if test='QR_NM != null'>QR_NM = #{QR_NM},</if>
+			<if test='EMAIL_STATE != null'>EMAIL_STATE = #{EMAIL_STATE},</if>
+			<if test='EMAIL_CNT != null'>EMAIL_CNT = #{EMAIL_CNT},</if>
+			<if test='EMAIL_DES != null'>EMAIL_DES = #{EMAIL_DES},</if>
+
+			UPDATE_USER_ID = #{USER_ID},
+			UPDATE_DT = NOW()
+
+		WHERE MST_ID = #{MST_ID}
+
+	 </update>
+
+ 	<delete id="delete_eSimInfoList" parameterType="java.util.Map">
+	   	/* APIMapper.delete_eSimInfoList */
+
+		DELETE FROM ESIM_INFO WHERE MST_ID = #{MST_ID}
+
+	</delete>
+
+
+	<select id="get_eSimInfo4MakeVoucher" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.get_eSimInfo4MakeVoucher*/
+
+		SELECT A.MST_ID,
+					A.RECEIPT_STATE,
+					IFNULL(A.RECEIPT_ID, '') AS RECEIPT_ID,
+					IFNULL(A.RENTAL_MGMT_NUM, '') AS RENTAL_MGMT_NUM,
+					A.RENTAL_DAYS,
+
+<!-- 					기타 등등 정보 -->
+					B.INFO_ID,
+					IFNULL(A.EMAIL_ADDR, '') AS EMAIL_ADDR,
+					IFNULL(B.RSV_VOU_NUM, '') AS RSV_VOU_NUM,
+					IFNULL(B.RENTAL_MST_NUM, '') AS RENTAL_MST_NUM,
+					IFNULL(B.ESIM_MAPPING_ID, '') AS ESIM_MAPPING_ID,
+					IFNULL(B.ROMING_PHON_NUM, '') AS ROMING_PHON_NUM,
+					IFNULL(B.PDF_PATH, '') AS PDF_PATH,
+					IFNULL(B.QR_PATH, '') AS QR_PATH,
+					IFNULL(B.EMAIL_CNT, '') AS EMAIL_CNT,
+					IF(A.ESIM_ORDER_TYPE = '2', IFNULL(C.PDF_CODE_NM, 'USA'), 'USA') AS PDF_CODE_NM
+
+					FROM ESIM_MST A LEFT JOIN  ESIM_INFO B ON (A.MST_ID = B.MST_ID)
+					LEFT OUTER JOIN NATION_CD C ON (A.NATION_CD = C.CODE)
+					WHERE A.MST_ID = #{MST_ID} AND A.RECEIPT_STATE = 2
+
+	</select>
+
+
+	<select id="get_eSimInfoFileList" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.get_eSimInfoFileList*/
+		SELECT INFO_ID, RENTAL_MST_NUM, PDF_PATH FROM ESIM_INFO WHERE MST_ID = #{MST_ID}
+	</select>
+
+
+	<insert id="insertEmailLog" parameterType="java.util.Map" >
+	   	/* APIMapper.insertEmailLog */
+			INSERT INTO EMAIL_LOG (MST_ID, EMAIL_ADDR, SEND_DT) VALUES (#{MST_ID}, #{EMAIL_ADDR}, NOW())
+	 </insert>
+
+
+	<select id="getUSimData" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getUSimData*/
+
+		SELECT
+			 IFNULL(B.RECEIPT_ID, '') AS RECEIPT_ID
+			, IFNULL(B.MST_ID, -1) AS MST_ID
+			, IFNULL(B.RENTAL_MGMT_NUM, '') AS RENTAL_MGMT_NUM
+			, IFNULL(B.RENTAL_SCHD_STA_DTM, '') AS RENTAL_SCHD_STA_DTM
+			, IFNULL(B.RENTAL_SCHD_END_DTM, '') AS RENTAL_SCHD_END_DTM
+			, IFNULL(B.RENTAL_SALE_ORG_ID, '') AS RENTAL_SALE_ORG_ID
+			, IFNULL(B.RTN_SALE_ORG_ID, '') AS RTN_SALE_ORG_ID
+			, IFNULL(B.EMAIL_ADDR, '') AS EMAIL_ADDR
+			, IFNULL(B.RSV_RCV_DTM, '') AS RSV_RCV_DTM
+			, IFNULL(B.RENTAL_BOOTH_ORG_ID, '') AS RENTAL_BOOTH_ORG_ID
+			, IFNULL(B.ROMING_PASSPORT_NUM, '') AS ROMING_PASSPORT_NUM
+			, IFNULL(B.CUST_NM, '') AS CUST_NM
+			, IFNULL(B.RCMNDR_ID, '') AS RCMNDR_ID
+			, IFNULL(B.TOTAL_CNT, '') AS TOTAL_CNT
+
+		FROM ESIM_MST B
+
+		WHERE B.MST_ID = #{MST_ID}
+	</select>
+
+	<select id="getSimInfoByMaterId" parameterType="java.util.Map" resultType="java.util.Map">
+		/*APIMapper.getSimInfoByMaterId*/
+
+		SELECT
+			IFNULL(ROMING_TYP_CD, '') AS ROMING_TYP_CD
+			, IFNULL(RSV_VOU_NUM, '') AS RSV_VOU_NUM
+			, IFNULL(RENTAL_FEE_PROD_ID, '') AS RENTAL_FEE_PROD_ID
+			, IFNULL(RENTAL_MST_NUM, '') AS RENTAL_MST_NUM
+		FROM ESIM_INFO
+		WHERE MST_ID = #{MST_ID}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 	<select id="getManageNoInfo" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getManageNoInfo*/ -->
+
+<!-- 				SELECT	* -->
+<!-- 				FROM COUPON_MANAGEMENT -->
+<!-- 				<where> -->
+<!-- 					<if test='MANAGE_NO != null'> MANAGE_NO = #{MANAGE_NO} </if> -->
+<!-- 					<if test='SALE_COM_CODE != null'>AND SALE_COM_CODE = #{SALE_COM_CODE} </if> -->
+<!-- 					<if test='AUTH_NO != null'>AND AUTH_NO = #{AUTH_NO} </if> -->
+<!-- 				</where> -->
+<!-- 				LIMIT 1 -->
+
+<!-- 	</select> -->
+
+<!-- 	<select id="getManageNoCheck" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getManageNoCheck*/ -->
+
+<!-- 				SELECT	A.*, IFNULL(B.SALE_DATE, '-1') AS COUPON_SALE_DATE, B.SELLER_CODE AS SALE_COM_CD -->
+<!-- 				FROM COUPON_MANAGEMENT A LEFT JOIN  COUPON_SALE_LIST B ON (A.MANAGE_NO = B.MANAGE_NO) -->
+<!-- 				<where> -->
+<!-- 					<if test='MANAGE_NO != null'> AND B.MANAGE_NO = #{MANAGE_NO} </if> -->
+<!-- 					<if test='SALE_COM_CODE != null'>AND B.SELLER_CODE = #{SALE_COM_CODE} </if> -->
+<!-- 					<if test='AUTH_NO != null'>AND B.AUTH_NO = #{AUTH_NO} </if> -->
+<!-- 				</where> -->
+<!-- 				LIMIT 1 -->
+
+<!-- 	</select> -->
+
+<!-- 	<select id="getWarrantyType" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getWarrantyType*/ -->
+
+<!-- 				SELECT	* -->
+<!-- 				FROM COUPON_WARRANTY_MANAGEMENT -->
+<!-- 				WHERE TPYE = #{TYPE} AND COL_NO = #{COL_NO} AND -->
+<!-- 				(SALE_NO = #{SALE_NO} OR TEST_NO1 = #{SALE_NO} OR TEST_NO2 = #{SALE_NO} OR TEST_NO3 = #{SALE_NO}) -->
+
+<!-- 	</select> -->
+
+<!-- 	<select id="getSaleInfo" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getSaleInfo*/ -->
+
+<!-- 				SELECT	* -->
+<!-- 				FROM COUPON_SALE_LIST -->
+<!-- 				WHERE MANAGE_NO = #{MANAGE_NO} AND AUTH_NO = #{AUTH_NO} -->
+
+<!-- 	</select> -->
+
+<!-- 	<insert id="insertSaleInfo" parameterType="java.util.Map" > -->
+<!-- 	   	/* APIMapper.insertSaleInfo */ -->
+
+<!-- 			INSERT INTO COUPON_SALE_LIST -->
+<!-- 			(MANAGE_NO, AUTH_NO, COUPON_TYPE, REG_DATE, WARRANTY_START, WARRANTY_END, WARRANTY_TYPE, PRODUCT_CODE, PRODUCT_TYPE, PUBLISHER_CODE, SELLER_CODE, MODEL_NAME, REG_PATH, CPU, MBD, RAM, VGA, HDD, SSD, ODD, CASE, POWER, MONITOR, KEYBOARD, SOUND, SPEAKER, COOLER, MOUSE, SW, PRINTER, LAN, BASIC_SPEC, ADD_SPEC, GOODS_DETAIL, ETC, WINDOWS_SETUP, OS, CREATE_DT) -->
+<!-- 	        VALUES -->
+<!-- 	        (#{MANAGE_NO}, #{AUTH_NO}, #{COUPON_TYPE}, #{REG_DATE}, #{WARRANTY_START}, #{WARRANTY_END}, #{WARRANTY_TYPE}, #{PRODUCT_CODE}, #{PRODUCT_TYPE}, #{PUBLISHER_CODE}, #{SELLER_CODE}, #{MODEL_NAME}, #{REG_PATH}, #{CPU}, #{MBD}, #{RAM}, #{VGA}, #{HDD}, #{SSD}, #{ODD}, #{CASE}, #{POWER}, #{MONITOR}, #{KEYBOARD}, #{SOUND}, #{SPEAKER}, #{COOLER}, #{MOUSE}, #{SW}, #{PRINTER}, #{LAN}, #{BASIC_SPEC}, #{ADD_SPEC}, #{GOODS_DETAIL}, #{ETC}, #{WINDOWS_SETUP}, #{OS}, NOW()) -->
+
+<!-- 	 </insert> -->
+
+<!-- 	 <update id="updateSaleInfo" parameterType="java.util.Map"> -->
+<!-- 	   	/* APIMapper.updateSaleInfo */ -->
+
+<!-- 		UPDATE COUPON_SALE_LIST -->
+<!-- 		SET -->
+<!-- 			<if test='SALE_DATE != null'>SALE_DATE = #{SALE_DATE},</if> -->
+<!-- 			<if test='REG_DATE != null'>REG_DATE = #{REG_DATE},</if> -->
+<!-- 			<if test='WARRANTY_START != null'>WARRANTY_START = #{WARRANTY_START},</if> -->
+<!-- 			<if test='WARRANTY_END != null'>WARRANTY_END = #{WARRANTY_END},</if> -->
+<!-- 			<if test='WARRANTY_TYPE != null'>WARRANTY_TYPE = #{WARRANTY_TYPE},</if> -->
+<!-- 			<if test='PRODUCT_CODE != null'>PRODUCT_CODE = #{PRODUCT_CODE},</if> -->
+<!-- 			<if test='PRODUCT_TYPE != null'>PRODUCT_TYPE = #{PRODUCT_TYPE},</if> -->
+<!-- 			<if test='MODEL_NAME != null'>MODEL_NAME = #{MODEL_NAME},</if> -->
+<!-- 			<if test='REG_PATH != null'>REG_PATH = #{REG_PATH},</if> -->
+<!-- 			<if test='CPU != null'>CPU = #{CPU},</if> -->
+<!-- 			<if test='MBD != null'>MBD = #{MBD},</if> -->
+<!-- 			<if test='RAM != null'>RAM = #{RAM},</if> -->
+<!-- 			<if test='VGA != null'>VGA = #{VGA},</if> -->
+<!-- 			<if test='HDD != null'>HDD = #{HDD},</if> -->
+<!-- 			<if test='SSD != null'>SSD = #{SSD},</if> -->
+<!-- 			<if test='ODD != null'>ODD = #{ODD},</if> -->
+<!-- 			<if test='CASE != null'>`CASE` = #{CASE},</if> -->
+<!-- 			<if test='POWER != null'>POWER = #{POWER},</if> -->
+<!-- 			<if test='MONITOR != null'>MONITOR = #{MONITOR},</if> -->
+<!-- 			<if test='KEYBOARD != null'>KEYBOARD = #{KEYBOARD},</if> -->
+<!-- 			<if test='SOUND != null'>SOUND = #{SOUND},</if> -->
+<!-- 			<if test='SPEAKER != null'>SPEAKER = #{SPEAKER},</if> -->
+<!-- 			<if test='COOLER != null'>COOLER = #{COOLER},</if> -->
+<!-- 			<if test='MOUSE != null'>MOUSE = #{MOUSE},</if> -->
+<!-- 			<if test='SW != null'>SW = #{SW},</if> -->
+<!-- 			<if test='PRINTER != null'>PRINTER = #{PRINTER},</if> -->
+<!-- 			<if test='LAN != null'>LAN = #{LAN},</if> -->
+<!-- 			<if test='BASIC_SPEC != null'>BASIC_SPEC = #{BASIC_SPEC},</if> -->
+<!-- 			<if test='ADD_SPEC != null'>ADD_SPEC = #{ADD_SPEC},</if> -->
+<!-- 			<if test='GOODS_DETAIL != null'>GOODS_DETAIL = #{GOODS_DETAIL},</if> -->
+<!-- 			<if test='ETC != null'>ETC = #{ETC},</if> -->
+<!-- 			<if test='WINDOWS_SETUP != null'>WINDOWS_SETUP = #{WINDOWS_SETUP},</if> -->
+<!-- 			<if test='OS != null'>OS = #{OS},</if> -->
+
+<!-- 		UPDATE_DT = NOW() -->
+<!-- 		WHERE MANAGE_NO = #{MANAGE_NO} AND AUTH_NO = #{AUTH_NO}  AND SELLER_CODE = #{SELLER_CODE} -->
+
+<!-- 	 </update> -->
+
+<!-- 	 <update id="deleteSaleInfo" parameterType="java.util.Map"> -->
+<!-- 	   	/* APIMapper.deleteSaleInfo */ -->
+
+<!-- 		UPDATE COUPON_SALE_LIST -->
+<!-- 		SET -->
+<!-- 			SALE_DATE = NULL, -->
+<!-- 			REG_DATE = NULL, -->
+<!-- 			WARRANTY_START = NULL, -->
+<!-- 			WARRANTY_END = NULL, -->
+<!-- 			WARRANTY_TYPE = NULL, -->
+<!-- 			PRODUCT_CODE = NULL, -->
+<!-- 			PRODUCT_TYPE = NULL, -->
+<!-- 			MODEL_NAME = NULL, -->
+<!-- 			REG_PATH = NULL, -->
+<!-- 			CPU = NULL, -->
+<!-- 			MBD = NULL, -->
+<!-- 			RAM = NULL, -->
+<!-- 			VGA = NULL, -->
+<!-- 			HDD = NULL, -->
+<!-- 			SSD = NULL, -->
+<!-- 			ODD = NULL, -->
+<!-- 			`CASE` = NULL, -->
+<!-- 			POWER = NULL, -->
+<!-- 			MONITOR = NULL, -->
+<!-- 			KEYBOARD = NULL, -->
+<!-- 			SOUND = NULL, -->
+<!-- 			SPEAKER = NULL, -->
+<!-- 			COOLER = NULL, -->
+<!-- 			MOUSE = NULL, -->
+<!-- 			SW = NULL, -->
+<!-- 			PRINTER = NULL, -->
+<!-- 			LAN = NULL, -->
+<!-- 			BASIC_SPEC = NULL, -->
+<!-- 			ADD_SPEC = NULL, -->
+<!-- 			GOODS_DETAIL = NULL, -->
+<!-- 			ETC = NULL, -->
+<!-- 			WINDOWS_SETUP = NULL, -->
+<!-- 			OS = NULL, -->
+<!-- 			UPDATE_DT = NOW() -->
+<!-- 		<where> -->
+<!-- 				<if test='MANAGE_NO != null'> AND MANAGE_NO = #{MANAGE_NO} </if> -->
+<!-- 				<if test='AUTH_NO != null'>AND AUTH_NO = #{AUTH_NO} </if> -->
+<!-- 		</where> -->
+
+<!-- 	 </update> -->
+
+
+<!-- 	 <update id="updateCouponInfo" parameterType="java.util.Map"> -->
+<!-- 	   	/* APIMapper.updateCouponInfo */ -->
+
+<!-- 		UPDATE COUPON_MANAGEMENT -->
+<!-- 		SET -->
+<!-- 			<if test='SALE_DATE != null'>SALE_DATE = #{SALE_DATE},</if> -->
+<!-- 			<if test='WARRANTY_TYPE != null'>WARRANTY_TYPE = #{WARRANTY_TYPE},</if> -->
+<!-- 			<if test='SALE_FLAG != null'>SALE_FLAG = #{SALE_FLAG},</if> -->
+
+<!-- 		UPDATE_DT = NOW() -->
+<!-- 		WHERE MANAGE_NO = #{MANAGE_NO}<if test='AUTH_NO != null'> AND AUTH_NO = #{AUTH_NO} </if> -->
+
+<!-- 	 </update> -->
+
+<!-- 	 <select id="getSaleInfoForAsworld" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getSaleInfoForAsworld*/ -->
+
+<!-- 				SELECT -->
+
+<!-- 					A.MANAGE_NO, -->
+<!-- 					A.AUTH_NO, -->
+<!-- 					DATE_FORMAT(A.SALE_DATE,'%Y-%m-%d') AS SALE_YMD, -->
+<!-- 					DATE_FORMAT(A.WARRANTY_START,'%Y-%m-%d') AS WARRANTY_START_YMD, -->
+<!-- 					DATE_FORMAT(A.WARRANTY_END,'%Y-%m-%d') AS WARRANTY_END_YMD, -->
+<!-- 					DATE_FORMAT(A.REG_DATE,'%Y-%m-%d') AS REG_DATE, -->
+<!-- 					B.NAME AS CUSTOMER_NAME, -->
+
+<!-- 					B.NAME AS CUSTOMER_NAME, -->
+<!-- 					B.TEL AS TEL_NO, -->
+<!-- 					B.PHONE AS HAND_PHONE, -->
+<!-- 					B.POST_NO AS POST_NO, -->
+<!-- 					B.ADDRESS1 AS ADDRESS, -->
+<!-- 					B.ADDRESS2 AS ADDRESS2, -->
+
+<!-- 					A.SELLER_CODE AS SALE_COM_CODE, -->
+<!-- 					IFNULL(C.NAME, '') AS SALE_COM_NAME, -->
+<!-- 					IFNULL(C.NAME, '') AS SALE_COM_NAME1, -->
+
+<!-- 					A.PRODUCT_TYPE, -->
+<!-- 					A.PRODUCT_CODE, -->
+<!-- 					A.MODEL_NAME, -->
+<!-- 					A.BASIC_SPEC AS BASIC_INFO, -->
+
+<!-- 					IFNULL(A.CPU, '' ) AS CPU_TYPE, -->
+<!-- 					IFNULL(A.MBD, '' ) AS MB_TYPE, -->
+<!-- 					IFNULL(A.RAM, '' ) AS MEM_TYPE, -->
+<!-- 					IFNULL(A.VGA, '' ) AS VGA_TYPE, -->
+<!-- 					IFNULL(A.HDD, '' ) AS HDD_TYPE, -->
+<!-- 					IFNULL(A.SSD, '' ) AS SSD_TYPE, -->
+<!-- 					IFNULL(A.ODD, '' ) AS ODD_TYPE, -->
+<!-- 					IFNULL(A.CASE, '' ) AS CAS_TYPE, -->
+<!-- 					IFNULL(A.POWER, '' ) AS PWR_TYPE, -->
+<!-- 					IFNULL(A.MONITOR, '' ) AS MRT_TYPE, -->
+<!-- 					IFNULL(A.KEYBOARD, '' ) AS KB_TYPE, -->
+<!-- 					IFNULL(A.SOUND, '' ) AS SC_TYPE, -->
+<!-- 					IFNULL(A.SPEAKER, '' ) AS SP_TYPE, -->
+<!-- 					IFNULL(A.COOLER, '' ) AS COL_TYPE, -->
+<!-- 					IFNULL(A.MOUSE, '' ) AS MUS_TYPE, -->
+<!-- 					IFNULL(A.SW, '' ) AS SW_TYPE, -->
+<!-- 					IFNULL(A.PRINTER, '' ) AS PRT_TYPE, -->
+<!-- 					IFNULL(A.LAN, '' ) AS LAN_TYPE, -->
+<!-- 					IFNULL(A.ETC, '' ) AS OTH_TYPE, -->
+<!-- 					IFNULL(A.OS, '' ) AS OS_TYPE, -->
+
+<!-- 					IFNULL(A.CPU, '' ) AS CPU_DETAIL, -->
+<!-- 					IFNULL(A.MBD, '' ) AS MB_DETAIL, -->
+<!-- 					IFNULL(A.RAM, '' ) AS MEM_DETAIL, -->
+<!-- 					IFNULL(A.VGA, '' ) AS VGA_DETAIL, -->
+<!-- 					IFNULL(A.HDD, '' ) AS HDD_DETAIL, -->
+<!-- 					IFNULL(A.SSD, '' ) AS SSD_DETAIL, -->
+<!-- 					IFNULL(A.ODD, '' ) AS ODD_DETAIL, -->
+<!-- 					IFNULL(A.CASE, '' ) AS CAS_DETAIL, -->
+<!-- 					IFNULL(A.POWER, '' ) AS PWR_DETAIL, -->
+<!-- 					IFNULL(A.MONITOR, '' ) AS MRT_DETAIL, -->
+<!-- 					IFNULL(A.KEYBOARD, '' ) AS KB_DETAIL, -->
+<!-- 					IFNULL(A.SOUND, '' ) AS SC_DETAIL, -->
+<!-- 					IFNULL(A.SPEAKER, '' ) AS SP_DETAIL, -->
+<!-- 					IFNULL(A.COOLER, '' ) AS COL_DETAIL, -->
+<!-- 					IFNULL(A.MOUSE, '' ) AS MUS_DETAIL, -->
+<!-- 					IFNULL(A.SW, '' ) AS SW_DETAIL, -->
+<!-- 					IFNULL(A.PRINTER, '' ) AS PRT_DETAIL, -->
+<!-- 					IFNULL(A.LAN, '' ) AS LAN_DETAIL, -->
+<!-- 					IFNULL(A.ETC, '' ) AS OTH_DETAIL, -->
+<!-- 					IFNULL(A.OS, '' ) AS OS_DETAIL -->
+
+<!-- 				FROM COUPON_SALE_LIST A LEFT JOIN CUSTOMER B ON (A.MANAGE_NO = B.MANAGE_NO) -->
+<!-- 				LEFT JOIN SELLER C ON (A.SELLER_CODE = C.SELLER_CODE) -->
+<!-- 				WHERE A.MANAGE_NO = #{MANAGE_NO} AND A.AUTH_NO = #{AUTH_NO} AND A.REG_DATE IS NOT NULL -->
+
+<!-- 	</select> -->
+
+<!-- 	<select id="getSaleInfo4Danawa" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getSaleInfo4Danawa*/ -->
+
+<!-- 				SELECT -->
+
+<!-- 					A.MANAGE_NO, -->
+<!-- 					A.AUTH_NO, -->
+<!-- 					DATE_FORMAT(A.SALE_DATE,'%Y-%m-%d') AS SALE_YMD, -->
+<!-- 					DATE_FORMAT(A.WARRANTY_START,'%Y-%m-%d') AS WARRANTY_START_YMD, -->
+<!-- 					DATE_FORMAT(A.WARRANTY_END,'%Y-%m-%d') AS WARRANTY_END_YMD, -->
+<!-- 					DATE_FORMAT(A.REG_DATE,'%Y-%m-%d') AS REG_DATE, -->
+<!-- 					B.NAME AS CUSTOMER_NAME, -->
+
+<!-- 					B.NAME AS CUSTOMER_NAME, -->
+<!-- 					B.TEL AS TEL, -->
+<!-- 					B.PHONE AS HP, -->
+<!-- 					B.POST_NO AS POST_NO, -->
+<!-- 					B.ADDRESS1 AS ADDRESS, -->
+<!-- 					B.ADDRESS2 AS ADDRESS2, -->
+
+<!-- 					A.SELLER_CODE AS SALE_COM_CODE, -->
+<!-- 					IFNULL(C.NAME, '') AS SALE_COM_NAME, -->
+<!-- 					IFNULL(C.NAME, '') AS SALE_COM_NAME1, -->
+
+<!-- 					A.PRODUCT_TYPE, -->
+<!-- 					A.PRODUCT_CODE, -->
+<!-- 					A.MODEL_NAME, -->
+<!-- 					A.BASIC_SPEC AS BASIC_INFO, -->
+<!-- 					A.ADD_SPEC AS ADD_INFO, -->
+<!-- 					A.GOODS_DETAIL AS DETAIL_INFO, -->
+
+<!-- 					IFNULL(A.CPU, '' ) AS CPU, -->
+<!-- 					IFNULL(A.MBD, '' ) AS MBD, -->
+<!-- 					IFNULL(A.RAM, '' ) AS RAM, -->
+<!-- 					IFNULL(A.VGA, '' ) AS VGA, -->
+<!-- 					IFNULL(A.HDD, '' ) AS HDD, -->
+<!-- 					IFNULL(A.SSD, '' ) AS SSD, -->
+<!-- 					IFNULL(A.ODD, '' ) AS ODD, -->
+<!-- 					IFNULL(A.CASE, '' ) AS `CASE`, -->
+<!-- 					IFNULL(A.POWER, '' ) AS POWER, -->
+<!-- 					IFNULL(A.MONITOR, '' ) AS MONITOR, -->
+<!-- 					IFNULL(A.KEYBOARD, '' ) AS KEYBOARD, -->
+<!-- 					IFNULL(A.SOUND, '' ) AS SOUND, -->
+<!-- 					IFNULL(A.SPEAKER, '' ) AS SPEAKER, -->
+<!-- 					IFNULL(A.COOLER, '' ) AS COOLER, -->
+<!-- 					IFNULL(A.MOUSE, '' ) AS MOUSE, -->
+<!-- 					IFNULL(A.SW, '' ) AS SW, -->
+<!-- 					IFNULL(A.PRINTER, '' ) AS PRINTER, -->
+<!-- 					IFNULL(A.LAN, '' ) AS LAN, -->
+<!-- 					IFNULL(A.ETC, '' ) AS ETC, -->
+<!-- 					IFNULL(A.OS, '' ) AS OS, -->
+<!-- 					IFNULL(A.WINDOWS_SETUP, '' ) AS WINDOWS_SETUP -->
+
+<!-- 				FROM COUPON_SALE_LIST A LEFT JOIN CUSTOMER B ON (A.MANAGE_NO = B.MANAGE_NO) -->
+<!-- 				LEFT JOIN SELLER C ON (A.SELLER_CODE = C.SELLER_CODE) -->
+<!-- 				WHERE A.MANAGE_NO = #{MANAGE_NO} AND A.AUTH_NO = #{AUTH_NO} AND A.REG_DATE IS NOT NULL -->
+
+<!-- 	</select> -->
+
+
+<!-- 	<select id="selectCustomerInfo" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.selectCustomerInfo*/ -->
+
+<!-- 		SELECT	* FROM CUSTOMER WHERE MANAGE_NO = #{MANAGE_NO} -->
+
+<!-- 	</select> -->
+
+<!-- 	<insert id="insertCustomerInfo" parameterType="java.util.Map" > -->
+<!-- 	   	/* APIMapper.insertCustomerInfo */ -->
+
+<!-- 			INSERT INTO CUSTOMER (MANAGE_NO, NAME, TEL, PHONE, POST_NO, ADDRESS1, ADDRESS2, MEMO) -->
+<!-- 	        VALUES (#{MANAGE_NO}, #{NAME}, #{TEL}, #{PHONE}, #{POST_NO}, #{ADDRESS1}, #{ADDRESS2}, #{MEMO}) -->
+
+<!-- 	 </insert> -->
+
+<!-- 	 <update id="updateCustomerInfo" parameterType="java.util.Map"> -->
+<!-- 	   	/* APIMapper.updateCustomerInfo */ -->
+
+<!-- 		UPDATE CUSTOMER -->
+<!-- 		SET -->
+<!-- 			<if test='NAME != null'>NAME = #{NAME},</if> -->
+<!-- 			<if test='TEL != null'>TEL = #{TEL},</if> -->
+<!-- 			<if test='PHONE != null'>PHONE = #{PHONE},</if> -->
+<!-- 			<if test='POST_NO != null'>POST_NO = #{POST_NO},</if> -->
+<!-- 			<if test='ADDRESS1 != null'>ADDRESS1 = #{ADDRESS1},</if> -->
+<!-- 			<if test='ADDRESS2 != null'>ADDRESS2 = #{ADDRESS2},</if> -->
+<!-- 			<if test='MEMO != null'>MEMO = #{MEMO},</if> -->
+<!-- 			MANAGE_NO = #{MANAGE_NO} -->
+<!-- 		WHERE MANAGE_NO = #{MANAGE_NO} -->
+
+<!-- 	 </update> -->
+
+<!-- 	<delete id="deleteCustomerInfo" parameterType="java.util.Map"> -->
+<!-- 	   	/* APIMapper.deleteCustomerInfo */ -->
+
+<!-- 		DELETE FROM CUSTOMER WHERE MANAGE_NO = #{MANAGE_NO} -->
+
+<!-- 	</delete> -->
+
+
+<!-- 	<select id="getSalePcInfo" parameterType="java.util.Map" resultType="java.util.Map"> -->
+<!-- 		/*APIMapper.getSalePcInfo*/ -->
+
+<!-- 				SELECT * -->
+<!-- 				FROM SALE_PC -->
+<!-- 				<where> -->
+<!-- 					<if test='PC_CODE != null'>AND PC_CODE = #{PC_CODE} </if> -->
+<!-- 					<if test='MODEL_NAME != null'> AND MODEL_NAME = #{MODEL_NAME} </if> -->
+<!-- 					<if test='SALE_COM_CODE != null'>AND SELLER_CODE = #{SALE_COM_CODE} </if> -->
+<!-- 					<if test='PC_TYPE != null'>AND PC_TYPE = #{PC_TYPE} </if> -->
+<!-- 				</where> -->
+<!-- 				ORDER BY IDX DESC -->
+<!-- 				LIMIT 1 -->
+
+<!-- 	</select> -->
+
+
+
+
+</mapper>

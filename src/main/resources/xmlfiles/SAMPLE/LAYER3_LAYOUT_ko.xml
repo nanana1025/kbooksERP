@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="7" name="3단화면">
+	<area id="WBS_TREE" url="/tree.do?xn=WBS_TREE" width="100%" height="50%" collapsible="N" resizable="N">WBS</area>
+	<area id="WBS_LIST1" url="/list.do?xn=WBS_LIST" width="50%" height="50%" collapsible="Y" resizable="Y">WBS2</area>
+	<area id="WBS_LIST2" url="/list.do?xn=WBS_LIST" width="50%" height="50%" collapsible="Y" resizable="Y">WBS3</area>
+</layout>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbook.dev.SystemMapper">
+    <select id="getSystemId" resultType="string">
+        SELECT 'SYS'||LPAD(SQ_SYSTEM_INFO.NEXTVAL,4,'0') AS SYSTEMID FROM DUAL
+    </select>
+
+    <insert id="saveSystemInfo" parameterType="java.util.Map">
+        INSERT INTO TEAD_SYSTEM_INFO (
+            SYSTEM_ID
+          , SYSTEM_NM
+          , LOGO_IMG_NM
+          , LOGO_IMG_PATH
+          , COPYRIGHT
+          , CREATE_ID
+          , CREATE_DT
+          , ADMIN_ID
+          , ADMIN_PW
+        ) VALUES (
+            #{systemId}
+          , #{systemName}
+          , #{imgName}
+          , #{imgPath}
+          , #{copyright}
+          , #{rgsId}
+          , ${SYSDATETIME}
+          , #{adminId}
+          , #{adminPw}
+        )
+    </insert>
+
+    <update id="updateSystemInfo" parameterType="java.util.Map">
+    	/* SystemMapper.updateSystemInfo */
+        UPDATE TEAD_SYSTEM_INFO SET
+            SYSTEM_NM = #{systemName}
+          , COPYRIGHT = #{copyright}
+        <if test="files !=null and files != ''">
+          , LOGO_IMG_NM = #{imgName}
+          , LOGO_IMG_PATH = #{imgPath}
+        </if>
+        WHERE SYSTEM_ID = #{systemId}
+    </update>
+
+    <select id="getSystemInfoList" parameterType="java.util.Map" resultType="java.util.Map">
+    /*getSystemInfoList*/
+        SELECT
+          SYSTEM_ID
+          , SYSTEM_NM
+          , LOGO_IMG_NM
+          , LOGO_IMG_PATH
+          , COPYRIGHT
+          , CREATE_ID
+          , DATE_FORMAT(CREATE_DT, '%Y-%m-%d') AS CREATE_DT
+          , ADMIN_ID
+          , ADMIN_PW
+          , MENU_SID
+        FROM TEAD_SYSTEM_INFO A
+    </select>
+
+    <select id="getSystemInfoCnt" resultType="int">
+        SELECT
+          COUNT(*) AS CNT
+        FROM TEAD_SYSTEM_INFO
+    </select>
+
+    <update id="updateMenuInfo" parameterType="java.util.Map">
+        UPDATE TEAD_SYSTEM_INFO SET
+          MENU_SID = #{menuSid}
+        WHERE SYSTEM_ID = #{systemId}
+    </update>
+
+    <update id="deleteImgInfo" parameterType="java.util.Map">
+        UPDATE TEAD_SYSTEM_INFO SET
+          LOGO_IMG_NM = null,
+          LOGO_IMG_PATH = null
+        WHERE SYSTEM_ID = #{systemId}
+    </update>
+
+    <select id="getXmlList" resultType="java.util.LinkedHashMap" parameterType="java.util.Map">
+    	<![CDATA[
+        SELECT
+        ROWNUM AS RN
+        , SID
+        , CASE WHEN SCRN_TYPE = 'ROOT' OR SCRN_TYPE = 'FOLDER' THEN '<span class="k-icon k-i-pencil"></span>' || SCRN_TYPE
+          ELSE SCRN_TYPE AS SCRN_TYPE
+        , XML_FILE_NM
+        , SUBSTR(xml_file_nm, 0, INSTR(xml_file_nm, '.')-1) as XN
+        --           , TO_CHAR(CREATE_DT, 'YYYY-MM-DD') AS CREATE_DT
+        , (CASE WHEN SCRN_TYPE = 'LAYOUT' THEN '/layout.do?xn='||SUBSTR(xml_file_nm, 0, INSTR(xml_file_nm, '.')-1)
+        WHEN SCRN_TYPE = 'LIST' THEN '/list.do?xn='||SUBSTR(xml_file_nm, 0, INSTR(xml_file_nm, '.')-1)
+        WHEN SCRN_TYPE = 'DATA' THEN '/dataView.do?xn='||SUBSTR(xml_file_nm, 0, INSTR(xml_file_nm, '.')-1)
+        WHEN SCRN_TYPE = 'TREE' THEN '/tree.do?xn='||SUBSTR(xml_file_nm, 0, INSTR(xml_file_nm, '.')-1)
+        ELSE ''
+        END ) AS LINK
+        FROM TEAD_MNGM_MST
+        <where>
+        <if test="xmlName != null and xmlType != null">
+            AND SID = #{xmlName} AND SCRN_TYPE = #{xmlType}
+        </if>
+        	AND SCRN_OWNER = #{xmlOwner}
+        </where>
+        ORDER BY CREATE_DT DESC
+        ]]>
+    </select>
+
+    <update id="deleteXml" parameterType="java.util.Map">
+        DELETE FROM TEAD_MNGM_MST
+        WHERE XML_FILE_NM = #{xn}
+    </update>
+
+
+    <insert id="saveLog" parameterType="java.util.Map">
+        INSERT INTO TEAD_LOG (
+            LOG_ID
+          , LOG_URL
+          , LOG_DT
+          , IP_ADDR
+          , USER_ID
+          , MENU_NM
+        ) VALUES (
+            SQ_LOG.NEXTVAL
+          , #{reqUrl}
+          , ${sysdatetime}
+          , DECODE(#{reqIP}, '0:0:0:0:0:0:0:1', '127.0.0.1', #{reqIP})
+          , #{user_id}
+          , #{menuNm}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbookERP.custom.common.CommonMapper">
+    
+    <select id="checkPurchCd"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.checkPurchCd */
+			SELECT  DISTINCT
+						A.PURCHCD
+						, A.PURCHNM
+						
+			FROM HMA02 A LEFT JOIN HMA03 B ON (A.PURCHCD = B.PURCHCD)
+									LEFT JOIN HMA24 C ON (A.PURCHCD = C.PURCHCD AND B.SHOPCD = C.SHOPCD)
+
+			WHERE C.SHOPCD = #{SHOPCD}
+			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD} AND B.PURCHCD  = #{PURCHCD}</if>
+			<if test='PURCHCD = null AND PURCHNM != null'>AND A.PURCHNM = ${PURCHNM}%' AND B.PURCHNM LIKE '%${PURCHNM}%'</if>
+
+			ORDER BY A.PURCHNM, A.PURCHCD
+    </select>
+
+
+
+	<select id="getVoucherNo" parameterType="umap" resultType="String">
+    	/* CommonMapper.getVoucherNo */
+		SELECT 'V-' || TO_CHAR(SYSDATE, 'yyyymm') || '-' || LPAD(SEQ_VOUCHER_NO.NEXTVAL, 8, '0') AS VOUCHER_NO
+		FROM DUAL
+    </select>
+
+    <select id="getPaymentNo" parameterType="umap" resultType="String">
+    	/* CommonMapper.getPaymentNo */
+		SELECT 'P-' || TO_CHAR(SYSDATE, 'yyyymm') || '-' || LPAD(SEQ_PAYMENT_NO.NEXTVAL, 8, '0') AS PAYMENT_NO
+		FROM DUAL
+    </select>
+
+	<select id="getCode" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCode */
+		SELECT
+			  A.CODE_CD
+			, A.CODE_NM
+		FROM TCSY_CODE_LIST A
+		WHERE A.CODE_CLS = #{CODE_CLS}
+			AND A.USE_YN = 'Y'
+		ORDER BY SORT_SEQ
+    </select>
+
+    <select id="getCode2" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCode2 */
+		SELECT
+			  A.CODE_CD AS V
+			, A.CODE_NM AS K
+		FROM TCSY_CODE_LIST A
+		WHERE A.CODE_CLS = #{CODE_CLS}
+			AND A.USE_YN = 'Y'
+		ORDER BY SORT_SEQ
+    </select>
+
+    <select id="getCodeValue" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCodeValue */
+		SELECT
+			  A.CODE_CD
+		FROM TCSY_CODE_LIST A
+		WHERE A.CODE_CLS = #{CODE_CLS} AND A.CODE_NM = #{CODE_NM} AND A.USE_YN = 'Y'
+    </select>
+
+     <select id="getCodeName" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCodeName */
+		SELECT
+			  IFNULL(A.CODE_NM, '') AS CODE_NM
+		FROM TCSY_CODE_LIST A
+		WHERE A.CODE_CLS = #{CODE_CLS} AND A.CODE_CD = #{CODE_CD} AND A.USE_YN = 'Y'
+    </select>
+
+     <select id="checkCodeListInfo" parameterType="java.util.Map" resultType="int">
+    	/* CommonMapper.checkCodeListInfo */
+		SELECT
+			  COUNT(*)
+		FROM TCSY_CODE_LIST A
+		WHERE A.CODE_CLS = #{CODE_CLS} AND A.CODE_NM = #{CODE_NM}
+    </select>
+
+    <select id="getCustomCode" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCustomCode */
+		SELECT
+			  ${KEY} AS K
+			, ${VALUE} AS V
+		FROM  ${TABLE_NAME}
+		WHERE ${CONDITION}
+		ORDER BY ${ORDER}
+    </select>
+
+    <select id="getTable" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getTable */
+		SELECT
+			  ${COLUMNS}
+		FROM  ${TABLE_NAME}
+		WHERE ${CONDITION}
+		<if test='GROUP != null'>GROUP BY ${GROUP}</if>
+		ORDER BY ${ORDER}
+
+    </select>
+
+
+	<select id="getSeq" parameterType="java.util.Map" resultType="String">
+    	/* CommonMapper.getSeq */
+		SELECT ${SEQ_NM}.NEXTVAL FROM DUAL
+    </select>
+
+    <update id="exequteQuery" parameterType="java.util.Map" >
+    	/* CommonMapper.exequteQuery */
+		${QUERY}
+    </update>
+
+    <select id="queryDT" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.queryDT */
+		${QUERY}
+    </select>
+
+     <select id="queryLong" parameterType="java.util.Map" resultType="long">
+    	/* CommonMapper.queryLong */
+		${QUERY}
+    </select>
+
+    <select id="exequteQueryDT" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper."exequteQueryDT" */
+		${QUERY}
+    </select>
+
+    <select id="exequteQueryLong" parameterType="java.util.Map" resultType="int">
+    	/* CommonMapper.exequteQueryLong */
+		${QUERY}
+    </select>
+
+
+	<insert id="createVisibleColOne" parameterType="java.util.Map">
+	   	/* CommonMapper.createVisibleColOne */
+		INSERT INTO TN_VISIBLE_COL
+       	(VIEW_CATEGORY, VIEW_TYPE, USER_ID,TABLE_COL_ID,VISIBLE_YN, FIX_YN, DISPLAY_SEQ, CREATE_USER_ID, CREATE_DT)
+       	VALUES
+       	(#{VIEW_CATEGORY},#{VIEW_TYPE},#{USER_ID},#{TABLE_COL_ID},#{VISIBLE_YN},#{FIX_YN}, #{SEQ},#{USER_ID},NOW())
+	 </insert>
+
+    <insert id="createVisibleCol" parameterType="java.util.Map">
+	   	/* CommonMapper.createVisibleCol */
+		INSERT INTO TN_VISIBLE_COL
+       	(VIEW_CATEGORY, VIEW_TYPE, USER_ID,TABLE_COL_ID,VISIBLE_YN, FIX_YN, DISPLAY_SEQ, CREATE_USER_ID, CREATE_DT)
+       	VALUES <foreach collection="LIST_COL" item="item" separator=",">
+        (#{VIEW_CATEGORY},#{VIEW_TYPE},#{USER_ID},#{item.TABLE_COL_ID},#{VISIBLE_YN},#{item.FIX_YN}, #{item.DISPLAY_SEQ},#{USER_ID},NOW())
+	        </foreach>
+	 </insert>
+
+	 <update id="updateVisibleCol" parameterType="java.util.Map">
+	   	/* CommonMapper.updateVisibleCol */
+		UPDATE TN_VISIBLE_COL
+		SET
+			 	<if test='VISIBLE_YN != null'>VISIBLE_YN = #{VISIBLE_YN},</if>
+			 	<if test='DISPLAY_SEQ != null'>DISPLAY_SEQ = #{DISPLAY_SEQ},</if>
+			 	<if test='FIX_YN != null'>FIX_YN = #{FIX_YN},</if>
+			 	UPDATE_USER_ID = #{USER_ID},
+				UPDATE_DT = NOW()
+		WHERE VISIBLE_COL_ID = #{VISIBLE_COL_ID}
+
+	 </update>
+
+	 <select id="getVisibleCol" parameterType="java.util.Map" resultType="java.util.Map">
+	   	/* CommonMapper.getVisibleCol */
+		SELECT A.*, B.COL_NAME, B.FIELD_NAME, B.COL_NAME_ENG
+		FROM TN_VISIBLE_COL A LEFT JOIN TN_TABLE_COL B ON (A.TABLE_COL_ID = B.TABLE_COL_ID)
+		WHERE A.USER_ID = #{USER_ID} AND A.VIEW_CATEGORY = #{VIEW_CATEGORY} AND A.VIEW_TYPE = #{VIEW_TYPE} AND B.TABLE_COL_ID IS NOT NULL
+		ORDER BY A.DISPLAY_SEQ ASC, B.SEQ ASC, B.CREATE_DT ASC
+	 </select>
+
+	 <select id="getTableCol" parameterType="java.util.Map" resultType="java.util.Map">
+	   	/* CommonMapper.getTableCol */
+
+		SELECT *,@ROWNUM:=@ROWNUM+1 AS DISPLAY_SEQ
+		FROM(
+
+			SELECT *
+			FROM TN_TABLE_COL
+			WHERE VIEW_CATEGORY = #{VIEW_CATEGORY} AND VIEW_TYPE = #{VIEW_TYPE}
+
+<!-- 			ORDER BY SEQ ASC, CREATE_DT ASC -->
+
+		) A, (SELECT @ROWNUM:=0) TMP
+
+		ORDER BY A.SEQ ASC, A.CREATE_DT ASC
+
+	 </select>
+
+
+<select id="getCodeTable" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCodeTable */
+		SELECT
+			CODE_CLS,
+			IFNULL(UP_CODE_CLS, -1) AS UP_CODE_CLS,
+			CODE_CLS_NM,
+			CODE_CLS_DESC,
+			SORT_SEQ,
+			USE_YN
+		FROM TCSY_CODE_CLS
+    </select>
+
+    <select id="getCodeListTable1" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* CommonMapper.getCodeListTable1 */
+		SELECT
+			CODE_CLS,
+			CODE_CD,
+			CODE_NM,
+			CODE_CONTENT,
+			SORT_SEQ,
+			USE_YN
+		FROM TCSY_CODE_LIST
+		WHERE CODE_CLS = #{CODE_CLS}
+		ORDER BY SORT_SEQ ASC
+    </select>
+
+
+ 	<update id="updateCode" parameterType="java.util.Map">
+	 /* CommonMapper.updateCode */
+		UPDATE TCSY_CODE_CLS
+		SET
+			<if test='CODE_CLS != null'>CODE_CLS = #{CODE_CLS},</if>
+			<if test='UP_CODE_CLS != null'>UP_CODE_CLS = #{UP_CODE_CLS},</if>
+			<if test='CODE_CLS_NM != null'>CODE_CLS_NM = #{CODE_CLS_NM},</if>
+			<if test='CODE_CLS_DESC != null'>CODE_CLS_DESC = #{CODE_CLS_DESC},</if>
+			<if test='SORT_SEQ != null'>SORT_SEQ = #{SORT_SEQ},</if>
+			<if test='USE_YN != null'>USE_YN = #{USE_YN},</if>
+	      	UPDATE_DT = NOW()
+	    WHERE CODE_CLS = #{OLD_CODE_CLS} AND UP_CODE_CLS = #{UP_CODE_CLS}
+	</update>
+
+	<update id="updateSubCode" parameterType="java.util.Map">
+	 /* CommonMapper.updateSubCode */
+		UPDATE TCSY_CODE_CLS
+		SET
+			<if test='UP_CODE_CLS != null'>UP_CODE_CLS = #{CODE_CLS},</if>
+	      	UPDATE_DT = NOW()
+	    WHERE UP_CODE_CLS = #{OLD_CODE_CLS}
+	</update>
+
+	<update id="updateCodeList" parameterType="java.util.Map">
+	 /* CommonMapper.updateCodeList */
+		UPDATE TCSY_CODE_LIST
+		SET
+			<if test='CODE_CLS != null'>CODE_CLS = #{CODE_CLS},</if>
+			<if test='CODE_CD != null'>CODE_CD = #{CODE_CD},</if>
+			<if test='CODE_NM != null'>CODE_NM = #{CODE_NM},</if>
+			<if test='CODE_CONTENT != null'>CODE_CONTENT = #{CODE_CONTENT},</if>
+			<if test='SORT_SEQ != null'>SORT_SEQ = #{SORT_SEQ},</if>
+			<if test='USE_YN != null'>USE_YN = #{USE_YN},</if>
+	      	UPDATE_DT = NOW()
+	    WHERE CODE_CLS = #{CODE_CLS} AND CODE_CD = #{OLD_CODE_CD}
+	</update>
+
+
+ 	<insert id="createCode" parameterType="java.util.Map">
+	   	/* CommonMapper.createCode */
+	   		INSERT INTO TCSY_CODE_CLS
+	   			(CODE_CLS, UP_CODE_CLS, CODE_CLS_NM, CODE_CLS_DESC, USE_YN, CREATE_DT)
+	    	VALUES
+		        (#{CODE_CLS}, #{UP_CODE_CLS},  #{CODE_CLS_NM}, #{CODE_CLS_DESC}, #{USE_YN}, NOW())
+	 </insert>
+
+	 <insert id="createCodeList" parameterType="java.util.Map">
+	   	/* CommonMapper.createCodeList */
+	   		INSERT INTO TCSY_CODE_LIST
+	   			(CODE_CLS, CODE_CD, CODE_NM, CODE_CONTENT, USE_YN, CREATE_DT)
+	    	VALUES
+		        (#{CODE_CLS}, #{CODE_CD},  #{CODE_NM}, #{CODE_CONTENT}, #{USE_YN}, NOW())
+	 </insert>
+
+
+ 	<delete id="deleteCode" parameterType="java.util.Map">
+	   	/* CommonMapper.deleteCode */
+	   		 DELETE FROM TCSY_CODE_CLS
+	   		 WHERE
+		 		CODE_CLS = #{OLD_CODE_CLS} AND UP_CODE_CLS = #{UP_CODE_CLS}
+	 </delete>
+
+
+	  <delete id="deleteCodeList" parameterType="java.util.Map">
+	   	/* CommonMapper.deleteCodeList */
+	   		 DELETE FROM TCSY_CODE_LIST
+	   		 WHERE
+		 		CODE_CLS = #{CODE_CLS} AND CODE_CD = #{OLD_CODE_CD}
+	 </delete>
+
+	<select id="getLastAutoIncreasedId"  resultType="long">
+    	/* CommonMapper."getLastAutoIncreasedId" */
+		SELECT LAST_INSERT_ID() AS ID;
+    </select>
+
+
+	<insert id="wirteUpdateLog" parameterType="java.util.Map">
+	   	/* CommonMapper.wirteUpdateLog */
+	   		 INSERT INTO TH_LOG (REPRESENTATIVE_ID, REPRESENTATIVE_TYPE, DES, USER_ID, CREATE_DT) VALUES (#{REPRESENTATIVE_ID},#{REPRESENTATIVE_TYPE},  #{DES}, #{USER_ID}, NOW())
+	 </insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

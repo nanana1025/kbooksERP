@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<layout type="8" name="4단화면">
+	<area id="CODE_LIST1" url="/list.do?xn=CODE_LIST" width="40%" height="60%" collapsible="Y" resizable="Y">CODE1</area>
+	<area id="CODE_LIST2" url="/list.do?xn=CODE_LIST" width="60%" height="60%" collapsible="N" resizable="Y" refAreaId="CODE_LIST1">CODE2</area>
+	<area id="CODE_LIST3" url="/list.do?xn=CODE_LIST" width="50%" height="40%" collapsible="Y" resizable="Y" refAreaId="CODE_LIST2">CODE3</area>
+	<area id="CODE_LIST4" url="/list.do?xn=CODE_LIST" width="50%" height="40%" collapsible="N" resizable="Y">CODE4</area>
+</layout>

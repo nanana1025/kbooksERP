@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list editable="Y">
+	<userJs>/WEB-INF/views/custom/codeTest.jsp</userJs>
+	<userHtml></userHtml>
+	<table>tcsy_code_cls</table>
+	<object>code_cls</object>
+	<columns>
+		<col id="code_cls" type="text" width="10%" align="center" search="N">코드그룹ID</col>
+		<col id="code_cls_nm" type="text" width="10%" align="center" search="N">코드그룹명</col>
+		<col id="code_cls_desc" type="text" width="10%" align="center" search="N">코드내용</col>
+		<col id="use_yn" groupLabel="정보" type="text" width="10%" align="center" search="N">사용여부</col>
+		<col id="sort_seq" groupLabel="정보" type="num" width="10%" align="center" search="N">순서</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<select></select>
+		<change></change>
+	</event>
+	<sql>
+		select code_cls,
+			code_cls_nm,
+			code_cls_desc,
+			use_yn ,
+			sort_seq
+		from tcsy_code_cls a
+		order by code_cls,sort_seq
+	</sql>
+</list>

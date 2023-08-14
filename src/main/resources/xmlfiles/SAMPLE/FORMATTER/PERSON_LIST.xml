@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list name="포매터 테스트" editable="Y">
+	<userJs></userJs>
+	<userHtml>
+		<html position="button"><button class="PERSON_LIST_userBtn">우상단버튼</button></html>
+		<html position="bottom"><input type="button" class="k-button" value="하단테스트"/></html>
+		<html position="title"><span>타이틀에 들어가는 userHtml</span></html>
+		<html position="caption"><span>새 줄로 들어가는 userHtml</span></html>
+	</userHtml>
+	<table>tnts_person_test</table>
+	<object>person_id</object>
+	<columns>
+		<col id="person_id" type="text" width="10%" align="center" search="N" lock="Y">&lt;br/&gt;사람ID</col>
+		<col id="person_nm" type="text" width="10%" align="center" search="Y" hidden="N" lock="Y">사람이름</col>
+		<col id="ssn" type="mask" width="10%" align="center" search="N" lock="Y" formatter="ssn"><![CDATA[\n]]>주민번호</col>
+		<col id="phone_no" type="mask" width="10%" align="center" search="N" formatter="phone_no">핸드폰\n번호</col>
+		<col id="email" type="text" width="10%" align="center" search="N">이메일</col>
+		<col id="address" type="text" width="60%" align="center" search="N">주소</col>
+		<col id="cash" type="num" width="10%" align="center" search="N" lock="Y" formatter="price">소지금</col>
+		<col id="temp_num" type="num" width="10%" align="center" search="N" formatter="percent">그냥 숫자</col>
+	</columns>
+	<event>
+		<insert></insert>
+		<update></update>
+		<delete></delete>
+		<select></select>
+	</event>
+	<kendoExtend>{filterable: false}</kendoExtend>
+	<sql>
+		SELECT
+			person_id,
+			person_nm,
+			ssn,
+			phone_no,
+			email,
+			address,
+			cash,
+			temp_num
+		FROM
+			tnts_person_test
+	</sql>
+	<desc>화면설명 시작
+	화면설명1
+	화면설명2
+	화면설명 종료
+	</desc>
+</list>
