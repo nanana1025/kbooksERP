@@ -67,6 +67,6 @@ public interface SearchMapper {
 
 	public List<Map<String,Object>> getVirtualShopCd(Map<String,Object> params);
 
-
+	public List<Map<String,Object>> getBookSalePerformance1(Map<String,Object> params);
 
 }

@@ -166,6 +166,15 @@ public class SearchController {
         return searchService.checkHMA02(params);
     }
 
+	@PostMapping(value = "/getBookSalePerformance.json")
+    @ResponseBody
+	public Map<String, Object> getBookSalePerformance(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {
+		System.out.println("SearchController.getBookSalePerformance");
+		Util.pramsNullCheck(params);
+
+        return searchService.getBookSalePerformance(params);
+    }
+
 
 
 

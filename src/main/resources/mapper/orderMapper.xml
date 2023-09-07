@@ -594,6 +594,24 @@
 					AND BOOKCD =#{BOOKCD}
     </update>
 
+    <select id="getOrderBookOne" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* orderMapper.getOrderBookOne */
+			SELECT *
+  			FROM (
+				SELECT *
+				FROM HOR01
+				WHERE INP_SHOPCD = #{INP_SHOPCD}
+						AND INP_GROUPCD = #{INP_GROUPCD}
+						AND ORD_DATE = #{ORD_DATE}
+						AND TRADE_ITEM = #{TRADE_ITEM}
+						AND PURCHCD = #{PURCHCD}
+						AND BOOKCD =#{BOOKCD}
+			)
+			where rownum <![CDATA[<]]>  2
+    </select>
+
+
+
     <delete id="deleteOrderBookInfo" parameterType="java.util.Map" >
     	/* orderMapper.deleteOrderBookInfo */
 			DELETE

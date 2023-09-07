@@ -792,8 +792,8 @@
 		WHERE SHOPCD = #{SHOPCD}
 				AND BOOKCD = #{BOOKCD}
 				<if test='PURCHCD != null'> AND PURCHCD = #{PURCHCD} </if>
-				AND BOOK_DATE >= #{DT_FROM}
-				AND BOOK_DATE <![CDATA[<=]]> #{DT_TO}
+				<if test='DT_FROM != null'> AND BOOK_DATE >= #{DT_FROM} AND BOOK_DATE <![CDATA[<=]]> #{DT_TO}</if>
+
 
 		GROUP BY BOOK_DATE
 		ORDER BY BOOK_DATE DESC
@@ -812,8 +812,10 @@
 		FROM HLS02
 		WHERE LD_SHOPCD = #{SHOPCD}
 				AND BOOKCD = #{BOOKCD}
+				<if test='DT_FROM != null'>
 				AND LS_DATE >= #{DT_FROM}
 				AND LS_DATE <![CDATA[<=]]> #{DT_TO}
+				</if>
 		GROUP BY LD_SHOPCD, LS_DATE
 
     </select>
@@ -830,8 +832,10 @@
 		FROM HLS02
 		WHERE SUB_SHOPCD = #{SHOPCD}
 				AND BOOKCD = #{BOOKCD}
+					<if test='DT_FROM != null'>
 				AND LS_DATE >= #{DT_FROM}
 				AND LS_DATE <![CDATA[<=]]> #{DT_TO}
+				</if>
 		GROUP BY SUB_SHOPCD, LS_DATE
 
     </select>
@@ -944,6 +948,27 @@
 					AND PURCHCD = #{PURCHCD}
 
     </select>
+
+    <select id="getBookSalePerformance1"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* searchMapper.getBookSalePerformance1 */
+
+		SELECT BOOK_DATE
+					, SUM(TRUST_SALE_COUNT + PAY_SALE_COUNT) AS SALE_COUNT
+					, SUM(BUY_COUNT) AS BUY_COUNT
+					, SUM(TRUST_RET_COUNT) AS RET_COUNT
+					, SUM(PRESENT_COUNT) AS PRESENT_COUNT
+					, SUM(DISUSE_COUNT) AS DISUSE_COUNT
+					, SUM(LOSS_COUNT) AS LOSS_COUNT
+					, SUM(SPEC_SALE_COUNT) AS SPEC_SALE_COUNT
+		FROM HSA01
+		WHERE SHOPCD = #{SHOPCD}
+				AND BOOKCD = #{BOOKCD}
+				<if test='DT_FROM != null'> AND BOOK_DATE >= #{DT_FROM} AND BOOK_DATE <![CDATA[<=]]> #{DT_TO} </if>
+				<if test='PURCHCD != null'> AND PURCHCD = #{PURCHCD} </if>
+		GROUP BY BOOK_DATE
+
+    </select>
+
 
 
 

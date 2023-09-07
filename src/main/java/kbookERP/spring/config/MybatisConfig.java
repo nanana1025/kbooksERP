@@ -19,7 +19,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@MapperScan(value="kbookERP", sqlSessionFactoryRef="db1SqlSessionFactory")
+@MapperScan(value="kbook", sqlSessionFactoryRef="db1SqlSessionFactory")
 @EnableTransactionManagement
 public class MybatisConfig {
 

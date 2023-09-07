@@ -718,7 +718,63 @@ public class SearchService {
 			}
 	    }
 
+	    public Map<String, Object> getBookSalePerformance(Map<String, Object> params) throws Exception {
 
+	    	Map<String, Object> resultMap = new HashMap<String, Object>();
+			List<Map<String, Object>> listPreformanceMap = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> listLDCountAMap = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> listLDCountBMap = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> listWarehouseMap = new ArrayList<Map<String, Object>>();
+
+			try {
+
+				listPreformanceMap = searchMapper.getBookSalePerformance1(params);
+
+				if (listPreformanceMap.size() > 0) {
+					resultMap.put("EXIST", true);
+					resultMap.put("DATA1", listPreformanceMap);
+
+
+					listLDCountAMap = searchMapper.getPublisherLDA(params);
+
+					if (listLDCountAMap.size() > 0) {
+						resultMap.put("LD_A_EXIST", true);
+						resultMap.put("LD_A_DATA", listLDCountAMap);
+					} else
+						resultMap.put("LD_A_EXIST", false);
+
+					listLDCountBMap = searchMapper.getPublisherLDB(params);
+
+					if (listLDCountBMap.size() > 0) {
+						resultMap.put("LD_B_EXIST", true);
+						resultMap.put("LD_B_DATA", listLDCountBMap);
+					} else
+						resultMap.put("LD_B_EXIST", false);
+
+					listWarehouseMap = searchMapper.getPublisherWarehouse(params);
+
+					if (listWarehouseMap.size() > 0) {
+						resultMap.put("WAREHOUSE_EXIST", true);
+						resultMap.put("WAREHOUSE_DATA", listWarehouseMap);
+					} else
+						resultMap.put("WAREHOUSE_EXIST", false);
+
+				} else
+					resultMap.put("EXIST", false);
+
+
+				resultMap.put("SUCCESS", true);
+				return resultMap;
+
+			} catch (Exception ex) {
+				System.out.println("error: " + ex);
+
+				resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+				resultMap.put("SUCCESS", false);
+
+				return resultMap;
+			}
+	    }
 
 
 

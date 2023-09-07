@@ -439,8 +439,21 @@ public class OrderService {
 
 						result = orderMapper.updateOrderBookInfo(oMap);
 						if(result == 0) {
-//							oMap.put("SHOPCD", oMap.get("INP_SHOPCD"));
 
+							Map<String, Object> orderBookMap = orderMapper.getOrderBookOne(oMap);
+							if(orderBookMap != null) {
+								orderBookMap.put("SHOPCD", orderBookMap.get("INP_SHOPCD"));
+								orderBookMap.put("STORECD", oMap.get("STORECD"));
+								orderBookMap.put("ORD_CNT", oMap.get("ORD_COUNT"));
+								orderMapper.createOrderBook(orderBookMap);
+							}
+							else {
+//								orderBookMap.put("SHOPCD", orderBookMap.get("INP_SHOPCD"));
+//								orderBookMap.put("ORD_CNT", oMap.get("ORD_COUNT"));
+//								orderMapper.createOrderBook(oMap);
+							}
+
+//							oMap.put("SHOPCD", oMap.get("INP_SHOPCD"));
 //							orderMapper.createOrderBook(oMap);
 						}
 					}
