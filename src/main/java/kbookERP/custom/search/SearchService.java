@@ -275,7 +275,16 @@ public class SearchService {
 						resultMap.put("EXIST", false);
 				}
 				else {
-					resultMap.put("EXIST", false);
+
+					listSqlMap = searchMapper.getNewBooksList(params);
+
+					if (listSqlMap.size() > 0) {
+						resultMap.put("EXIST", true);
+//						if(searchType.equals("SINGLE"))
+//							resultMap.put("ORGAN_NM", sqlMap.get("ORGAN_NM"));
+						resultMap.put("DATA", listSqlMap);
+					} else
+						resultMap.put("EXIST", false);
 				}
 
 				resultMap.put("SUCCESS", true);

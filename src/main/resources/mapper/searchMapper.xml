@@ -301,7 +301,8 @@
 								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD
 								 		</when>
 								 		<otherwise>
-								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD
+								 		A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99
+<!-- 								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD -->
 								 		</otherwise>
 								 	</choose>
 									)
@@ -323,9 +324,9 @@
 						<if test='STANDCD_S != null'>AND A.STANDCD BETWEEN #{STANDCD_S} AND #{STANDCD_E}</if>
 			 		</when>
 			 		<otherwise>
-			 			<if test='DEPTCD != null'>AND A.DEPTCD = #{DEPTCD}</if>
-						<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if>
-						<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if>
+<!-- 			 			<if test='DEPTCD != null'>AND A.DEPTCD = #{DEPTCD}</if> -->
+<!-- 						<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 						<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
 			 		</otherwise>
 			 	</choose>
 

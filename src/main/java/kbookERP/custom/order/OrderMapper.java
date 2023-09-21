@@ -31,7 +31,7 @@ public interface OrderMapper {
 
 	public Map<String,Object> getSaleDataInp(Map<String,Object> params);
 
-	public Map<String,Object> getSaleDataInpRatio(Map<String,Object> params);
+	public  List<Map<String,Object>> getSaleDataInpRatio(Map<String,Object> params);
 
 	public List<Map<String,Object>> getOrderDataList(Map<String,Object> params);
 

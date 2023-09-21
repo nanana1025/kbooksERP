@@ -569,7 +569,14 @@
     <update id="UpdateOrderBook" parameterType="java.util.Map" >
     	/* orderMapper.UpdateOrderBook */
 			UPDATE HOR01 SET
-				ORD_COUNT = ORD_COUNT + #{ORD_CNT}
+			<choose>
+			 		<when test='REPLACE != null'>
+			 			ORD_COUNT = #{ORD_CNT}
+			 		</when>
+			 		<otherwise>
+			 			ORD_COUNT = ORD_COUNT + #{ORD_CNT}
+			 		</otherwise>
+			 	</choose>
 				, ORD_RATE = #{ORD_RATE}
 			WHERE INP_SHOPCD = #{SHOPCD}
 					AND STORECD = #{STORECD}

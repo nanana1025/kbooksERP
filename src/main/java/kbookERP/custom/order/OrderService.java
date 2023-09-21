@@ -25,6 +25,7 @@ public class OrderService {
 //			Map<String, Object> newParams = new HashMap<String, Object>();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
 			List<Map<String, Object>> listSqlMap = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> listRetMap = new ArrayList<Map<String, Object>>();
 
 			try {
 
@@ -111,18 +112,25 @@ public class OrderService {
 							oData.put("ORD_SUM", 0);
 							oData.put("ORD_RATE", 0);
 							oData.put("TRADE_ITEM", 0);
+
+//							oData.put("RATE_KBN", 1);
+//							listRetMap = searchMapper.getOrderBookPurchRate(oData);
 						}
 
 						sqlMap = orderMapper.getSaleDataInp(oData);
 						if(sqlMap != null) oData.put("INP_SUM", sqlMap.get("INP_SUM"));
 						else oData.put("INP_SUM", 0);
 
-//						if(gCount == 0) {
-//							sqlMap = orderMapper.getSaleDataInpRatio(oData);
-//							if(sqlMap != null) oData.put("RATE", sqlMap.get("RATE"));
-//							else oData.put("RATE", oData.get("ORD_RATE"));
-//						}
-//						else
+						if(gCount == 0) {
+							listRetMap = orderMapper.getSaleDataInpRatio(oData);
+							if(listRetMap.size() > 0) {
+								oData.put("RATE", listRetMap.get(0).get("RATE"));
+								oData.put("RATE_EXCEPT", true);
+							}
+							else
+								oData.put("RATE", oData.get("ORD_RATE"));
+						}
+						else
 							oData.put("RATE", oData.get("ORD_RATE"));
 					}
 
@@ -385,8 +393,10 @@ public class OrderService {
 
 							if(sqlMap == null)
 								 orderMapper.createOrderBook(oMap);
-							else
+							else {
+								oMap.put("REPLACE", true);
 								orderMapper.UpdateOrderBook(oMap);
+							}
 						}
 
 					}
