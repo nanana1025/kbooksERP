@@ -49,21 +49,22 @@ public class LoginService {
 			System.out.println("userMap = "+userMap);
 
 			String passwd = params.get("PASSWD").toString();
-			String dbPasswd = userMap.get("PASS_WD").toString();
-			String encdbPasswd  = Function.Password(userId, dbPasswd);
+			String dbPasswd = userMap.get("PASSWD").toString();
+//			String encdbPasswd  = Function.Password(userId, dbPasswd);
 
 //			String hash = Function.HashSHA256(dbPasswd);
 //			String sha = Function.EncryptionSHA256(dbPasswd);
 //			String result = Function.Password(userId, dbPasswd);
 
 
-	        if(passwd.equals(encdbPasswd)){
+	        if(passwd.equals(dbPasswd)){
 
 //	        	List<Map<String, Object>> listUserMap = new ArrayList<Map<String, Object>>();
 
 //	        	listUserMap = loginMapper.getUserInfoList(params);
 
-	        	resultMap.put("USER_NM", userMap.get("USER_NAME"));
+	        	resultMap.put("USER_NM", userMap.get("USER_NM"));
+	        	resultMap.put("USER_TYPE", userMap.get("USER_TYPE"));
 	        	resultMap.put("SUCCESS", true);
 //        		resultMap.put("DATA", listUserMap);
 	            return resultMap;
@@ -82,6 +83,68 @@ public class LoginService {
 			return resultMap;
 		}
 	}
+
+//	public Map<String, Object> createUser(Map<String,Object> params) {
+//
+//		Map<String, Object> userMap = new HashMap<>();
+//		Map<String,Object> resultMap = new HashMap<>();
+//		Map<String, Object> newParams = new HashMap<>();
+//
+//		try{
+//
+//		String userId = params.get("USER_ID").toString();
+//		String passwd = params.get("PASSWD").toString();
+//		newParams.put("USER_ID", userId);
+//
+//		String encdbPasswd  = Function.Password(userId, passwd);
+//
+//		 params.put("PASSWD", encdbPasswd);
+//
+//		userMap = loginMapper.getUserInfo(newParams);
+//
+//		if(userMap == null) {
+//			resultMap.put("MSG", "존재하지 않는 ID입니다.");
+//        	resultMap.put("SUCCESS", false);
+//        	return resultMap;
+//		}
+//		else {
+//
+//			System.out.println("userMap = "+userMap);
+//
+//			String passwd = params.get("PASSWD").toString();
+//			String dbPasswd = userMap.get("PASS_WD").toString();
+//			String encdbPasswd  = Function.Password(userId, dbPasswd);
+//
+////			String hash = Function.HashSHA256(dbPasswd);
+////			String sha = Function.EncryptionSHA256(dbPasswd);
+////			String result = Function.Password(userId, dbPasswd);
+//
+//
+//	        if(passwd.equals(encdbPasswd)){
+//
+////	        	List<Map<String, Object>> listUserMap = new ArrayList<Map<String, Object>>();
+//
+////	        	listUserMap = loginMapper.getUserInfoList(params);
+//
+//	        	resultMap.put("USER_NM", userMap.get("USER_NAME"));
+//	        	resultMap.put("SUCCESS", true);
+////        		resultMap.put("DATA", listUserMap);
+//	            return resultMap;
+//        	}else {
+//    			resultMap.put("MSG", "아이디 또는 비밀번호가 일치하지 않습니다.");
+//    			resultMap.put("SUCCESS", false);
+//    			return resultMap;
+//            }
+//		}
+//
+//		}
+//		catch (Exception ex){
+//			resultMap.put("SUCCESS", false);
+//			resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+//			resultMap.put("ERROR", ex.getMessage());
+//			return resultMap;
+//		}
+//	}
 
 
 //	public Map<String, Object> userInst(Map<String,Object> params){

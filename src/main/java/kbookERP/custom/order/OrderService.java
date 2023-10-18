@@ -199,6 +199,48 @@ public class OrderService {
 			}
 	    }
 
+	    public Map<String, Object> getBookOrderInfo(Map<String, Object> params) throws Exception {
+
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			Map<String, Object> sqlMap = new HashMap<String, Object>();
+
+
+			try {
+
+				sqlMap = orderMapper.getSaleDataEsti(params);
+				if(sqlMap != null) resultMap.put("ESTI_CNT", sqlMap.get("ESTI_SUM"));
+				else resultMap.put("ESTI_CNT", 0);
+
+
+				sqlMap = orderMapper.getSaleDataRet(params);
+				if(sqlMap != null) resultMap.put("RET_CNT", sqlMap.get("RET_SUM"));
+				else resultMap.put("RET_CNT", 0);
+
+
+				sqlMap = orderMapper.getSaleDataOrd(params);
+				if(sqlMap != null) resultMap.put("ORD_CNT", sqlMap.get("ORD_SUM"));
+				else resultMap.put("ORD_CNT", 0);
+
+
+				sqlMap = orderMapper.getSaleDataInp(params);
+				if(sqlMap != null) resultMap.put("INP_CNT", sqlMap.get("INP_SUM"));
+				else resultMap.put("INP_CNT", 0);
+
+
+				resultMap.put("SUCCESS", true);
+
+				return resultMap;
+
+			} catch (Exception ex) {
+				System.out.println("error: " + ex);
+
+				resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+				resultMap.put("SUCCESS", false);
+
+				return resultMap;
+			}
+	    }
+
 
 	    public Map<String, Object> getOrderDataList(Map<String, Object> params) throws Exception {
 			Map<String, Object> resultMap = new HashMap<String, Object>();

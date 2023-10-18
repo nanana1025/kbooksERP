@@ -261,7 +261,7 @@ public class ReturnsService {
 			}
 	    }
 
-	 public Map<String, Object> confirmReturnBook(Map<String, Object> params) throws Exception {
+	 public Map<String, Object> saveReturnBook(Map<String, Object> params) throws Exception {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 //			List<Map<String, Object>> listSqlMap = new ArrayList<Map<String, Object>>();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
@@ -299,6 +299,47 @@ public class ReturnsService {
 				}
 
 				resultMap.put("SUCCESS", true);
+				return resultMap;
+			} catch (Exception ex) {
+				resultMap.put("SUCCESS", false);
+				resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+				resultMap.put("ERROR", ex.getMessage());
+				return resultMap;
+			}
+		}
+
+	 public Map<String, Object> confirmReturnBook(Map<String, Object> params) throws Exception {
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			List<Map<String, Object>> listSqlMap = new ArrayList<Map<String, Object>>();
+			Map<String, Object> sqlMap = new HashMap<String, Object>();
+			List<Object> listData = new ArrayList<Object>();
+//			List<Integer> listSuccessId = new ArrayList<Integer>();
+			try {
+
+
+
+				listSqlMap = returnsMapper.getReturnBookList(params);
+
+				if (listSqlMap.size() > 0) {
+
+					long hma06NookCd;
+					int hor02MaxSeq;
+					for(Map<String, Object> oData : listSqlMap) {
+
+						returnsMapper.insertReturnBookConfirm(oData);
+
+					}
+//					returnsMapper.deleteReturnBookAll(params);
+
+
+					resultMap.put("SUCCESS", true);
+
+				} else{
+					resultMap.put("MSG", "확정할 데이터가 없습니다.");
+					resultMap.put("REFRESH", false);
+					resultMap.put("SUCCESS", false);
+				}
+
 				return resultMap;
 			} catch (Exception ex) {
 				resultMap.put("SUCCESS", false);

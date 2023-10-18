@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbookERP.custom.board.BoardMapper">
+
+	<select id="getViewType" parameterType="java.util.Map" resultType="java.util.Map">
+	   	/* BoardMapper.getViewType */
+
+	        SELECT B.VNAME AS NAME, A.VIEW_YN
+			FROM TN_PLM_USER_CATEGORY_VIEW A,
+			TN_PLM_CATEGORY_VIEW B
+			WHERE A.VIEW_ID = B.ID AND A.USER_ID = #{USER_ID} AND B.TYPE  = #{TYPE}
+
+    </select>
+
+	 <select id="getViewType2" parameterType="java.util.Map" resultType="java.util.Map">
+	   	/* BoardMapper.getViewType2 */
+
+	        SELECT A.VIEW_ID, B.VIEW_CATEGORY, B.NAME AS VIEW_NAME, A.VIEW_YN
+
+			FROM TN_PLM_USER_CATEGORY_VIEW A, TN_PLM_CATEGORY_VIEW B
+
+			WHERE A.VIEW_ID = B.ID AND A.USER_ID = #{SELECT_USER_ID} AND B.TYPE = #{TYPE}
+
+			<if test='VIEW_CATEGORY != null'> AND B.VIEW_CATEGORY = #{VIEW_CATEGORY}</if>
+			ORDER BY B.TYPE ASC, VIEW_CATEGORY ASC, SEQ ASC, SEQ2
+
+    </select>
+
+      <delete id="deleteViewType2" parameterType="java.util.Map">
+    	/* BoardMapper.deleteViewType2 */
+		DELETE FROM TN_PLM_USER_CATEGORY_VIEW A
+
+		WHERE A.USER_ID = #{SELECT_USER_ID} AND A.VIEW_ID IN
+		(
+			SELECT ID FROM TN_PLM_CATEGORY_VIEW WHERE TYPE = #{TYPE}
+			<if test='VIEW_CATEGORY != null'> AND VIEW_CATEGORY = #{VIEW_CATEGORY}</if>
+		)
+
+    </delete>
+
+    <insert id="insertDefaultViewType2" parameterType="java.util.Map">
+	   	/* BoardMapper.insertDefaultViewType2*/
+	   		 INSERT INTO TN_PLM_USER_CATEGORY_VIEW
+	        (ID, USER_ID, VIEW_ID, VIEW_YN, CREATE_DT)
+	    	SELECT
+		    #{SELECT_USER_ID}||'_' ||ID,  #{SELECT_USER_ID}, ID, DEFAULT_YN, SYSDATE
+<!-- 		    #{USER_ID}, ID, 1, NOW() -->
+		    FROM TN_PLM_CATEGORY_VIEW WHERE TYPE = #{TYPE}
+		    <if test='VIEW_CATEGORY != null'> AND VIEW_CATEGORY = #{VIEW_CATEGORY}</if>
+	 </insert>
+
+	 <update id="updateViewType" parameterType="java.util.Map">
+		/* BoardMapper.updateViewType */
+		UPDATE TN_PLM_USER_CATEGORY_VIEW SET
+		VIEW_YN = #{VIEW_YN}
+		WHERE USER_ID = #{SELECT_USER_ID} AND VIEW_ID = #{VIEW_ID}
+
+	</update>
+
+	<delete id="deleteViewType" parameterType="java.util.Map">
+    	/* BoardMapper.deleteViewType */
+		DELETE FROM TN_PLM_USER_CATEGORY_VIEW
+		WHERE
+		<choose>
+		 		<when test='LIST_USER_ID != null and LIST_USER_ID.size > 0'>
+		 			USER_ID IN <foreach collection="LIST_USER_ID" item="item" open=" (" close=")" separator=",">#{item}</foreach>
+		 		</when>
+		 		<otherwise>
+		 			USER_ID = #{USER_ID}
+		 		</otherwise>
+		 	</choose>
+    </delete>
+
+    <insert id="insertViewTypeByUser" parameterType="java.util.Map">
+	   	/* BoardMapper.insertViewTypeByUser*/
+	   		 INSERT INTO TN_PLM_USER_CATEGORY_VIEW
+	        (ID, USER_ID, VIEW_ID, VIEW_YN, CREATE_DT)
+	    	SELECT
+		    #{COPY_USER_ID}||'_' ||VIEW_ID, #{COPY_USER_ID}, VIEW_ID, VIEW_YN, NOW()
+		    FROM TN_PLM_USER_CATEGORY_VIEW WHERE USER_ID = #{SELECT_USER_ID}
+	 </insert>
+
+	 <select id="getUser" parameterType="java.util.Map" resultType="java.util.Map">
+		/* UserMapper.getUser */
+		SELECT *
+		FROM TN_USER_MST
+		WHERE USER_ID = #{USER_ID}
+    </select>
+
+    <select id="getUserInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		/* UserMapper.getUserInfo */
+		SELECT *
+		FROM TN_USER_MST
+		<where>
+		<if test='SELECTED_USER_ID != null' > AND USER_ID = #{SELECTED_USER_ID}</if>
+		</where>
+
+		ORDER BY USER_NM ASC
+    </select>
+
+	<select id="getNewView" parameterType="java.util.Map" resultType="java.util.Map">
+	   	/* BoardMapper.getNewView */
+
+	        SELECT A.ID
+			FROM TN_PLM_CATEGORY_VIEW A
+			WHERE A.ID NOT IN (
+				SELECT VIEW_ID FROM TN_PLM_USER_CATEGORY_VIEW WHERE USER_ID = #{USER_ID}
+			)
+
+    </select>
+
+    <insert id="insertNewView" parameterType="java.util.Map">
+	   	/* BoardMapper.insertNewView*/
+	   		 INSERT INTO TN_PLM_USER_CATEGORY_VIEW
+	        (ID, USER_ID, VIEW_ID, VIEW_YN, CREATE_DT)
+	    	SELECT
+		    #{SELECT_USER_ID}||'_' ||ID, #{SELECT_USER_ID}, ID, DEFAULT_YN, NOW()
+		    FROM TN_PLM_CATEGORY_VIEW WHERE ID IN
+			 			<foreach collection="LIST_ID" item="data" open=" (" close=")" separator=","> #{data}</foreach>
+	 </insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

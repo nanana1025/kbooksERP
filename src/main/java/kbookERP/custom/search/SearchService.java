@@ -24,7 +24,7 @@ public class SearchService {
 
 			try {
 
-				if(params.containsKey("PUBSHCD") || params.containsKey("PUBSH_NM")) {
+				if(params.containsKey("PUBSHCD") || params.containsKey("PUBSHNM")) {
 					sqlMap = searchMapper.getPubshInfo(params);
 					if(sqlMap == null) {
 						resultMap.put("MSG", "출판사 정보가 없습니다.");
@@ -34,7 +34,7 @@ public class SearchService {
 						params.put("PUBSHCD", sqlMap.get("PUBSHCD"));
 				}
 
-				if(params.containsKey("GROUPCD") || params.containsKey("GROUP_NM")) {
+				if(params.containsKey("GROUPCD") || params.containsKey("GROUPNM")) {
 					sqlMap = searchMapper.getGroupInfo(params);
 					if(sqlMap == null) {
 						resultMap.put("MSG", "조코드 정보가 없습니다.");
@@ -44,7 +44,7 @@ public class SearchService {
 						params.put("GROUPCD", sqlMap.get("GROUPCD"));
 				}
 
-				if(params.containsKey("STANDCD") || params.containsKey("STAND_NM")) {
+				if(params.containsKey("STANDCD") || params.containsKey("STANDNM")) {
 					sqlMap = searchMapper.getStandInfo(params);
 					if(sqlMap == null) {
 						resultMap.put("MSG", "서가코드 정보가 없습니다.");
@@ -655,6 +655,7 @@ public class SearchService {
 
 				resultMap.put("SUCCESS", true);
 				return resultMap;
+
 
 			} catch (Exception ex) {
 				System.out.println("error: " + ex);

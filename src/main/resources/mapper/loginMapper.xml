@@ -6,12 +6,17 @@
 	<select id="getUserInfo"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* LoginMapper.getUserInfo */
     	SELECT *
-    	FROM(
-			SELECT *
-			FROM ID_PASS
-			WHERE USER_ID = #{USER_ID}
-		)
-		WHERE ROWNUM <![CDATA[<=]]> 1
+    	FROM TN_USER_MST
+		WHERE USER_ID = #{USER_ID}
+
+
+<!-- 		SELECT * -->
+<!--     	FROM( -->
+<!-- 			SELECT * -->
+<!-- 			FROM ID_PASS -->
+<!-- 			WHERE USER_ID = #{USER_ID} -->
+<!-- 		) -->
+<!-- 		WHERE ROWNUM <![CDATA[<=]]> 1 -->
     </select>
 
     <select id="getUserInfoList"  parameterType="java.util.Map" resultType="java.util.Map">

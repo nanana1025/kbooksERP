@@ -49,7 +49,7 @@ public interface OrderMapper {
 
 	public int updateOrderBookInfo(Map<String,Object> params);
 
-	public  Map<String,Object> getOrderBookOne(Map<String,Object> params);
+	public Map<String,Object> getOrderBookOne(Map<String,Object> params);
 
 	public List<Map<String,Object>> selectOrderBookList(Map<String,Object> params);
 
@@ -73,5 +73,6 @@ public interface OrderMapper {
 
 	public List<Map<String,Object>> getUnregisteredOrderDataList(Map<String,Object> params);
 
+	public Map<String,Object> getBookOrderInfo(Map<String,Object> params);
 
 }

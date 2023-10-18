@@ -87,16 +87,28 @@
 						, B.PUBSHNM
 						, B.SPECIALNM
 						, A.GROUPCD
-						, D.ORGAN_NM AS GROUP_NM
+<!-- 						, D.ORGAN_NM AS GROUP_NM -->
 						, A.STANDCD
-						, E.ORGAN_NM AS STAND_NM
+<!-- 						, E.ORGAN_NM AS STAND_NM -->
 						, A.PRICE
 						, A.STOCK
-			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD)
-									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD)
-									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999)
-									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD)
-			WHERE A.SHOPCD = #{SHOPCD}
+
+
+
+			FROM HMA08 A,
+			HMA11 B,
+			HMA12 C
+<!-- 									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999) -->
+<!-- 									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD) -->
+			WHERE
+
+			A.PUBSHCD = B.PUBSHCD AND
+			A.BOOKCD = C.BOOKCD AND
+
+
+
+
+			A.SHOPCD = #{SHOPCD}
 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '%${BOOKNM}%'</if>
 			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if>
 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if>
@@ -104,10 +116,41 @@
 			<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if>
 
 			ORDER BY A.BOOKNM
+
+
+
+
+<!-- 			SELECT  A.BOOKCD -->
+<!-- 						, A.SHOPCD -->
+<!-- 						, C.BOOKNM -->
+<!-- 						, C.AUTHOR1 -->
+<!-- 						, C.AUTHOR2 -->
+<!-- 						, B.PUBSHNM -->
+<!-- 						, B.SPECIALNM -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, D.ORGAN_NM AS GROUP_NM -->
+<!-- 						, A.STANDCD -->
+<!-- 						, E.ORGAN_NM AS STAND_NM -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.STOCK -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD) -->
+<!-- 									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD) -->
+<!-- 									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999) -->
+<!-- 									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} -->
+<!-- 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '%${BOOKNM}%'</if> -->
+<!-- 			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if> -->
+<!-- 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if> -->
+<!-- 			<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 			<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
+
+<!-- 			ORDER BY A.BOOKNM -->
     </select>
 
     <select id="getSearchBookList4Purchase"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getSearchBookList4Purchase */
+
+
 			SELECT  A.BOOKCD
 						, A.SHOPCD
 						, C.BOOKNM
@@ -122,12 +165,15 @@
 						, A.PRICE
 						, A.STOCK
 						, (SELECT NVL(SUM(RET_PLAN_COUNT), 0) FROM HRE03 WHERE SHOPCD = #{SHOPCD} AND BOOKCD = A.BOOKCD) AS RETURN_CNT
-			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD)
-									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD)
-									RIGHT JOIN HMA07 F ON (A.BOOKCD = F.BOOKCD AND F.PURCHCD = #{PURCHCD})
-									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999)
-									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD)
-			WHERE A.SHOPCD = #{SHOPCD} AND F.PURCHCD = #{PURCHCD}
+			FROM HMA08 A,HMA11 B , HMA12 C ,HMA07 F,HMA10 D ,HMA10 E
+			WHERE
+			A.PUBSHCD = B.PUBSHCD(+)
+			AND A.BOOKCD = C.BOOKCD(+)
+			AND A.BOOKCD(+) = F.BOOKCD AND F.PURCHCD = #{PURCHCD}
+			AND A.DEPTCD = D.DEPTCD(+) AND A.GROUPCD = D.GROUPCD(+) AND D.STANDCD(+) = 9999
+			AND A.DEPTCD = E.DEPTCD(+) AND A.GROUPCD = E.GROUPCD(+) AND A.STANDCD = E.STANDCD(+)
+
+			AND A.SHOPCD = #{SHOPCD} AND F.PURCHCD = #{PURCHCD}
 
 			<if test='TAX_FG != null'>AND A.TAX_FG = #{TAX_FG}</if>
 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '${BOOKNM}'</if>
@@ -137,6 +183,38 @@
 			<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if>
 
 			ORDER BY A.BOOKNM
+
+
+
+<!-- 			SELECT  A.BOOKCD -->
+<!-- 						, A.SHOPCD -->
+<!-- 						, C.BOOKNM -->
+<!-- 						, C.AUTHOR1 -->
+<!-- 						, C.AUTHOR2 -->
+<!-- 						, B.PUBSHNM -->
+<!-- 						, B.SPECIALNM -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, D.ORGAN_NM AS GROUP_NM -->
+<!-- 						, A.STANDCD -->
+<!-- 						, E.ORGAN_NM AS STAND_NM -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.STOCK -->
+<!-- 						, (SELECT NVL(SUM(RET_PLAN_COUNT), 0) FROM HRE03 WHERE SHOPCD = #{SHOPCD} AND BOOKCD = A.BOOKCD) AS RETURN_CNT -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD) -->
+<!-- 									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD) -->
+<!-- 									RIGHT JOIN HMA07 F ON (A.BOOKCD = F.BOOKCD AND F.PURCHCD = #{PURCHCD}) -->
+<!-- 									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999) -->
+<!-- 									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND F.PURCHCD = #{PURCHCD} -->
+
+<!-- 			<if test='TAX_FG != null'>AND A.TAX_FG = #{TAX_FG}</if> -->
+<!-- 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '${BOOKNM}'</if> -->
+<!-- 			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if> -->
+<!-- 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if> -->
+<!-- 			<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 			<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
+
+<!-- 			ORDER BY A.BOOKNM -->
     </select>
 
 <!--     <select id="getBookList"  parameterType="java.util.Map" resultType="java.util.Map"> -->
@@ -161,6 +239,7 @@
 
 <!--     </select> -->
 
+<!-- 사용안함 -->
     <select id="getBookListWithName"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getBookListWithName */
 
@@ -178,11 +257,14 @@
 				 		</otherwise>
 				 	</choose>
 
-				FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD)
-										LEFT JOIN HMA11 C ON (A.PUBSHCD = C.PUBSHCD)
-										LEFT JOIN HMA04 D ON (A.BOOKCD = C.BOOKCD)
+				FROM HMA08 A ,HMA07 B, HMA11 C, HMA04 D
 
-				WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKNM LIKE '%${BOOKNM}%'
+				WHERE
+				A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD AND
+				A.PUBSHCD = C.PUBSHCD AND
+				A.BOOKCD = C.BOOKCD AND
+
+				A.SHOPCD = #{SHOPCD} AND A.BOOKNM LIKE '%${BOOKNM}%'
 				<choose>
 			 		<when test='PURCHCD != null'>
 			 			AND B.PURCHCD = #{PURCHCD}
@@ -193,6 +275,38 @@
 			 	</choose>
 
 				ORDER BY A.BOOKNM
+
+
+
+<!-- 				SELECT -->
+<!-- 						NVL(A.BOOKCD,0) AS BOOKCD -->
+<!-- 						, NVL(A.BOOKNM,'**********') AS BOOKNM -->
+<!-- 						, A.PRICE -->
+<!-- 						, C.PUBSHNM -->
+<!-- 						<choose> -->
+<!-- 				 		<when test='PURCHCD != null'> -->
+<!-- 				 			, NVL(D.AUTHOR1,'****') AS AUTHORNM -->
+<!-- 				 		</when> -->
+<!-- 				 		<otherwise> -->
+<!-- 				 			, NVL(D.AUTHORNM,'****') AS AUTHORNM -->
+<!-- 				 		</otherwise> -->
+<!-- 				 	</choose> -->
+
+<!-- 				FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD) -->
+<!-- 										LEFT JOIN HMA11 C ON (A.PUBSHCD = C.PUBSHCD) -->
+<!-- 										LEFT JOIN HMA04 D ON (A.BOOKCD = C.BOOKCD) -->
+
+<!-- 				WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKNM LIKE '%${BOOKNM}%' -->
+<!-- 				<choose> -->
+<!-- 			 		<when test='PURCHCD != null'> -->
+<!-- 			 			AND B.PURCHCD = #{PURCHCD} -->
+<!-- 			 		</when> -->
+<!-- 			 		<otherwise> -->
+<!-- 			 			AND B.PUR_PROCESS = 1 -->
+<!-- 			 		</otherwise> -->
+<!-- 			 	</choose> -->
+
+<!-- 				ORDER BY A.BOOKNM -->
 
     </select>
 
@@ -219,17 +333,21 @@
 <!-- 				 			, NVL(D.AUTHORNM,'****') AS AUTHORNM -->
 <!-- 				 		</otherwise> -->
 <!-- 					</choose> -->
-				FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD)
-										LEFT JOIN HMA11 C ON (A.PUBSHCD = C.PUBSHCD)
+				FROM HMA08 A,  HMA07 B, HMA11 C,
 <!-- 								<choose> -->
 <!-- 									<when test='BOOKNM != null and PURCHCD == null'> -->
-							 			LEFT JOIN HMA12 D ON (A.BOOKCD = D.BOOKCD)
+							 			HMA12 D
 <!-- 							 		</when> -->
 <!-- 							 		<otherwise> -->
 <!-- 							 			LEFT JOIN HMA04 D ON (A.BOOKCD = D.BOOKCD) -->
 <!-- 							 		</otherwise> -->
 <!-- 								</choose> -->
-				WHERE A.SHOPCD = #{SHOPCD}
+				WHERE
+				A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD AND
+				A.PUBSHCD = C.PUBSHCD AND
+				A.BOOKCD = D.BOOKCD AND
+
+				A.SHOPCD = #{SHOPCD}
 				<if test='BOOKNM != null'>AND A.BOOKNM LIKE '%${BOOKNM}%'</if>
 				<if test='BOOKCD != null'>AND A.BOOKCD  = #{BOOKCD}</if>
 				<choose>
@@ -242,11 +360,43 @@
 			 	</choose>
 
 				ORDER BY A.BOOKNM
+
+
+<!-- 				SELECT -->
+<!-- 						NVL(A.BOOKCD,0) AS BOOKCD -->
+<!-- 						, NVL(A.BOOKNM,'**********') AS BOOKNM -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.STOCK -->
+<!-- 						, A.PUBSHCD -->
+<!-- 						, B.PURCHCD -->
+<!-- 						, C.PUBSHNM -->
+<!-- 						, NVL(A.GROUPCD, 0) AS GROUPCD -->
+<!-- 						, NVL(A.STANDCD, 0) AS STANDCD -->
+<!-- 				 			, NVL(D.AUTHOR1,'****') AS AUTHORNM -->
+<!-- 				 			, NVL(D.AUTHOR2,'****') AS AUTHORNM2 -->
+
+<!-- 				FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD) -->
+<!-- 										LEFT JOIN HMA11 C ON (A.PUBSHCD = C.PUBSHCD) -->
+<!-- 							 			LEFT JOIN HMA12 D ON (A.BOOKCD = D.BOOKCD) -->
+
+<!-- 				WHERE A.SHOPCD = #{SHOPCD} -->
+<!-- 				<if test='BOOKNM != null'>AND A.BOOKNM LIKE '%${BOOKNM}%'</if> -->
+<!-- 				<if test='BOOKCD != null'>AND A.BOOKCD  = #{BOOKCD}</if> -->
+<!-- 				<choose> -->
+<!-- 			 		<when test='PURCHCD != null'> -->
+<!-- 			 			AND B.PURCHCD = #{PURCHCD} -->
+<!-- 			 		</when> -->
+<!-- 			 		<otherwise> -->
+<!-- 			 			AND B.PUR_PROCESS = 1 -->
+<!-- 			 		</otherwise> -->
+<!-- 			 	</choose> -->
+
+<!-- 				ORDER BY A.BOOKNM -->
     </select>
 
 
 
-
+<!-- 사용안함 -->
     <select id="getBookPurchInfo"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getBookPurchInfo */
 
@@ -285,32 +435,40 @@
 						, D.ORGAN_NM
 <!-- 						, A.STANDCD -->
 <!-- 						, E.ORGAN_NM AS STAND_NM -->
+						, A.FIRSTSTORE
 						, A.PRICE
 						, A.STOCK
-			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD)
-									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD)
-									LEFT JOIN HMA10 D ON (
-									<choose>
-								 		<when test='COLNM.equals("DEPTCD")'>
-								 			A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99
-								 		</when>
-								 		<when test='COLNM.equals("GROUPCD")'>
-								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999
-								 		</when>
-								 		<when test='COLNM.equals("STANDCD")'>
-								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD
-								 		</when>
-								 		<otherwise>
-								 		A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99
+			FROM HMA08 A , HMA11 B
+									, HMA12 C
+									, HMA10 D
+
+			WHERE
+			A.PUBSHCD = B.PUBSHCD(+)
+			AND A.BOOKCD = C.BOOKCD(+)
+			AND
+			<choose>
+		 		<when test='COLNM.equals("DEPTCD")'>
+		 			A.DEPTCD = D.DEPTCD(+) AND D.GROUPCD(+) = 99
+		 		</when>
+		 		<when test='COLNM.equals("GROUPCD")'>
+		 			A.DEPTCD = D.DEPTCD(+) AND A.GROUPCD = D.GROUPCD(+) AND D.STANDCD(+) = 9999
+		 		</when>
+		 		<when test='COLNM.equals("STANDCD")'>
+		 			A.DEPTCD = D.DEPTCD(+) AND A.GROUPCD = D.GROUPCD(+) AND A.STANDCD = D.STANDCD(+)
+		 		</when>
+		 		<otherwise>
+		 		A.DEPTCD = D.DEPTCD(+) AND D.GROUPCD(+) = 99
 <!-- 								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD -->
-								 		</otherwise>
-								 	</choose>
-									)
-<!-- 									LEFT JOIN HMA10 E ON (A.GROUPCD = E.GROUPCD AND A.STANDCD = E.STANDCD) -->
-			WHERE A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2
+		 		</otherwise>
+		 	</choose>
+
+
+
+
+			AND A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2
 <!-- 			AND A.BOOKNM LIKE '${BOOKNM}' -->
 <!-- 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '${BOOKNM}'</if> -->
-			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if>
+			<if test='AUTHOR != null'>AND (C.AUTHOR1(+) LIKE '%${AUTHOR}%' OR C.AUTHOR2(+) LIKE '%${AUTHOR}%')</if>
 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if>
 			<choose>
 			 		<when test='SEARCH_TYPE.equals("SINGLE")'>
@@ -334,21 +492,70 @@
 			<if test='DT_TO != null'> AND A.FIRSTSTORE <![CDATA[<=]]> #{DT_TO} </if>
 
 			ORDER BY A.BOOKNM
+
+
+
+
+<!-- 			SELECT A.SHOPCD -->
+<!-- 						, C.BOOKNM -->
+<!-- 						, C.BOOKCD -->
+<!-- 						, C.AUTHOR1 -->
+<!-- 						, C.AUTHOR2 -->
+<!-- 						, B.PUBSHNM -->
+<!-- 						, A.DEPTCD -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, A.STANDCD -->
+<!-- 						, D.ORGAN_NM -->
+<!-- 						, A.FIRSTSTORE -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.STOCK -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD) -->
+<!-- 									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD) -->
+<!-- 									LEFT JOIN HMA10 D ON ( -->
+<!-- 									<choose> -->
+<!-- 								 		<when test='COLNM.equals("DEPTCD")'> -->
+<!-- 								 			A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99 -->
+<!-- 								 		</when> -->
+<!-- 								 		<when test='COLNM.equals("GROUPCD")'> -->
+<!-- 								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND D.STANDCD = 9999 -->
+<!-- 								 		</when> -->
+<!-- 								 		<when test='COLNM.equals("STANDCD")'> -->
+<!-- 								 			A.DEPTCD = D.DEPTCD AND A.GROUPCD = D.GROUPCD AND A.STANDCD = D.STANDCD -->
+<!-- 								 		</when> -->
+<!-- 								 		<otherwise> -->
+<!-- 								 		A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99 -->
+<!-- 								 		</otherwise> -->
+<!-- 								 	</choose> -->
+<!-- 									) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2 -->
+
+<!-- 			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if> -->
+<!-- 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if> -->
+<!-- 			<choose> -->
+<!-- 			 		<when test='SEARCH_TYPE.equals("SINGLE")'> -->
+<!-- 			 			<if test='DEPTCD != null'>AND A.DEPTCD = #{DEPTCD}</if> -->
+<!-- 						<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 						<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
+<!-- 			 		</when> -->
+<!-- 			 		<when test='SEARCH_TYPE.equals("MULTI")'> -->
+<!-- 			 			<if test='DEPTCD_S != null'>AND A.DEPTCD BETWEEN #{DEPTCD_S} AND #{DEPTCD_E}</if> -->
+<!-- 						<if test='GROUPCD_S != null'>AND A.GROUPCD BETWEEN #{GROUPCD_S} AND #{GROUPCD_E}</if> -->
+<!-- 						<if test='STANDCD_S != null'>AND A.STANDCD BETWEEN #{STANDCD_S} AND #{STANDCD_E}</if> -->
+<!-- 			 		</when> -->
+<!-- 			 		<otherwise> -->
+
+<!-- 			 		</otherwise> -->
+<!-- 			 	</choose> -->
+
+<!-- 			<if test='DT_FROM != null'> AND A.FIRSTSTORE >= #{DT_FROM} </if> -->
+<!-- 			<if test='DT_TO != null'> AND A.FIRSTSTORE <![CDATA[<=]]> #{DT_TO} </if> -->
+
+<!-- 			ORDER BY A.BOOKNM -->
+
     </select>
 
     <select id="getBestSellerBooksList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getBestSellerBooksList */
-
-    	WITH T_BOOK_SALE AS
-		(
-			SELECT BOOKCD
-						, SUM(TRUST_SALE_COUNT) + SUM(PAY_SALE_COUNT) SUM_SALE_COUNT
-						, SUM(TRUST_SALE_PRICE) + SUM(PAY_SALE_PRICE) SUM_SALE_PRICE
-						FROM HSA01
-						WHERE SHOPCD = #{SHOPCD}
-									AND BOOK_DATE >= #{DT_FROM} AND BOOK_DATE <![CDATA[<=]]> #{DT_TO}
-						GROUP BY BOOKCD
-		)
 
 			SELECT DISTINCT
 						A.BOOKCD
@@ -368,16 +575,30 @@
 						, A.STOCK
 						, NVL(G.SUM_SALE_COUNT, 0) AS SUM_SALE_COUNT
 						, NVL(G.SUM_SALE_PRICE, 0) AS SUM_SALE_PRICE
-			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD)
-									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD)
-									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99)
-									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999)
-									LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD)
-									LEFT JOIN T_BOOK_SALE G ON (A.BOOKCD = G.BOOKCD)
-			WHERE A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2
+			FROM HMA08 A , HMA11 B
+									, HMA12 C
+									, HMA10 D
+									, HMA10 E
+									,HMA10 F
+									, (SELECT BOOKCD
+										, SUM(TRUST_SALE_COUNT) + SUM(PAY_SALE_COUNT) SUM_SALE_COUNT
+										, SUM(TRUST_SALE_PRICE) + SUM(PAY_SALE_PRICE) SUM_SALE_PRICE
+										FROM HSA01
+										WHERE SHOPCD = #{SHOPCD}
+													AND BOOK_DATE >= #{DT_FROM} AND BOOK_DATE <![CDATA[<=]]> #{DT_TO}
+										GROUP BY BOOKCD) G
+			WHERE
+			A.PUBSHCD = B.PUBSHCD(+)
+			AND A.BOOKCD = C.BOOKCD(+)
+			AND A.DEPTCD = D.DEPTCD(+) AND D.GROUPCD(+) = 99
+			AND A.DEPTCD = E.DEPTCD(+) AND A.GROUPCD = E.GROUPCD(+) AND E.STANDCD(+) = 9999
+			AND A.DEPTCD = F.DEPTCD(+) AND A.GROUPCD = F.GROUPCD(+) AND A.STANDCD = F.STANDCD(+)
+			AND A.BOOKCD = G.BOOKCD(+)
+
+			AND A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2
 <!-- 			AND A.BOOKNM LIKE '${BOOKNM}' -->
 <!-- 			<if test='BOOKNM != null'>AND A.BOOKNM LIKE '${BOOKNM}'</if> -->
-			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if>
+			<if test='AUTHOR != null'>AND (C.AUTHOR1(+) LIKE '%${AUTHOR}%' OR C.AUTHOR2(+) LIKE '%${AUTHOR}%')</if>
 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if>
 			<if test='SALE_CNT != null'>AND G.SUM_SALE_COUNT >= #{SALE_CNT}</if>
 			<if test='SEARCH_TYPE != null'>
@@ -405,13 +626,90 @@
 
 
 			ORDER BY SUM_SALE_COUNT DESC, BOOKNM ASC
+
+
+
+
+
+
+
+<!-- 			WITH T_BOOK_SALE AS -->
+<!-- 		( -->
+<!-- 			SELECT BOOKCD -->
+<!-- 						, SUM(TRUST_SALE_COUNT) + SUM(PAY_SALE_COUNT) SUM_SALE_COUNT -->
+<!-- 						, SUM(TRUST_SALE_PRICE) + SUM(PAY_SALE_PRICE) SUM_SALE_PRICE -->
+<!-- 						FROM HSA01 -->
+<!-- 						WHERE SHOPCD = #{SHOPCD} -->
+<!-- 									AND BOOK_DATE >= #{DT_FROM} AND BOOK_DATE <![CDATA[<=]]> #{DT_TO} -->
+<!-- 						GROUP BY BOOKCD -->
+<!-- 		) -->
+
+<!-- 			SELECT DISTINCT -->
+<!-- 						A.BOOKCD -->
+<!-- 						, A.SHOPCD -->
+<!-- 						, C.BOOKNM -->
+<!-- 						, C.AUTHOR1 -->
+<!-- 						, C.AUTHOR2 -->
+<!-- 						, B.PUBSHNM -->
+
+<!-- 						, A.DEPTCD -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, A.STANDCD -->
+<!-- 						, D.ORGAN_NM AS DEPT_NM -->
+<!-- 						, E.ORGAN_NM AS GROUP_NM -->
+<!-- 						, F.ORGAN_NM AS STAND_NM -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.STOCK -->
+<!-- 						, NVL(G.SUM_SALE_COUNT, 0) AS SUM_SALE_COUNT -->
+<!-- 						, NVL(G.SUM_SALE_PRICE, 0) AS SUM_SALE_PRICE -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD) -->
+<!-- 									LEFT JOIN HMA12 C ON (A.BOOKCD = C.BOOKCD) -->
+<!-- 									LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99) -->
+<!-- 									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999) -->
+<!-- 									LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD) -->
+<!-- 									LEFT JOIN T_BOOK_SALE G ON (A.BOOKCD = G.BOOKCD) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.TAX_FG = 2 -->
+
+<!-- 			<if test='AUTHOR != null'>AND (C.AUTHOR1 LIKE '%${AUTHOR}%' OR C.AUTHOR2 LIKE '%${AUTHOR}%')</if> -->
+<!-- 			<if test='PUBSHCD != null'>AND A.PUBSHCD = #{PUBSHCD}</if> -->
+<!-- 			<if test='SALE_CNT != null'>AND G.SUM_SALE_COUNT >= #{SALE_CNT}</if> -->
+<!-- 			<if test='SEARCH_TYPE != null'> -->
+<!-- 				<choose> -->
+<!-- 				 		<when test='SEARCH_TYPE.equals("SINGLE")'> -->
+<!-- 				 			<if test='DEPTCD != null'>AND A.DEPTCD = #{DEPTCD}</if> -->
+<!-- 							<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 							<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
+<!-- 				 		</when> -->
+<!-- 				 		<when test='SEARCH_TYPE.equals("MULTI")'> -->
+<!-- 				 			<if test='DEPTCD_S != null'>AND A.DEPTCD BETWEEN #{DEPTCD_S} AND #{DEPTCD_E}</if> -->
+<!-- 							<if test='GROUPCD_S != null'>AND A.GROUPCD BETWEEN #{GROUPCD_S} AND #{GROUPCD_E}</if> -->
+<!-- 							<if test='STANDCD_S != null'>AND A.STANDCD BETWEEN #{STANDCD_S} AND #{STANDCD_E}</if> -->
+<!-- 				 		</when> -->
+<!-- 				 		<otherwise> -->
+<!-- 				 			<if test='DEPTCD != null'>AND A.DEPTCD = #{DEPTCD}</if> -->
+<!-- 							<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if> -->
+<!-- 							<if test='STANDCD != null'>AND A.STANDCD = #{STANDCD}</if> -->
+<!-- 				 		</otherwise> -->
+<!-- 				 	</choose> -->
+<!-- 			 	</if> -->
+
+<!-- 			ORDER BY SUM_SALE_COUNT DESC, BOOKNM ASC -->
     </select>
 
 
 
     <select id="getBookInfoDetail"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getBookDetail */
-			SELECT *
+
+
+
+			SELECT A.*
+				, (SELECT C.ORGAN_NAME FROM  HMA28 C WHERE A.PRODUCT_CD = C.PRODUCT_CD ) AS PRODUCT_NM
+				, (SELECT D.ORGAN_NM FROM  HMA10 D WHERE A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99 ) AS DEPT_NM
+				, (SELECT E.ORGAN_NM FROM  HMA10 E WHERE A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999 ) AS GROUP_NM
+				, (SELECT F.ORGAN_NM FROM  HMA10 F WHERE A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD ) AS STAND_NM
+				, (SELECT G.CONTENTS FROM  HMA01 G WHERE A.BOOKCD = G.BOOKCD  ) AS CONTENTS
+
 			FROM(
 				SELECT  A.BOOKNM
 							, A.BOOKCD
@@ -431,60 +729,140 @@
 							, A.MD_CD
 							, A.SD_CD
 							, A.PRODUCT_CD
-							, C.ORGAN_NAME AS PRODUCT_NM
-							, D.ORGAN_NM AS DEPT_NM
-							, E.ORGAN_NM AS GROUP_NM
-							, F.ORGAN_NM AS STAND_NM
-							, G.CONTENTS
-				FROM HMA12 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD)
-										LEFT OUTER JOIN HMA28 C ON (A.PRODUCT_CD = C.PRODUCT_CD)
-										LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99)
-										LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999)
-										LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD)
-										LEFT OUTER JOIN HMA01 G ON (A.BOOKCD = G.BOOKCD)
-				WHERE A.BOOKCD = #{BOOKCD}
-			)
+				FROM HMA12 A, HMA11 B
+				WHERE A.PUBSHCD = B.PUBSHCD AND
+
+
+				A.BOOKCD = #{BOOKCD}
+			) A
 			WHERE ROWNUM <![CDATA[<]]> 2
+
+
+
+
+<!-- 			SELECT * -->
+<!-- 			FROM( -->
+<!-- 				SELECT  A.BOOKNM -->
+<!-- 							, A.BOOKCD -->
+<!-- 							, A.STANDCD -->
+<!-- 							, A.PUBSHCD -->
+<!-- 							, A.PRICE -->
+<!-- 							, DECODE(A.TAX_FG, 1, '1 : 과세 ', 2, '2 : 비과세 ', ' ') AS TAX_FG -->
+<!-- 							, A.FIRSTISSUE -->
+<!-- 							, A.AUTHOR1 -->
+<!-- 							, A.AUTHOR2 -->
+<!-- 							, A.TRANS_EDITOR -->
+<!-- 							, A.DEPTCD -->
+<!-- 							, A.GROUPCD -->
+<!-- 							, A.STOCK -->
+<!-- 							, B.PUBSHNM -->
+<!-- 							, A.LD_CD -->
+<!-- 							, A.MD_CD -->
+<!-- 							, A.SD_CD -->
+<!-- 							, A.PRODUCT_CD -->
+<!-- 							, C.ORGAN_NAME AS PRODUCT_NM -->
+<!-- 							, D.ORGAN_NM AS DEPT_NM -->
+<!-- 							, E.ORGAN_NM AS GROUP_NM -->
+<!-- 							, F.ORGAN_NM AS STAND_NM -->
+<!-- 							, G.CONTENTS -->
+<!-- 				FROM HMA12 A LEFT JOIN HMA11 B ON (A.PUBSHCD = B.PUBSHCD) -->
+<!-- 										LEFT OUTER JOIN HMA28 C ON (A.PRODUCT_CD = C.PRODUCT_CD) -->
+<!-- 										LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99) -->
+<!-- 										LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999) -->
+<!-- 										LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD) -->
+<!-- 										LEFT OUTER JOIN HMA01 G ON (A.BOOKCD = G.BOOKCD) -->
+<!-- 				WHERE A.BOOKCD = #{BOOKCD} -->
+<!-- 			) -->
+<!-- 			WHERE ROWNUM <![CDATA[<]]> 2 -->
+
     </select>
 
     <select id="getShopBookInfoDetail"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getShopBookInfoDetail */
-			SELECT  A.BOOKNM
-						, A.STANDCD
-						, A.PUBSHCD
-						, A.PRICE
-						, A.DEPTCD
-						, A.GROUPCD
-						, A.STANDCD
-						, G.PRODUCT_CD
-						, DECODE(NVL(A.ISBN_FG,0), 1, '1 : ISBN부여+EAN부착', 2, '2 : ISBN부여+EAN미부착', 3, '3 : INSTORE' , ' ' ) AS ISBN_FG
-						, DECODE(NVL(A.BARCODE_FG,0),1,'1 : 無',2,'2 : 有', ' ') AS BARCODE_FG
-						, A.PREV_PRICE
-						, A.PRICE_DATE
-						, A.INP_PLAN_COUNT
-						, A.FIRSTSTORE
-						, A.LASTSTORE
-						, A.FIRSTSALES
-						, A.LASTSALES
-						, A.ADDSIGN
-						, A.SALEFRONT
-						, DECODE(NVL(A.OUT_BOOK_FG, 0), 1, '1 : 정상 ', 2, '2 : 절판 ', ' ') AS OUT_BOOK_FG
-						, DECODE(NVL(A.SALE_FG, 0), 1, '1 : 정상 ', 2, '2 : 품절 ', ' ') AS SALE_FG
-						, A.STAND_STOCK
-						, A.SPECIAL_NO
-						, A.STOCK
-						, D.ORGAN_NM AS DEPT_NM
-						, E.ORGAN_NM AS GROUP_NM
-						, F.ORGAN_NM AS STAND_NM
-						, NVL(H.ORGAN_NAME, '') AS PRODUCT_NM
-						, NVL(I.SPECIAL_NM, ' ') SPECIAL_NM
-			FROM HMA08 A LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99)
-									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999)
-									LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD)
-									LEFT JOIN HMA12 G ON (A.BOOKCD = G.BOOKCD)
-									LEFT JOIN HMA28 H ON (A.STANDCD = H.STANDCD AND G.PRODUCT_CD = H.PRODUCT_CD)
-									LEFT JOIN HMA13 I ON (A.SPECIAL_NO = I.SPECIAL_NO)
-			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
+			SELECT A.*
+
+				, (SELECT D.ORGAN_NM FROM  HMA10 D WHERE A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99 ) AS DEPT_NM
+				, (SELECT E.ORGAN_NM FROM  HMA10 E WHERE A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999 ) AS GROUP_NM
+				, (SELECT F.ORGAN_NM FROM  HMA10 F WHERE A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD ) AS STAND_NM
+				, (SELECT NVL(H.ORGAN_NAME, '') FROM  HMA28 H WHERE A.STANDCD = H.STANDCD AND A.PRODUCT_CD = H.PRODUCT_CD ) AS PRODUCT_NM
+
+			FROM(
+
+				SELECT  A.BOOKNM
+							, A.STANDCD
+							, A.PUBSHCD
+							, A.PRICE
+							, A.DEPTCD
+							, A.GROUPCD
+							, G.PRODUCT_CD
+							, DECODE(NVL(A.ISBN_FG,0), 1, '1 : ISBN부여+EAN부착', 2, '2 : ISBN부여+EAN미부착', 3, '3 : INSTORE' , ' ' ) AS ISBN_FG
+							, DECODE(NVL(A.BARCODE_FG,0),1,'1 : 無',2,'2 : 有', ' ') AS BARCODE_FG
+							, A.PREV_PRICE
+							, A.PRICE_DATE
+							, A.INP_PLAN_COUNT
+							, A.FIRSTSTORE
+							, A.LASTSTORE
+							, A.FIRSTSALES
+							, A.LASTSALES
+							, A.ADDSIGN
+							, A.SALEFRONT
+							, DECODE(NVL(A.OUT_BOOK_FG, 0), 1, '1 : 정상 ', 2, '2 : 절판 ', ' ') AS OUT_BOOK_FG
+							, DECODE(NVL(A.SALE_FG, 0), 1, '1 : 정상 ', 2, '2 : 품절 ', ' ') AS SALE_FG
+							, A.STAND_STOCK
+							, A.SPECIAL_NO
+							, A.STOCK
+	<!-- 						, D.ORGAN_NM AS DEPT_NM -->
+	<!-- 						, E.ORGAN_NM AS GROUP_NM -->
+	<!-- 						, F.ORGAN_NM AS STAND_NM -->
+	<!-- 						, NVL(H.ORGAN_NAME, '') AS PRODUCT_NM -->
+							, NVL(I.SPECIAL_NM, ' ') SPECIAL_NM
+				FROM HMA08 A ,HMA12 G, HMA13 I
+
+				WHERE A.BOOKCD = G.BOOKCD AND A.SPECIAL_NO = I.SPECIAL_NO(+) AND
+
+
+				A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
+
+			) A
+
+<!-- 			SELECT  A.BOOKNM -->
+<!-- 						, A.STANDCD -->
+<!-- 						, A.PUBSHCD -->
+<!-- 						, A.PRICE -->
+<!-- 						, A.DEPTCD -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, A.STANDCD -->
+<!-- 						, G.PRODUCT_CD -->
+<!-- 						, DECODE(NVL(A.ISBN_FG,0), 1, '1 : ISBN부여+EAN부착', 2, '2 : ISBN부여+EAN미부착', 3, '3 : INSTORE' , ' ' ) AS ISBN_FG -->
+<!-- 						, DECODE(NVL(A.BARCODE_FG,0),1,'1 : 無',2,'2 : 有', ' ') AS BARCODE_FG -->
+<!-- 						, A.PREV_PRICE -->
+<!-- 						, A.PRICE_DATE -->
+<!-- 						, A.INP_PLAN_COUNT -->
+<!-- 						, A.FIRSTSTORE -->
+<!-- 						, A.LASTSTORE -->
+<!-- 						, A.FIRSTSALES -->
+<!-- 						, A.LASTSALES -->
+<!-- 						, A.ADDSIGN -->
+<!-- 						, A.SALEFRONT -->
+<!-- 						, DECODE(NVL(A.OUT_BOOK_FG, 0), 1, '1 : 정상 ', 2, '2 : 절판 ', ' ') AS OUT_BOOK_FG -->
+<!-- 						, DECODE(NVL(A.SALE_FG, 0), 1, '1 : 정상 ', 2, '2 : 품절 ', ' ') AS SALE_FG -->
+<!-- 						, A.STAND_STOCK -->
+<!-- 						, A.SPECIAL_NO -->
+<!-- 						, A.STOCK -->
+<!-- 						, D.ORGAN_NM AS DEPT_NM -->
+<!-- 						, E.ORGAN_NM AS GROUP_NM -->
+<!-- 						, F.ORGAN_NM AS STAND_NM -->
+<!-- 						, NVL(H.ORGAN_NAME, '') AS PRODUCT_NM -->
+<!-- 						, NVL(I.SPECIAL_NM, ' ') SPECIAL_NM -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA10 D ON (A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99) -->
+<!-- 									LEFT JOIN HMA10 E ON (A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999) -->
+<!-- 									LEFT JOIN HMA10 F ON (A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD) -->
+<!-- 									LEFT JOIN HMA12 G ON (A.BOOKCD = G.BOOKCD) -->
+<!-- 									LEFT JOIN HMA28 H ON (A.STANDCD = H.STANDCD AND G.PRODUCT_CD = H.PRODUCT_CD) -->
+<!-- 									LEFT JOIN HMA13 I ON (A.SPECIAL_NO = I.SPECIAL_NO) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD} -->
+
+
     </select>
 
 	<select id="getPurchaseList"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -502,14 +880,48 @@
 						, B.STD_RATE
 						, B.RPNM
 						, B.TRADE_NM
-			FROM HMA02 A LEFT JOIN HMA03 B ON (A.PURCHCD = B.PURCHCD)
-									LEFT JOIN HMA24 C ON (A.PURCHCD = C.PURCHCD AND B.SHOPCD = C.SHOPCD)
 
-			WHERE C.SHOPCD = #{SHOPCD}
+
+			FROM HMA02 A, HMA03 B
+<!-- 			, HMA24 C -->
+
+			WHERE B.SHOPCD = #{SHOPCD} AND
+
+			A.PURCHCD = B.PURCHCD(+)
+<!-- 			AND A.PURCHCD = C.PURCHCD(+) AND B.SHOPCD = C.SHOPCD(+) -->
+
+
+
+
 			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD} AND B.PURCHCD  = #{PURCHCD}</if>
 			<if test='PURCHNM != null'>AND A.PURCHNM LIKE '%${PURCHNM}%' AND B.PURCHNM LIKE '%${PURCHNM}%'</if>
 
 			ORDER BY A.PURCHNM, A.PURCHCD
+
+
+<!-- 			SELECT  DISTINCT -->
+<!-- 						A.PURCHCD -->
+<!-- 						, A.PURCHNM -->
+<!-- 						, A.TEL_LOCAL1 AS TEL1 -->
+<!-- 						, A.TEL_DEPT1 AS TEL2 -->
+<!-- 						, A.TEL_NO1 AS TEL3 -->
+<!-- 						, A.FAX_LOCAL AS FAX1 -->
+<!-- 						, A.FAX_DEPT AS FAX2 -->
+<!-- 						, A.FAX_NO AS FAX3 -->
+<!-- 						, B.RET_NM -->
+<!-- 						, B.STD_RATE -->
+<!-- 						, B.RPNM -->
+<!-- 						, B.TRADE_NM -->
+<!-- 			FROM HMA02 A LEFT JOIN HMA03 B ON (A.PURCHCD = B.PURCHCD) -->
+<!-- 									LEFT JOIN HMA24 C ON (A.PURCHCD = C.PURCHCD AND B.SHOPCD = C.SHOPCD) -->
+
+<!-- 			WHERE C.SHOPCD = #{SHOPCD} -->
+<!-- 			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD} AND B.PURCHCD  = #{PURCHCD}</if> -->
+<!-- 			<if test='PURCHNM != null'>AND A.PURCHNM LIKE '%${PURCHNM}%' AND B.PURCHNM LIKE '%${PURCHNM}%'</if> -->
+
+<!-- 			ORDER BY A.PURCHNM, A.PURCHCD -->
+
+
     </select>
 
     <select id="getPurchaseList4Order"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -520,12 +932,28 @@
 						, B.ORD_GROUPCD
 						, A.PUR_PROCESS
 
-			FROM HMA07 A LEFT JOIN HMA02 B ON (A.PURCHCD = B.PURCHCD)
-									LEFT JOIN HMA24 C ON (A.PURCHCD = C.PURCHCD AND A.SHOPCD = C.SHOPCD)
+			FROM HMA07 A , HMA02 B
+									, HMA24 C
 
-			WHERE C.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
+			WHERE A.PURCHCD = B.PURCHCD(+)
+			AND A.PURCHCD = C.PURCHCD AND A.SHOPCD = C.SHOPCD
+
+			AND C.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
 
 			ORDER BY A.PUR_PROCESS ASC
+
+<!-- 			SELECT  DISTINCT -->
+<!-- 						A.PURCHCD -->
+<!-- 						, B.PURCHNM -->
+<!-- 						, B.ORD_GROUPCD -->
+<!-- 						, A.PUR_PROCESS -->
+
+<!-- 			FROM HMA07 A LEFT JOIN HMA02 B ON (A.PURCHCD = B.PURCHCD) -->
+<!-- 									LEFT JOIN HMA24 C ON (A.PURCHCD = C.PURCHCD AND A.SHOPCD = C.SHOPCD) -->
+
+<!-- 			WHERE C.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD} -->
+
+<!-- 			ORDER BY A.PUR_PROCESS ASC -->
     </select>
 
     <select id="getPurchaseDetail"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -558,13 +986,53 @@
 					, T1.ORD_GROUPCD
 					, NVL(T2.ORGAN_NM, ' ') AS GRGAN_NM
 					, NVL(T1.PAY_DATE, 0) || '일' AS PAY_DATE
-	<!-- 				, SUBSTR(BOOK_CONST_DAY,1,4) || '-' || SUBSTR(BOOK_CONST_DAY,5,2) || '-' || SUBSTR(BOOK_CONST_DAY,7,2) AS BOOK_CONST_DAY -->
+<!-- 					, SUBSTR(BOOK_CONST_DAY,1,4) || '-' || SUBSTR(BOOK_CONST_DAY,5,2) || '-' || SUBSTR(BOOK_CONST_DAY,7,2) AS BOOK_CONST_DAY -->
 					, T1.BOOK_CONST_DAY
 					, NVL(PAY_GRADE, ' ') AS PAY_GRADE
-				FROM HMA02 T1 LEFT JOIN HMA10 T2 ON (T2.GROUPCD = T1.ORD_GROUPCD)
-				WHERE T1.PURCHCD = #{PURCHCD} AND T2.STANDCD = '9999'
+				FROM HMA02 T1, HMA10 T2
+
+
+				WHERE T1.PURCHCD = #{PURCHCD} AND T2.STANDCD = '9999' AND
+				T2.GROUPCD(+) = T1.ORD_GROUPCD
 			)
 			WHERE ROWNUM <![CDATA[<=]]> 1
+
+
+
+<!-- 			ELECT * FROM ( -->
+<!-- 				SELECT -->
+<!-- 					T1.PURCHCD -->
+<!-- 					, NVL(T1.PURCHNM, ' ') AS PURCHNM -->
+<!-- 					, DECODE(T1.PURCH_KBN, 1, '국내출판사(직거래)', -->
+<!-- 					2, '국내출판', -->
+<!-- 					3, '문구', -->
+<!-- 					4, '국내개인', -->
+<!-- 					5, '국내해외총파', -->
+<!-- 					6, '신문총판', -->
+<!-- 					99, '기타', '') AS PURCH_KBN -->
+<!-- 					, NVL(T1.SPECIALNM, ' ') AS SPECIALNM -->
+<!-- 					, NVL(T1.REPNM, ' ') AS REPNM -->
+<!-- 					, NVL(T1.ENT_LOCAL, 0) || '-' || NVL(T1.ENT_TYPE, 0) || '-' || NVL(T1.ENT_SEQNO, 0) AS ENT_NUM -->
+<!-- 					, NVL(T1.JID_BIRTHDAY, 0) || '-' || NVL(T1.JID_SEQNO, 0) AS PERSON_NUM -->
+<!-- 					, NVL(T1.BUSINESS_ITEM, ' ') AS BUSINESS_ITEM -->
+<!-- 					, NVL(T1.BUSINESS_TYPE, ' ') AS BUSINESS_TYPE -->
+<!-- 					, NVL(T1.POST_NO1, ' ') || '-' || NVL(T1.POST_NO2, ' ') AS POST_NUM -->
+<!-- 					, NVL(T1.ADDRESS, ' ') AS ADDRESS -->
+<!-- 					, NVL(T1.TEL_LOCAL1, ' ') || '-' || NVL(T1.TEL_DEPT1, ' ') || '-' || NVL(T1.TEL_NO1, ' ') AS TEL_NUM1 -->
+<!-- 					, NVL(T1.TEL_LOCAL2, ' ') || '-' || NVL(T1.TEL_DEPT2, ' ') || '-' || NVL(T1.TEL_NO2, ' ') AS TEL_NUM2 -->
+<!-- 					, NVL(T1.FAX_LOCAL, ' ') || '-' || NVL(T1.FAX_DEPT, ' ') || '-' || NVL(T1.FAX_NO, ' ') AS FAX_NUM -->
+<!-- 					, NVL(T1.BOOK_CONST_NM1, ' ') AS BOOK_CONST_NM1 -->
+<!-- 					, NVL(T1.BOOK_CONST_NM2, ' ') AS BOOK_CONST_NM2 -->
+<!-- 					, T1.ORD_GROUPCD -->
+<!-- 					, NVL(T2.ORGAN_NM, ' ') AS GRGAN_NM -->
+<!-- 					, NVL(T1.PAY_DATE, 0) || '일' AS PAY_DATE -->
+
+<!-- 					, T1.BOOK_CONST_DAY -->
+<!-- 					, NVL(PAY_GRADE, ' ') AS PAY_GRADE -->
+<!-- 				FROM HMA02 T1 LEFT JOIN HMA10 T2 ON (T2.GROUPCD = T1.ORD_GROUPCD) -->
+<!-- 				WHERE T1.PURCHCD = #{PURCHCD} AND T2.STANDCD = '9999' -->
+<!-- 			) -->
+<!-- 			WHERE ROWNUM <![CDATA[<=]]> 1 -->
     </select>
 
     <select id="getPublisherList"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -601,7 +1069,7 @@
 			ORDER BY A.PUBSHNM, A.PUBSHCD
     </select>
 
-
+<!-- 사용안함 -->
     <select id="getSellerBookList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getSellerBookList */
 			SELECT  A.BOOKNM
@@ -629,7 +1097,7 @@
 			ORDER BY A.BOOKNM
     </select>
 
-
+<!-- 사용안함 -->
     <select id="getSaleDataList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getSaleDataList */
 
@@ -747,32 +1215,73 @@
     <select id="getBookPurchaseInfo"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* searchMapper.getBookPurchaseInfo */
 
-    	SELECT
-			A.PUR_PROCESS
-			, B.PURCHNM
-			, A.PURCHCD
-			, C.RATE_KBN
-			, C.RATE
-			, C.COST
-			, C.STOCK
-			, NVL(E.RET_PLAN_COUNT, 0) AS RET_PLAN_COUNT
-		FROM (
+    		SELECT A.*
+					, NVL(E.RET_PLAN_COUNT, 0) AS RET_PLAN_COUNT
+    		FROM(
 
-			SELECT
-				COUNT(PURCHCD),
-				PURCHCD,
-				PUR_PROCESS
-			FROM HMA07
-			WHERE  SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+		    	SELECT A.*
+		    		, C.RATE_KBN
+					, C.RATE
+					, C.COST
+					, C.STOCK
 
-			GROUP BY PURCHCD, PUR_PROCESS
-			ORDER BY PUR_PROCESS
+		    	FROM(
 
-		) A LEFT JOIN HMA02 B ON (A.PURCHCD = B.PURCHCD)
-		LEFT JOIN HMA06 C ON (C.SHOPCD = #{SHOPCD} AND C.BOOKCD = #{BOOKCD} AND A.PURCHCD = C.PURCHCD)
-		LEFT JOIN HRE03 E ON (E.SHOPCD = #{SHOPCD} AND E.BOOKCD = #{BOOKCD} AND A.PURCHCD = E.PURCHCD AND C.RATE_KBN = E.RATE_KBN)
-<!-- 		WHERE  A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD} AND A.PURCHCD = #{PURCHCD} -->
-		ORDER BY A.PUR_PROCESS, C.RATE_KBN
+			    	SELECT
+						A.PUR_PROCESS
+						, B.PURCHNM
+						, A.PURCHCD
+					FROM (
+
+						SELECT
+							COUNT(PURCHCD),
+							PURCHCD,
+							PUR_PROCESS
+						FROM HMA07
+						WHERE  SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+
+						GROUP BY PURCHCD, PUR_PROCESS
+
+					) A,  HMA02 B
+
+					WHERE
+					A.PURCHCD = B.PURCHCD(+)
+
+					)A, HMA06 C
+					WHERE C.SHOPCD = #{SHOPCD} AND C.BOOKCD = #{BOOKCD} AND A.PURCHCD = C.PURCHCD(+)
+				)A, HRE03 E
+				WHERE
+				E.SHOPCD(+) = #{SHOPCD} AND E.BOOKCD(+) = #{BOOKCD} AND A.PURCHCD = E.PURCHCD(+) AND A.RATE_KBN = E.RATE_KBN(+)
+
+				ORDER BY A.PUR_PROCESS, A.RATE_KBN
+
+
+
+<!-- 		SELECT -->
+<!-- 			A.PUR_PROCESS -->
+<!-- 			, B.PURCHNM -->
+<!-- 			, A.PURCHCD -->
+<!-- 			, C.RATE_KBN -->
+<!-- 			, C.RATE -->
+<!-- 			, C.COST -->
+<!-- 			, C.STOCK -->
+<!-- 			, NVL(E.RET_PLAN_COUNT, 0) AS RET_PLAN_COUNT -->
+<!-- 		FROM ( -->
+
+<!-- 			SELECT -->
+<!-- 				COUNT(PURCHCD), -->
+<!-- 				PURCHCD, -->
+<!-- 				PUR_PROCESS -->
+<!-- 			FROM HMA07 -->
+<!-- 			WHERE  SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD} -->
+
+<!-- 			GROUP BY PURCHCD, PUR_PROCESS -->
+<!-- 			ORDER BY PUR_PROCESS -->
+
+<!-- 		) A LEFT JOIN HMA02 B ON (A.PURCHCD = B.PURCHCD) -->
+<!-- 		LEFT JOIN HMA06 C ON (C.SHOPCD = #{SHOPCD} AND C.BOOKCD = #{BOOKCD} AND A.PURCHCD = C.PURCHCD) -->
+<!-- 		LEFT JOIN HRE03 E ON (E.SHOPCD = #{SHOPCD} AND E.BOOKCD = #{BOOKCD} AND A.PURCHCD = E.PURCHCD AND C.RATE_KBN = E.RATE_KBN) -->
+<!-- 		ORDER BY A.PUR_PROCESS, C.RATE_KBN -->
 
     </select>
 

@@ -30,6 +30,17 @@ public class OrderController {
         return orderService.getSaleDataList(params);
     }
 
+	@PostMapping(value = "/getBookOrderInfo.json")
+    @ResponseBody
+	public Map<String, Object> getBookOrderInfo(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {
+		System.out.println("OrderController.getBookOrderInfo");
+		Util.pramsNullCheck(params);
+
+        return orderService.getBookOrderInfo(params);
+    }
+
+
+
 	@PostMapping(value = "/getOrderDataList.json")
     @ResponseBody
 	public Map<String, Object> getOrderDataList(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {

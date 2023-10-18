@@ -57,6 +57,17 @@ public class LoginController {
 
     }
 
+//    @PostMapping("/createUser.json")
+//    @ResponseBody
+//    public Map<String,Object> createUser(HttpServletRequest request, @RequestBody Map<String,Object> params) {
+//
+//    	Map<String,Object> result = new HashMap<>();
+//    	result = loginService.createUser(params);
+//
+//    	return result;
+//
+//    }
+
 
 
 //

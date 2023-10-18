@@ -19,14 +19,47 @@
 						, NVL(D.AUTHOR1,'') AS AUTHOR1
 						, NVL(D.AUTHOR2,'') AS AUTHOR2
 						, NVL(E.PUBSHNM,'') AS PUBSHNM
-			FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD)
-									LEFT JOIN HMA24 C ON (B.SHOPCD = C.SHOPCD AND B.PURCHCD = C.PURCHCD)
-									LEFT OUTER JOIN HMA12 D ON (A.BOOKCD = D.BOOKCD)
-									LEFT OUTER JOIN HMA11 E ON (A.PUBSHCD = E.PUBSHCD)
+
+			FROM HMA08 A ,HMA07 B
+									, HMA24 C
+									, HMA12 D
+									, HMA11 E
 
 
-			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
+			WHERE
+			A.SHOPCD = B.SHOPCD(+) AND A.BOOKCD = B.BOOKCD(+)
+			AND B.SHOPCD = C.SHOPCD(+) AND B.PURCHCD = C.PURCHCD(+)
+			AND A.BOOKCD = D.BOOKCD(+)
+			AND A.PUBSHCD = E.PUBSHCD(+)
+			AND A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
 			<if test='PURCHCD != null'>AND B.PURCHCD = #{PURCHCD}</if>
+
+
+
+
+<!-- 			SELECT  A.BOOKCD -->
+<!-- 						, NVL(A.BOOKNM,0) AS BOOKNM -->
+<!-- 						, NVL(A.STOCK,0) AS STOCK -->
+<!-- 						, NVL(A.PRICE,0) AS PRICE -->
+<!-- 						, NVL(A.FIRSTSTORE,0) AS FIRSTSTORE -->
+<!-- 						, NVL(A.LASTSALES,0) AS LASTSALES -->
+<!-- 						, A.PUBSHCD -->
+<!-- 						, A.GROUPCD -->
+<!-- 						, A.STANDCD -->
+<!-- 						, B.PURCHCD -->
+<!-- 						, NVL(D.AUTHOR1,'') AS AUTHOR1 -->
+<!-- 						, NVL(D.AUTHOR2,'') AS AUTHOR2 -->
+<!-- 						, NVL(E.PUBSHNM,'') AS PUBSHNM -->
+<!-- 			FROM HMA08 A LEFT JOIN HMA07 B ON (A.SHOPCD = B.SHOPCD AND A.BOOKCD = B.BOOKCD) -->
+<!-- 									LEFT JOIN HMA24 C ON (B.SHOPCD = C.SHOPCD AND B.PURCHCD = C.PURCHCD) -->
+<!-- 									LEFT OUTER JOIN HMA12 D ON (A.BOOKCD = D.BOOKCD) -->
+<!-- 									LEFT OUTER JOIN HMA11 E ON (A.PUBSHCD = E.PUBSHCD) -->
+
+
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD} -->
+<!-- 			<if test='PURCHCD != null'>AND B.PURCHCD = #{PURCHCD}</if> -->
+
+
 	</select>
 
     <select id="getPurchaseProcessList"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -36,12 +69,27 @@
 						, B.PURCHNM
 						, A.PUR_PROCESS
 
-			FROM HMA07 A LEFT JOIN HMA24 B ON (A.PURCHCD = B.PURCHCD AND A.SHOPCD = B.SHOPCD)
+			FROM HMA07 A ,N HMA24 B
 
-			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
+			WHERE
+			A.PURCHCD = B.PURCHCD(+) AND A.SHOPCD = B.SHOPCD(+)
+
+			AND A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
 			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if>
 
 			ORDER BY A.PUR_PROCESS DESC
+
+<!-- 			SELECT -->
+<!-- 						A.PURCHCD -->
+<!-- 						, B.PURCHNM -->
+<!-- 						, A.PUR_PROCESS -->
+
+<!-- 			FROM HMA07 A LEFT JOIN HMA24 B ON (A.PURCHCD = B.PURCHCD AND A.SHOPCD = B.SHOPCD) -->
+
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD} -->
+<!-- 			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if> -->
+
+<!-- 			ORDER BY A.PUR_PROCESS DESC -->
     </select>
 
     <select id="getPurchaseRate"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -162,9 +210,18 @@
 			SELECT DISTINCT
 						A.RET_GROUPCD
 						, B.ORGAN_NM
-			FROM HRE02 A LEFT JOIN HMA10 B ON (A.SHOPCD = B.SHOPCD AND A.RET_GROUPCD = B.GROUPCD AND B.STANDCD = 9999)
-			WHERE A.SHOPCD = #{SHOPCD} AND A.STORECD = #{STORECD}
+			FROM HRE02 A, HMA10 B
+			WHERE
+			A.SHOPCD = B.SHOPCD(+) AND A.RET_GROUPCD = B.GROUPCD(+) AND B.STANDCD(+) = 9999
+			AND A.SHOPCD = #{SHOPCD} AND A.STORECD = #{STORECD}
 <!-- 			AND A.GROUPCD = 99 -->
+
+
+<!-- 			SELECT DISTINCT -->
+<!-- 						A.RET_GROUPCD -->
+<!-- 						, B.ORGAN_NM -->
+<!-- 			FROM HRE02 A LEFT JOIN HMA10 B ON (A.SHOPCD = B.SHOPCD AND A.RET_GROUPCD = B.GROUPCD AND B.STANDCD = 9999) -->
+<!-- 			WHERE A.SHOPCD = #{SHOPCD} AND A.STORECD = #{STORECD} -->
     </select>
 
 
@@ -179,7 +236,9 @@
 
     <select id="getReturnBookList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* returnsMapper.getReturnBookList */
-			SELECT  BOOKCD
+			SELECT
+						SHOPCD
+						, BOOKCD
 						, BOOKNM
 						, PURCHNM
 						, PURCHCD
@@ -201,6 +260,29 @@
     	/* returnsMapper.deleteReturnBook */
 			DELETE FROM HRE02
 			WHERE SHOPCD = #{SHOPCD} AND STORECD = #{STORECD} AND PURCHCD = #{PURCHCD} AND BOOKCD = #{BOOKCD} AND RATE_KBN = #{RATE_KBN_O}
+			 	<if test='RET_GROUPCD != null'>AND RET_GROUPCD = #{RET_GROUPCD}</if>
+			 	<if test='GROUPCD != null'>AND GROUPCD = #{GROUPCD}</if>
+
+	</delete>
+
+	<insert id="insertReturnBookConfirm" parameterType="java.util.Map" >
+    	/* returnsMapper.insertReturnBookConfirm */
+			INSERT INTO HRE03 VALUES(
+				#{SHOPCD}
+				, #{BOOKCD}
+				, #{PURCHCD}
+				, #{RATE_KBN}
+				, #{RET_RATE}
+				, #{RET_COUNT}
+				)
+
+    </insert>
+
+    <delete id="deleteReturnBookAll"  parameterType="java.util.Map">
+    	/* returnsMapper.deleteReturnBookAll */
+			DELETE FROM HRE02
+			WHERE SHOPCD = #{SHOPCD} AND STORECD = #{STORECD}
+				<if test='PURCHCD != null'>AND PURCHCD = #{PURCHCD}</if>
 			 	<if test='RET_GROUPCD != null'>AND RET_GROUPCD = #{RET_GROUPCD}</if>
 			 	<if test='GROUPCD != null'>AND GROUPCD = #{GROUPCD}</if>
 

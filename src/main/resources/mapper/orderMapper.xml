@@ -22,18 +22,27 @@
 						, M2.ORD_GROUPCD
 						, NVL(M4.AUTHORNM, ' ') AUTHORNM
 
-			FROM HSA11 S1 LEFT JOIN HMA08 M8 ON (S1.SHOPCD = M8.SHOPCD AND S1.BOOKCD = M8.BOOKCD)
-									LEFT JOIN HPO04 P4 ON (S1.SHOPCD = P4.SHOPCD AND S1.TMNO = P4.POSNO)
-									LEFT JOIN HMA07 M7 ON (S1.SHOPCD = M7.SHOPCD AND S1.BOOKCD = M7.BOOKCD AND M7.PUR_PROCESS = 1)
-									LEFT JOIN HMA02 M2 ON (M7.PURCHCD = M2.PURCHCD)
-									LEFT JOIN HMA10 M10 ON (S1.SHOPCD = M10.SHOPCD AND M8.SHOPCD = M10.SHOPCD AND M8.DEPTCD = M10.DEPTCD AND M8.GROUPCD = M10.GROUPCD AND M8.STANDCD = M10.SHOPCD)
-									LEFT JOIN HMA04 M4 ON (S1.BOOKCD = M4.BOOKCD)
+			FROM HSA11 S1 , HMA08 M8
+									, HPO04 P4
+									, HMA07 M7
+									, HMA02 M2
+<!-- 									, HMA10 M10 -->
+									, HMA04 M4
 
 
-			WHERE S1.SHOPCD = #{SHOPCD}
+			WHERE
+			S1.SHOPCD = M8.SHOPCD(+) AND S1.BOOKCD = M8.BOOKCD(+)
+			AND S1.SHOPCD = P4.SHOPCD(+) AND S1.TMNO = P4.POSNO(+)
+			AND S1.SHOPCD = M7.SHOPCD(+) AND S1.BOOKCD = M7.BOOKCD(+) AND M7.PUR_PROCESS(+) = 1
+			AND M7.PURCHCD = M2.PURCHCD(+)
+<!-- 			AND S1.SHOPCD = M10.SHOPCD(+) AND M8.SHOPCD = M10.SHOPCD(+) AND M8.DEPTCD = M10.DEPTCD(+) AND M8.GROUPCD = M10.GROUPCD(+) AND M8.STANDCD = M10.SHOPCD(+) -->
+			AND S1.BOOKCD = M4.BOOKCD(+)
+
+
+			AND S1.SHOPCD = #{SHOPCD}
 			<if test='DT_FROM != null'> AND S1.BOOK_DATE >= #{DT_FROM} </if>
 			<if test='DT_TO != null'> AND S1.BOOK_DATE <![CDATA[<=]]> #{DT_TO} </if>
-			<if test='RATE != null'> AND M10.RATE = #{RATE} </if>
+			<if test='RATE != null'> AND M10.RATE(+) = #{RATE} </if>
 			<if test='STORE_TYPE != null'>
 				<choose>
 				 		<when test='STORE_TYPE.equals("SINGLE")'>
@@ -53,7 +62,63 @@
 
 			ORDER BY M2.PURCHNM, M8.BOOKNM
 
+
+
+
+
+
+
+
+<!-- 			SELECT -->
+<!-- 						S1.SHOPCD -->
+<!-- 						, S1.DEPTCD -->
+<!-- 						, S1.GROUPCD -->
+<!-- 						, S1.STANDCD -->
+<!-- 						, S1.BOOKCD -->
+<!-- 						, M8.BOOKNM -->
+<!-- 						, M8.PRICE -->
+<!-- 						, M8.STOCK -->
+<!-- 						, P4.STORECD -->
+<!-- 						, SUM(S1.TRUST_SALE_COUNT + S1.PAY_SALE_COUNT) AS SALE_SUM -->
+<!-- 						, M2.PURCHNM -->
+<!-- 						, M7.PURCHCD -->
+<!-- 						, M2.ORD_GROUPCD -->
+<!-- 						, NVL(M4.AUTHORNM, ' ') AUTHORNM -->
+
+<!-- 			FROM HSA11 S1 LEFT JOIN HMA08 M8 ON (S1.SHOPCD = M8.SHOPCD AND S1.BOOKCD = M8.BOOKCD) -->
+<!-- 									LEFT JOIN HPO04 P4 ON (S1.SHOPCD = P4.SHOPCD AND S1.TMNO = P4.POSNO) -->
+<!-- 									LEFT JOIN HMA07 M7 ON (S1.SHOPCD = M7.SHOPCD AND S1.BOOKCD = M7.BOOKCD AND M7.PUR_PROCESS = 1) -->
+<!-- 									LEFT JOIN HMA02 M2 ON (M7.PURCHCD = M2.PURCHCD) -->
+<!-- 									LEFT JOIN HMA10 M10 ON (S1.SHOPCD = M10.SHOPCD AND M8.SHOPCD = M10.SHOPCD AND M8.DEPTCD = M10.DEPTCD AND M8.GROUPCD = M10.GROUPCD AND M8.STANDCD = M10.SHOPCD) -->
+<!-- 									LEFT JOIN HMA04 M4 ON (S1.BOOKCD = M4.BOOKCD) -->
+
+
+<!-- 			WHERE S1.SHOPCD = #{SHOPCD} -->
+<!-- 			<if test='DT_FROM != null'> AND S1.BOOK_DATE >= #{DT_FROM} </if> -->
+<!-- 			<if test='DT_TO != null'> AND S1.BOOK_DATE <![CDATA[<=]]> #{DT_TO} </if> -->
+<!-- 			<if test='RATE != null'> AND M10.RATE = #{RATE} </if> -->
+<!-- 			<if test='STORE_TYPE != null'> -->
+<!-- 				<choose> -->
+<!-- 				 		<when test='STORE_TYPE.equals("SINGLE")'> -->
+<!-- 				 			<if test='STORECD != null'>AND P4.STORECD = #{STORECD}</if> -->
+<!-- 				 		</when> -->
+<!-- 				 		<when test='STORE_TYPE.equals("MULTI")'> -->
+<!-- 				 			<if test='STORECD_S != null'>AND P4.STORECD  BETWEEN #{STORECD_S} AND #{STORECD_E}</if> -->
+<!-- 				 		</when> -->
+<!-- 				 		<otherwise> -->
+<!-- 				 			<if test='STORECD != null'>AND P4.STORECD = #{STORECD}</if> -->
+<!-- 				 		</otherwise> -->
+<!-- 				 	</choose> -->
+<!-- 			 	</if> -->
+
+<!-- 			HAVING SUM(S1.TRUST_SALE_COUNT + S1.PAY_SALE_COUNT) > 0 -->
+<!-- 			GROUP BY S1.SHOPCD, S1.DEPTCD, S1.GROUPCD, S1.STANDCD, S1.BOOKCD, M8.BOOKNM, M8.PRICE, M8.STOCK, P4.STORECD, M2.PURCHNM, M7.PURCHCD, M2.ORD_GROUPCD, M4.AUTHORNM -->
+
+<!-- 			ORDER BY M2.PURCHNM, M8.BOOKNM -->
+
     </select>
+
+
 
     <select id="getSaleDataListGroup"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataListGroup */
@@ -74,13 +139,20 @@
 						, M2.ORD_GROUPCD
 						, NVL(M4.AUTHORNM, ' ') AUTHORNM
 
-			FROM HSA11 S1 LEFT JOIN HMA08 M8 ON (S1.SHOPCD = M8.SHOPCD AND S1.BOOKCD = M8.BOOKCD)
-									LEFT JOIN HPO04 P4 ON (S1.SHOPCD = P4.SHOPCD AND S1.TMNO = P4.POSNO)
-									LEFT JOIN HMA07 M7 ON (S1.SHOPCD = M7.SHOPCD AND S1.BOOKCD = M7.BOOKCD AND M7.PUR_PROCESS = 1)
-									LEFT JOIN HMA02 M2 ON (M7.PURCHCD = M2.PURCHCD)
-									LEFT JOIN HMA04 M4 ON (S1.BOOKCD = M4.BOOKCD)
+			FROM HSA11 S1 , HMA08 M8
+									, HPO04 P4
+									, HMA07 M7
+									, HMA02 M2
+									, HMA04 M4
 
-			WHERE S1.SHOPCD = #{SHOPCD}
+			WHERE
+			S1.SHOPCD = M8.SHOPCD(+) AND S1.BOOKCD = M8.BOOKCD(+)
+			AND S1.SHOPCD = P4.SHOPCD(+) AND S1.TMNO = P4.POSNO(+)
+			AND S1.SHOPCD = M7.SHOPCD(+) AND S1.BOOKCD = M7.BOOKCD(+) AND M7.PUR_PROCESS(+) = 1
+			AND M7.PURCHCD = M2.PURCHCD(+)
+			AND S1.BOOKCD = M4.BOOKCD(+)
+
+			AND S1.SHOPCD = #{SHOPCD}
 			<if test='DT_FROM != null'> AND S1.BOOK_DATE >= #{DT_FROM} </if>
 			<if test='DT_TO != null'> AND S1.BOOK_DATE <![CDATA[<=]]> #{DT_TO} </if>
 			<if test='GROUPCD != null'> AND S1.GROUPCD = #{GROUPCD} </if>
@@ -105,7 +177,7 @@
 
     </select>
 
-
+<!-- 사용안함 -->
     <select id="getSaleDataAuthorList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataAuthorList */
 
@@ -149,6 +221,8 @@
 
     </select>
 
+
+<!-- 사용안함 -->
     <select id="getSaleDataEstiList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataList */
 
@@ -192,6 +266,8 @@
 
     </select>
 
+
+<!-- 사용안함 -->
     <select id="getSaleDataRetList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataList */
 
@@ -236,6 +312,9 @@
 
     </select>
 
+
+
+<!-- 사용안함 -->
     <select id="getSaleDataOrdList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataList */
 
@@ -279,6 +358,8 @@
 
     </select>
 
+
+<!-- 사용안함 -->
     <select id="getSaleDataInpList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataList */
 
@@ -322,6 +403,7 @@
 
     </select>
 
+<!-- 사용안함 -->
     <select id="getSaleDataInpRatioList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getSaleDataInpRatioList */
 
@@ -394,7 +476,6 @@
 					AND PURCHCD = #{PURCHCD}
 					AND BOOKCD = #{BOOKCD}
 
-
     </select>
 
     <select id="getSaleDataOrd"  parameterType="java.util.Map" resultType="java.util.Map">
@@ -408,6 +489,7 @@
 						AND STORECD = #{STORECD}
 						AND PURCHCD = #{PURCHCD}
 						AND BOOKCD = #{BOOKCD}
+						<if test='ORD_DATE != null'>AND ORD_DATE = #{ORD_DATE}</if>
 
 			GROUP BY ORD_RATE, TRADE_ITEM
 		)
@@ -424,6 +506,7 @@
 					AND STORECD = #{STORECD}
 					AND PURCHCD = #{PURCHCD}
 					AND BOOKCD = #{BOOKCD}
+					<if test='ORD_DATE != null'>AND ORD_DATE = #{ORD_DATE}</if>
 
     </select>
 
@@ -444,27 +527,27 @@
 	<select id="getOrderDataList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* orderMapper.getOrderDataList */
 
-		WITH T_ORDER_LIST AS
-		(
-			SELECT DISTINCT
-							T1.BOOKCD
-							, T1.PURCHNM
-							, T1.GROUPCD
-							, T1.PURCHCD
+<!-- 		WITH T_ORDER_LIST AS -->
+<!-- 		( -->
+<!-- 			SELECT DISTINCT -->
+<!-- 							T1.BOOKCD -->
+<!-- 							, T1.PURCHNM -->
+<!-- 							, T1.GROUPCD -->
+<!-- 							, T1.PURCHCD -->
 
 
-				FROM  HOR01 T1 LEFT JOIN HMA10 T2 ON (T1.INP_SHOPCD = T2.SHOPCD AND T1.GROUPCD = T2.GROUPCD AND T1.STANDCD = T2.STANDCD)
+<!-- 				FROM  HOR01 T1 LEFT JOIN HMA10 T2 ON (T1.INP_SHOPCD = T2.SHOPCD AND T1.GROUPCD = T2.GROUPCD AND T1.STANDCD = T2.STANDCD) -->
 
-				WHERE T1.INP_SHOPCD = #{SHOPCD}
-				AND T1.STORECD IN <foreach collection="LIST_STORECD" item="item" open="(" close=")" separator=","> #{item}</foreach>
-				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if>
-				<if test='INP_GROUPCD != null'> AND T1.INP_GROUPCD = #{INP_GROUPCD}</if>
-				<if test='GROUPCD != null'> AND T1.INP_GROUPCD = #{GROUPCD}</if>
+<!-- 				WHERE T1.INP_SHOPCD = #{SHOPCD} -->
+<!-- 				AND T1.STORECD IN <foreach collection="LIST_STORECD" item="item" open="(" close=")" separator=","> #{item}</foreach> -->
+<!-- 				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if> -->
+<!-- 				<if test='INP_GROUPCD != null'> AND T1.INP_GROUPCD = #{INP_GROUPCD}</if> -->
+<!-- 				<if test='GROUPCD != null'> AND T1.INP_GROUPCD = #{GROUPCD}</if> -->
 
-				<if test='DT_ORDER != null'> AND T1.ORD_DATE = #{DT_ORDER} </if>
-				<if test='TRADE_ITEM != null'> AND T1.TRADE_ITEM = #{TRADE_ITEM} </if>
-				<if test='PURCHCD != null'> AND T1.PURCHCD = #{PURCHCD} </if>
-				AND T1.ORD_COUNT    > 0
+<!-- 				<if test='DT_ORDER != null'> AND T1.ORD_DATE = #{DT_ORDER} </if> -->
+<!-- 				<if test='TRADE_ITEM != null'> AND T1.TRADE_ITEM = #{TRADE_ITEM} </if> -->
+<!-- 				<if test='PURCHCD != null'> AND T1.PURCHCD = #{PURCHCD} </if> -->
+<!-- 				AND T1.ORD_COUNT    > 0 -->
 
 	<!-- 			<if test='STORE_TYPE != null'> -->
 	<!-- 				<choose> -->
@@ -479,7 +562,7 @@
 	<!-- 				 		</otherwise> -->
 	<!-- 				 	</choose> -->
 	<!-- 			 	</if> -->
-			)
+<!-- 			) -->
 
 			SELECT
 				 O1.PURCHNM
@@ -493,21 +576,109 @@
 				, M11.PUBSHNM
 				, O1.INP_GROUPCD
 				, O1.STANDCD
-			FROM T_ORDER_LIST A LEFT JOIN  HOR01 O1 ON (O1.BOOKCD = A.BOOKCD AND O1.PURCHCD = A.PURCHCD AND O1.BOOKCD = A.BOOKCD)
-										LEFT JOIN HMA08 M8 ON (O1.INP_SHOPCD = M8.SHOPCD AND O1.BOOKCD = M8.BOOKCD)
-										LEFT JOIN HMA11 M11 ON (M8.PUBSHCD = M11.PUBSHCD)
-										LEFT JOIN HMA10 T2 ON (O1.INP_SHOPCD = T2.SHOPCD AND O1.GROUPCD = T2.GROUPCD AND O1.STANDCD = T2.STANDCD)
+			FROM (
 
-			WHERE O1.INP_SHOPCD = #{SHOPCD}
+			SELECT DISTINCT
+							T1.BOOKCD
+							, T1.PURCHNM
+							, T1.GROUPCD
+							, T1.PURCHCD
+
+
+				FROM  HOR01 T1 ,HMA10 T2
+
+				WHERE T1.INP_SHOPCD = T2.SHOPCD(+) AND T1.GROUPCD = T2.GROUPCD(+) AND T1.STANDCD = T2.STANDCD(+)
+				AND T1.INP_SHOPCD = #{SHOPCD}
+				AND T1.STORECD IN <foreach collection="LIST_STORECD" item="item" open="(" close=")" separator=","> #{item}</foreach>
 				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if>
-				<if test='GROUPCD != null'> AND O1.INP_GROUPCD = #{GROUPCD}</if>
-				<if test='STANDCD != null'> AND O1.STANDCD = #{STANDCD}</if>
-				<if test='DT_ORDER != null'> AND O1.ORD_DATE = #{DT_ORDER} </if>
-				<if test='TRADE_ITEM != null'> AND O1.TRADE_ITEM = #{TRADE_ITEM} </if>
-				<if test='PURCHCD != null'> AND O1.PURCHCD = #{PURCHCD} </if>
+				<if test='INP_GROUPCD != null'> AND T1.INP_GROUPCD = #{INP_GROUPCD}</if>
+				<if test='GROUPCD != null'> AND T1.INP_GROUPCD = #{GROUPCD}</if>
+
+				<if test='DT_ORDER != null'> AND T1.ORD_DATE = #{DT_ORDER} </if>
+				<if test='TRADE_ITEM != null'> AND T1.TRADE_ITEM = #{TRADE_ITEM} </if>
+				<if test='PURCHCD != null'> AND T1.PURCHCD = #{PURCHCD} </if>
+				AND T1.ORD_COUNT    > 0
+
+
+			) A , HOR01 O1
+										, HMA08 M8
+										, HMA11 M11
+										, HMA10 T2
+
+			WHERE
+			O1.BOOKCD(+) = A.BOOKCD AND O1.PURCHCD(+) = A.PURCHCD AND O1.BOOKCD(+) = A.BOOKCD
+			AND O1.INP_SHOPCD = M8.SHOPCD(+) AND O1.BOOKCD = M8.BOOKCD(+)
+			AND M8.PUBSHCD = M11.PUBSHCD(+)
+			AND O1.INP_SHOPCD = T2.SHOPCD(+) AND O1.GROUPCD = T2.GROUPCD(+) AND O1.STANDCD = T2.STANDCD(+)
+			AND O1.INP_SHOPCD(+) = #{SHOPCD}
+				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if>
+				<if test='GROUPCD != null'> AND O1.INP_GROUPCD(+) = #{GROUPCD}</if>
+				<if test='STANDCD != null'> AND O1.STANDCD(+) = #{STANDCD}</if>
+				<if test='DT_ORDER != null'> AND O1.ORD_DATE(+) = #{DT_ORDER} </if>
+				<if test='TRADE_ITEM != null'> AND O1.TRADE_ITEM(+) = #{TRADE_ITEM} </if>
+				<if test='PURCHCD != null'> AND O1.PURCHCD(+) = #{PURCHCD} </if>
 
 			GROUP BY O1.PURCHNM, O1.BOOKNM ,M8.STOCK ,O1.BOOKCD ,O1.PURCHCD ,M8.PUBSHCD, M11.PUBSHNM, O1.INP_GROUPCD, O1.STANDCD
 			ORDER BY O1.PURCHNM, O1.BOOKCD
+
+
+
+
+<!-- 			WITH T_ORDER_LIST AS -->
+<!-- 		( -->
+<!-- 			SELECT DISTINCT -->
+<!-- 							T1.BOOKCD -->
+<!-- 							, T1.PURCHNM -->
+<!-- 							, T1.GROUPCD -->
+<!-- 							, T1.PURCHCD -->
+
+
+<!-- 				FROM  HOR01 T1 LEFT JOIN HMA10 T2 ON (T1.INP_SHOPCD = T2.SHOPCD AND T1.GROUPCD = T2.GROUPCD AND T1.STANDCD = T2.STANDCD) -->
+
+<!-- 				WHERE T1.INP_SHOPCD = #{SHOPCD} -->
+<!-- 				AND T1.STORECD IN <foreach collection="LIST_STORECD" item="item" open="(" close=")" separator=","> #{item}</foreach> -->
+<!-- 				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if> -->
+<!-- 				<if test='INP_GROUPCD != null'> AND T1.INP_GROUPCD = #{INP_GROUPCD}</if> -->
+<!-- 				<if test='GROUPCD != null'> AND T1.INP_GROUPCD = #{GROUPCD}</if> -->
+
+<!-- 				<if test='DT_ORDER != null'> AND T1.ORD_DATE = #{DT_ORDER} </if> -->
+<!-- 				<if test='TRADE_ITEM != null'> AND T1.TRADE_ITEM = #{TRADE_ITEM} </if> -->
+<!-- 				<if test='PURCHCD != null'> AND T1.PURCHCD = #{PURCHCD} </if> -->
+<!-- 				AND T1.ORD_COUNT    > 0 -->
+
+<!-- 			) -->
+
+<!-- 			SELECT -->
+<!-- 				 O1.PURCHNM -->
+<!-- 				, O1.BOOKNM -->
+<!-- 				, M8.STOCK -->
+<!-- 				<foreach collection="LIST_STORECD_EX" item="item" open="" close="" separator=""> -->
+<!-- 				, NVL(SUM(DECODE(O1.STORECD,#{item.STORECD},O1.ORD_COUNT )),0) AS ${item.STORECD_COL}</foreach> -->
+<!-- 				, O1.BOOKCD -->
+<!-- 				, O1.PURCHCD -->
+<!-- 				, M8.PUBSHCD -->
+<!-- 				, M11.PUBSHNM -->
+<!-- 				, O1.INP_GROUPCD -->
+<!-- 				, O1.STANDCD -->
+<!-- 			FROM T_ORDER_LIST A LEFT JOIN  HOR01 O1 ON (O1.BOOKCD = A.BOOKCD AND O1.PURCHCD = A.PURCHCD AND O1.BOOKCD = A.BOOKCD) -->
+<!-- 										LEFT JOIN HMA08 M8 ON (O1.INP_SHOPCD = M8.SHOPCD AND O1.BOOKCD = M8.BOOKCD) -->
+<!-- 										LEFT JOIN HMA11 M11 ON (M8.PUBSHCD = M11.PUBSHCD) -->
+<!-- 										LEFT JOIN HMA10 T2 ON (O1.INP_SHOPCD = T2.SHOPCD AND O1.GROUPCD = T2.GROUPCD AND O1.STANDCD = T2.STANDCD) -->
+
+<!-- 			WHERE O1.INP_SHOPCD = #{SHOPCD} -->
+<!-- 				<if test='RATECD != null'> AND T2.RATE = #{RATECD} </if> -->
+<!-- 				<if test='GROUPCD != null'> AND O1.INP_GROUPCD = #{GROUPCD}</if> -->
+<!-- 				<if test='STANDCD != null'> AND O1.STANDCD = #{STANDCD}</if> -->
+<!-- 				<if test='DT_ORDER != null'> AND O1.ORD_DATE = #{DT_ORDER} </if> -->
+<!-- 				<if test='TRADE_ITEM != null'> AND O1.TRADE_ITEM = #{TRADE_ITEM} </if> -->
+<!-- 				<if test='PURCHCD != null'> AND O1.PURCHCD = #{PURCHCD} </if> -->
+
+<!-- 			GROUP BY O1.PURCHNM, O1.BOOKNM ,M8.STOCK ,O1.BOOKCD ,O1.PURCHCD ,M8.PUBSHCD, M11.PUBSHNM, O1.INP_GROUPCD, O1.STANDCD -->
+<!-- 			ORDER BY O1.PURCHNM, O1.BOOKCD -->
+
+
+
+
     </select>
 
 
@@ -521,12 +692,26 @@
 					A.PURCHCD
 					, A.PURCHNM
 					, A.ORD_GROUPCD
-				FROM HMA02 A LEFT JOIN HMA24 B ON (A.PURCHCD = B.PURCHCD)
-				WHERE B.SHOPCD = #{SHOPCD}
+				FROM HMA02 A , HMA24 B
+				WHERE A.PURCHCD = B.PURCHCD(+) AND B.SHOPCD = #{SHOPCD}
 				<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if>
 				<if test='PURCHNM != null'>AND A.PURCHNM = #{PURCHNM}</if>
 				)
 			WHERE ROWNUM <![CDATA[<=]]> 1
+
+
+<!-- 			SELECT * -->
+<!-- 			FROM ( -->
+<!-- 				SELECT -->
+<!-- 					A.PURCHCD -->
+<!-- 					, A.PURCHNM -->
+<!-- 					, A.ORD_GROUPCD -->
+<!-- 				FROM HMA02 A LEFT JOIN HMA24 B ON (A.PURCHCD = B.PURCHCD) -->
+<!-- 				WHERE B.SHOPCD = #{SHOPCD} -->
+<!-- 				<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if> -->
+<!-- 				<if test='PURCHNM != null'>AND A.PURCHNM = #{PURCHNM}</if> -->
+<!-- 				) -->
+<!-- 			WHERE ROWNUM <![CDATA[<=]]> 1 -->
     </select>
 
     <select id="getOrderBookExist" parameterType="java.util.Map" resultType="java.util.Map">
@@ -614,7 +799,7 @@
 						AND PURCHCD = #{PURCHCD}
 						AND BOOKCD =#{BOOKCD}
 			)
-			where rownum <![CDATA[<]]>  2
+			WHERE ROWNUM <![CDATA[<]]>  2
     </select>
 
 
@@ -693,14 +878,24 @@
 				, NVL(E.BOOKCD, -1) AS HMA06_BOOKCD
 
 			FROM
-			HOR01 O1 LEFT JOIN HMA08 H8 ON (O1.INP_SHOPCD = H8.SHOPCD AND O1.BOOKCD = H8.BOOKCD)
-			LEFT OUTER JOIN HMA11 H1 ON (H8.PUBSHCD = H1.PUBSHCD)
-			LEFT OUTER JOIN HMA02 H2 ON (O1.PURCHCD = H2.PURCHCD)
-			LEFT JOIN HMA10 T2 ON (O1.INP_SHOPCD = T2.SHOPCD AND O1.GROUPCD = T2.GROUPCD AND O1.STANDCD = T2.STANDCD)
-			LEFT OUTER JOIN HMA06 E ON (O1.INP_SHOPCD = E.SHOPCD AND O1.BOOKCD = E.BOOKCD AND O1.PURCHCD = E.PURCHCD AND O1.ORD_RATE = E.RATE)
+			HOR01 O1
+			, HMA08 H8
+			, HMA11 H1
+			, HMA02 H2
+			, HMA10 T2
+			, HMA06 E
 
 			WHERE
-			O1.INP_SHOPCD = #{INP_SHOPCD}
+			O1.INP_SHOPCD = H8.SHOPCD(+) AND O1.BOOKCD = H8.BOOKCD(+)
+			AND H8.PUBSHCD = H1.PUBSHCD(+)
+			AND O1.PURCHCD = H2.PURCHCD(+)
+			AND O1.INP_SHOPCD = T2.SHOPCD(+) AND O1.GROUPCD = T2.GROUPCD(+) AND O1.STANDCD = T2.STANDCD(+)
+			AND O1.INP_SHOPCD = E.SHOPCD(+) AND O1.BOOKCD = E.BOOKCD(+) AND O1.PURCHCD = E.PURCHCD(+) AND O1.ORD_RATE = E.RATE(+)
+
+
+
+
+			AND O1.INP_SHOPCD = #{INP_SHOPCD}
 			<if test='STORECD != null'> AND O1.STORECD= #{STORECD} </if>
 			<if test='STORECD_S != null'> AND O1.STORECD BETWEEN #{STORECD_S} AND #{STORECD_E} </if>
 			<if test='RATE != null'> AND T2.RATE = #{RATE}</if>
@@ -710,6 +905,59 @@
 			AND O1.TRADE_ITEM = #{TRADE_ITEM}
 
 			ORDER BY O1.PURCHNM, O1.BOOKNM
+
+
+
+
+
+<!-- 			SELECT -->
+<!-- 				O1.INP_SHOPCD -->
+<!-- 				, O1.STORECD -->
+<!-- 				, O1.INP_GROUPCD -->
+<!-- 				, O1.ORD_DATE -->
+<!-- 				, O1.TRADE_ITEM -->
+<!-- 				, O1.PURCHCD -->
+<!-- 				, O1.BOOKCD -->
+<!-- 				, O1.ORD_GROUPCD -->
+<!-- 				, O1.GROUPCD -->
+<!-- 				, O1.STANDCD -->
+<!-- 				, O1.INP_DATE -->
+<!-- 				, NVL(O1.ORD_COUNT, 0) ORD_COUNT -->
+<!-- 				, NVL(O1.ORD_RATE, 0) ORD_RATE -->
+<!-- 				, NVL(O1.ORD_COST, 0) ORD_COST -->
+<!-- 				, NVL(O1.BOOKNM, ' ') BOOKNM -->
+<!-- 				, NVL(O1.AUTHORNM, ' ') AUTHORNM -->
+<!-- 				, NVL(O1.PURCHNM, ' ') PURCHNM -->
+<!-- 				, NVL(H8.PRICE, 0) PRICE -->
+<!-- 				, H8.PUBSHCD -->
+<!-- 				, NVL(H1.PUBSHNM, ' ') PUBSHNM -->
+<!-- 				, NVL(H2.TEL_LOCAL1, ' ') TEL_LOCAL1 -->
+<!-- 				, NVL(H2.TEL_DEPT1, ' ') TEL_DEPT1 -->
+<!-- 				, NVL(H2.TEL_NO1, ' ') TEL_NO1 -->
+<!-- 				, NVL(H2.FAX_LOCAL, ' ') FAX_LOCAL -->
+<!-- 				, NVL(H2.FAX_DEPT, ' ') FAX_DEPT -->
+<!-- 				, NVL(H2.FAX_NO, ' ') FAX_NO -->
+<!-- 				, H8.DEPTCD -->
+<!-- 				, NVL(E.BOOKCD, -1) AS HMA06_BOOKCD -->
+
+<!-- 			FROM -->
+<!-- 			HOR01 O1 LEFT JOIN HMA08 H8 ON (O1.INP_SHOPCD = H8.SHOPCD AND O1.BOOKCD = H8.BOOKCD) -->
+<!-- 			LEFT OUTER JOIN HMA11 H1 ON (H8.PUBSHCD = H1.PUBSHCD) -->
+<!-- 			LEFT OUTER JOIN HMA02 H2 ON (O1.PURCHCD = H2.PURCHCD) -->
+<!-- 			LEFT JOIN HMA10 T2 ON (O1.INP_SHOPCD = T2.SHOPCD AND O1.GROUPCD = T2.GROUPCD AND O1.STANDCD = T2.STANDCD) -->
+<!-- 			LEFT OUTER JOIN HMA06 E ON (O1.INP_SHOPCD = E.SHOPCD AND O1.BOOKCD = E.BOOKCD AND O1.PURCHCD = E.PURCHCD AND O1.ORD_RATE = E.RATE) -->
+
+<!-- 			WHERE -->
+<!-- 			O1.INP_SHOPCD = #{INP_SHOPCD} -->
+<!-- 			<if test='STORECD != null'> AND O1.STORECD= #{STORECD} </if> -->
+<!-- 			<if test='STORECD_S != null'> AND O1.STORECD BETWEEN #{STORECD_S} AND #{STORECD_E} </if> -->
+<!-- 			<if test='RATE != null'> AND T2.RATE = #{RATE}</if> -->
+<!-- 			<if test='INP_GROUPCD != null'> AND O1.INP_GROUPCD = #{INP_GROUPCD}</if> -->
+<!-- 			<if test='PURCHCD != null'> AND O1.PURCHCD = #{PURCHCD}</if> -->
+<!-- 			AND O1.ORD_DATE = #{ORD_DATE} -->
+<!-- 			AND O1.TRADE_ITEM = #{TRADE_ITEM} -->
+
+<!-- 			ORDER BY O1.PURCHNM, O1.BOOKNM -->
     </select>
 
     <select id="getHOR02MaxSeq" parameterType="java.util.Map" resultType="int">
@@ -800,17 +1048,54 @@
 						, NVL2(M02.PURCHNM, M02.TEL_LOCAL1||'-'||M02.TEL_DEPT1||'-'||M02.TEL_NO1,'- -') AS TEL
 						, NVL2(M02.PURCHNM, M02.FAX_LOCAL||'-'||M02.FAX_DEPT||'-'||M02.FAX_NO,'- -') AS FAX
 
-			FROM HOR02 O2 LEFT OUTER JOIN HMA10 M10 ON (M10.STANDCD = 9999 AND M10.GROUPCD = O2.INP_GROUPCD AND M10.SHOPCD = O2.INP_SHOPCD AND M10.DEPTCD = O2.DEPTCD)
-			LEFT OUTER JOIN HMA11 M11 ON (O2.PUBSHCD = M11.PUBSHCD)
-			LEFT OUTER JOIN HMA02 M02 ON (O2.PURCHCD = M02.PURCHCD)
+			FROM HOR02 O2,
+			 HMA10 M10
+			, HMA11 M11
+			, HMA02 M02
 
+			WHERE
 
-			WHERE O2.INP_SHOPCD = #{SHOPCD}
+			M10.STANDCD(+) = 9999 AND M10.GROUPCD(+) = O2.INP_GROUPCD AND M10.SHOPCD(+) = O2.INP_SHOPCD AND M10.DEPTCD(+) = O2.DEPTCD
+			AND O2.PUBSHCD = M11.PUBSHCD(+)
+			AND O2.PURCHCD = M02.PURCHCD(+)
+
+			AND O2.INP_SHOPCD = #{SHOPCD}
 			<if test='ORD_DATE != null'> AND O2.ORD_DATE = #{ORD_DATE} </if>
 			<if test='GROUPCD != null'> AND O2.INP_GROUPCD = #{GROUPCD} </if>
 <!-- 			<if test='RATE != null'> AND M10.RATE = #{RATE} </if> -->
 
 			ORDER BY O2.PURCHNM, O2.BOOKNM
+
+
+
+
+
+
+<!-- 			SELECT -->
+<!-- 						O2.STORECD -->
+<!-- 						, O2.BOOKCD -->
+<!-- 						, O2.BOOKNM -->
+<!-- 						, O2.PURCHNM -->
+<!-- 						, O2.PURCHCD -->
+<!-- 						, O2.AUTHORNM -->
+<!-- 						, O2.PRICE -->
+<!-- 						, NVL(M10.ORGAN_NM, '미등록조') AS GROUP_NM -->
+<!-- 						, O2.INP_PLAN_COUNT AS ORD_COUNT -->
+
+<!-- 						, NVL(M11.PUBSHNM, '') AS PUBSHNM -->
+<!-- 						, NVL2(M02.PURCHNM, M02.TEL_LOCAL1||'-'||M02.TEL_DEPT1||'-'||M02.TEL_NO1,'- -') AS TEL -->
+<!-- 						, NVL2(M02.PURCHNM, M02.FAX_LOCAL||'-'||M02.FAX_DEPT||'-'||M02.FAX_NO,'- -') AS FAX -->
+
+<!-- 			FROM HOR02 O2 LEFT OUTER JOIN HMA10 M10 ON (M10.STANDCD = 9999 AND M10.GROUPCD = O2.INP_GROUPCD AND M10.SHOPCD = O2.INP_SHOPCD AND M10.DEPTCD = O2.DEPTCD) -->
+<!-- 			LEFT OUTER JOIN HMA11 M11 ON (O2.PUBSHCD = M11.PUBSHCD) -->
+<!-- 			LEFT OUTER JOIN HMA02 M02 ON (O2.PURCHCD = M02.PURCHCD) -->
+
+
+<!-- 			WHERE O2.INP_SHOPCD = #{SHOPCD} -->
+<!-- 			<if test='ORD_DATE != null'> AND O2.ORD_DATE = #{ORD_DATE} </if> -->
+<!-- 			<if test='GROUPCD != null'> AND O2.INP_GROUPCD = #{GROUPCD} </if> -->
+
+<!-- 			ORDER BY O2.PURCHNM, O2.BOOKNM -->
 
     </select>
 
@@ -830,17 +1115,45 @@
 						, NVL2(M02.PURCHNM, M02.TEL_LOCAL1||'-'||M02.TEL_DEPT1||'-'||M02.TEL_NO1,'- -') AS TEL
 						, NVL2(M02.PURCHNM, M02.FAX_LOCAL||'-'||M02.FAX_DEPT||'-'||M02.FAX_NO,'- -') AS FAX
 
-			FROM HOR03 O3 LEFT OUTER JOIN HMA02 M02 ON (SUBSTR(O3.PURCHNM, 0,6) = M02.PURCHCD)
+			FROM HOR03 O3, HMA02 M02
 <!-- 			 LEFT JOIN HMA10 M10 ON (M10.GROUPCD != 99 AND M10.STANDCD = 9999 AND M10.GROUPCD = O2.ORD_GROUPCD) -->
 
 
 
-			WHERE O3.SHOPCD = #{SHOPCD}
+			WHERE
+			SUBSTR(O3.PURCHNM, 0,6) = M02.PURCHCD(+)
+			AND O3.SHOPCD = #{SHOPCD}
 			<if test='ORD_DATE != null'> AND O3.ORD_DATE = #{ORD_DATE} </if>
 <!-- 			<if test='GROUPCD != null'> AND O2.INP_GROUPCD = #{GROUPCD} </if> -->
 <!-- 			<if test='RATE != null'> AND M10.RATE = #{RATE} </if> -->
 
 			ORDER BY O3.PURCHNM, O3.BOOKNM
+
+
+
+
+<!-- 		SELECT -->
+<!-- 						O3.STORECD -->
+<!-- 						, O3.BOOKNM -->
+<!-- 						, O3.PURCHNM -->
+<!-- 						, O3.AUTHORNM -->
+<!-- 						, '미등록조' AS GROUP_NM -->
+<!-- 						, O3.ORD_COUNT -->
+<!-- 						, '' AS PUBSHNM -->
+<!-- 						, 0 AS PRICE -->
+<!-- 						, NVL2(M02.PURCHNM, M02.TEL_LOCAL1||'-'||M02.TEL_DEPT1||'-'||M02.TEL_NO1,'- -') AS TEL -->
+<!-- 						, NVL2(M02.PURCHNM, M02.FAX_LOCAL||'-'||M02.FAX_DEPT||'-'||M02.FAX_NO,'- -') AS FAX -->
+
+<!-- 			FROM HOR03 O3 LEFT OUTER JOIN HMA02 M02 ON (SUBSTR(O3.PURCHNM, 0,6) = M02.PURCHCD) -->
+
+
+
+<!-- 			WHERE O3.SHOPCD = #{SHOPCD} -->
+<!-- 			<if test='ORD_DATE != null'> AND O3.ORD_DATE = #{ORD_DATE} </if> -->
+
+<!-- 			ORDER BY O3.PURCHNM, O3.BOOKNM -->
+
+
 
     </select>
 
@@ -886,6 +1199,19 @@
 			ORDER BY O3.PURCHNM,  O3.BOOKNM
     </select>
 
+
+	<select id="getBookOrderInfo" parameterType="java.util.Map" resultType="java.util.Map">
+    	/* orderMapper.getBookOrderInfo */
+			SELECT NVL(ORD_COUNT, 0) AS CNT
+			FROM HOR01
+			WHERE INP_SHOPCD = #{SHOPCD}
+						AND STORECD = #{STORECD}
+						AND INP_GROUPCD = #{INP_GROUPCD}
+						AND ORD_DATE = #{ORD_DATE}
+						AND TRADE_ITEM = #{TRADE_ITEM}
+						AND PURCHCD = #{PURCHCD}
+						AND BOOKCD =#{BOOKCD}
+    </select>
 
 
 

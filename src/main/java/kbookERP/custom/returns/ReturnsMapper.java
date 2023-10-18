@@ -34,6 +34,9 @@ public interface ReturnsMapper {
 
 	public int deleteReturnBook(Map<String,Object> params);
 
+	public int insertReturnBookConfirm(Map<String,Object> params);
+
+	public int deleteReturnBookAll(Map<String,Object> params);
 
 
 
