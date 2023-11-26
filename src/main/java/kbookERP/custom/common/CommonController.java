@@ -34,6 +34,27 @@ public class CommonController {
     	return result;
     }
 
+	@PostMapping(value = "/getKbooksCodeList.json")
+    @ResponseBody
+	public Map<String, Object> getKbooksCodeList(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		Util.pramsNullCheck(params);
+
+    	result = commonService.getKbooksCodeList(params);
+
+    	return result;
+    }
+
+	@PostMapping(value = "/getKbooksProductCodeList.json")
+    @ResponseBody
+	public Map<String, Object> getKbooksProductCodeList(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		Util.pramsNullCheck(params);
+    	result = commonService.getKbooksProductCodeList(params);
+    	return result;
+    }
 
 
 	@PostMapping(value = "/getCodeList.json")
@@ -127,6 +148,16 @@ public class CommonController {
 
    	return result;
    }
+
+	@PostMapping(value = "/getRow.json")
+	 @ResponseBody
+		public Map<String, Object> getRow(HttpServletRequest req, @RequestBody Map<String, Object> params) throws Exception {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		Util.pramsNullCheck(params);
+		result = commonService.getRow(params);
+		return result;
+  }
 
 
 

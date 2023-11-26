@@ -57,6 +57,8 @@ public interface SearchMapper {
 
 	public List<Map<String,Object>> getOrderBookPurchRate(Map<String,Object> params);
 
+	public List<Map<String,Object>> getOrderBookPurchRateKbn(Map<String,Object> params);
+
 	public int getOrderBookInpCnt(Map<String,Object> params);
 
 	public int getOrderBookOrdCnt(Map<String,Object> params);

@@ -1,5 +1,7 @@
 package kbookERP.custom.returns;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kbookERP.custom.register.RegisterMapper;
 import kbookERP.custom.util.Util;
 
 @Service
@@ -15,6 +18,10 @@ public class ReturnsService {
 
 	@Autowired
 	private ReturnsMapper returnsMapper;
+
+	@Autowired
+	private RegisterMapper registerMapper;
+
 
 
 
@@ -318,19 +325,59 @@ public class ReturnsService {
 
 
 
-				listSqlMap = returnsMapper.getReturnBookList(params);
+				listSqlMap = returnsMapper.getReturnBookListAll(params);
 
 				if (listSqlMap.size() > 0) {
 
 					long hma06NookCd;
 					int hor02MaxSeq;
+					int returnChitNo;
+					int retKbn;
+					int gChitKbn;
+
+					int row = 1;
+					int result;
+					int returnPlanCnt;
+
+//					LocalDateTime now = LocalDateTime.now();
+//					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+//					String formatedNow = now.format(formatter);
+
+					sqlMap = registerMapper.getToday(params);
+
 					for(Map<String, Object> oData : listSqlMap) {
 
-						returnsMapper.insertReturnBookConfirm(oData);
+						retKbn = Util.getInt(oData.get("RET_KBN"), 0);
 
+						if(retKbn == 1)
+							gChitKbn = 28;
+						else
+							gChitKbn = 29;
+
+						returnChitNo = returnsMapper.getRETURN_CHIT_NO(oData);
+						returnsMapper.updateRETURN_CHIT_NO(oData);
+
+						oData.put("CHIT_NO", returnChitNo);
+						oData.put("CHIT_KBN", gChitKbn);
+						oData.put("ROW_NO", row);
+						oData.put("CHIT_DATE", sqlMap.get("TODAY"));
+						oData.put("RET_FG", 1);
+
+						result = returnsMapper.insertHRE04(oData);
+
+						returnPlanCnt = returnsMapper.checkHRE03(oData);
+
+						if(returnPlanCnt < 0)
+							returnsMapper.insertReturnBookConfirm(oData);
+						else
+							returnsMapper.updateHRE03(oData);
+
+						oData.put("RATE_KBN_O", oData.get("RATE_KBN"));
+
+						returnsMapper.deleteReturnBook(oData);
+
+						row++;
 					}
-//					returnsMapper.deleteReturnBookAll(params);
-
 
 					resultMap.put("SUCCESS", true);
 

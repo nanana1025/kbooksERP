@@ -69,7 +69,7 @@
 						, B.PURCHNM
 						, A.PUR_PROCESS
 
-			FROM HMA07 A ,N HMA24 B
+			FROM HMA07 A , HMA24 B
 
 			WHERE
 			A.PURCHCD = B.PURCHCD(+) AND A.SHOPCD = B.SHOPCD(+)
@@ -77,7 +77,7 @@
 			AND A.SHOPCD = #{SHOPCD} AND A.BOOKCD = #{BOOKCD}
 			<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if>
 
-			ORDER BY A.PUR_PROCESS DESC
+			ORDER BY A.PUR_PROCESS ASC
 
 <!-- 			SELECT -->
 <!-- 						A.PURCHCD -->
@@ -237,23 +237,38 @@
     <select id="getReturnBookList"  parameterType="java.util.Map" resultType="java.util.Map">
     	/* returnsMapper.getReturnBookList */
 			SELECT
-						SHOPCD
-						, BOOKCD
-						, BOOKNM
-						, PURCHNM
-						, PURCHCD
-						, STOCK
-						, PRICE
-						, RET_KBN
-						, RET_RATE
-						, RET_COUNT
-						, RET_COST
-						, RATE_KBN
-			FROM HRE02
-			WHERE SHOPCD = #{SHOPCD} AND STORECD = #{STORECD}
-			 	<if test='RET_GROUPCD != null'>AND RET_GROUPCD = #{RET_GROUPCD}</if>
-			 	<if test='GROUPCD != null'>AND GROUPCD = #{GROUPCD}</if>
-				<if test='PURCHCD != null'>AND PURCHCD = #{PURCHCD}</if>
+						A.SHOPCD
+						, A.BOOKCD
+						, A.BOOKNM
+						, A.PURCHNM
+						, A.PURCHCD
+						, A.STOCK
+						, A.PRICE
+						, A.RET_KBN
+						, A.RET_RATE
+						, A.RET_COUNT
+						, A.RET_COST
+						, A.RATE_KBN
+						, NVL(B.FIRSTSTORE,0) AS FIRSTSTORE
+						, NVL(B.DEPTCD,0) AS DEPTCD
+			FROM HRE02 A, HMA08 B
+			WHERE A.SHOPCD = #{SHOPCD} AND A.STORECD = #{STORECD} AND A.BOOKCD(+) = B.BOOKCD AND A.SHOPCD(+) = B.SHOPCD
+			 	<if test='RET_GROUPCD != null'>AND A.RET_GROUPCD = #{RET_GROUPCD}</if>
+			 	<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if>
+				<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if>
+	</select>
+
+	 <select id="getReturnBookListAll"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* returnsMapper.getReturnBookListAll */
+			SELECT
+						A.*
+						, NVL(B.FIRSTSTORE,0) AS FIRSTSTORE
+						, NVL(B.DEPTCD,0) AS DEPTCD
+			FROM HRE02 A, HMA08 B
+			WHERE A.SHOPCD = #{SHOPCD} AND A.STORECD = #{STORECD} AND A.BOOKCD(+) = B.BOOKCD AND A.SHOPCD(+) = B.SHOPCD
+			 	<if test='RET_GROUPCD != null'>AND A.RET_GROUPCD = #{RET_GROUPCD}</if>
+			 	<if test='GROUPCD != null'>AND A.GROUPCD = #{GROUPCD}</if>
+				<if test='PURCHCD != null'>AND A.PURCHCD = #{PURCHCD}</if>
 	</select>
 
 	<delete id="deleteReturnBook"  parameterType="java.util.Map">
@@ -278,6 +293,19 @@
 
     </insert>
 
+     <update id="updateHRE03" parameterType="java.util.Map" >
+    	/* returnsMapper.updateHRE03 */
+			UPDATE HRE03
+			SET
+				RET_PLAN_COUNT = RET_PLAN_COUNT + #{RET_COUNT}
+				RET_RATE = #{RET_RATE}
+			WHERE
+					SHOPCD = #{SHOPCD}
+					AND BOOKCD = #{BOOKCD}
+					AND PURCHCD = #{PURCHCD}
+					AND RATE_KBN = #{RATE_KBN}
+    </update>
+
     <delete id="deleteReturnBookAll"  parameterType="java.util.Map">
     	/* returnsMapper.deleteReturnBookAll */
 			DELETE FROM HRE02
@@ -288,13 +316,55 @@
 
 	</delete>
 
+	<select id="getRETURN_CHIT_NO"  parameterType="java.util.Map" resultType="int">
+    	/* returnsMapper.getRETURN_CHIT_NO*/
+			SELECT RETURN_CHIT_NO FROM HMA14_02
+    </select>
+
+	 <update id="updateRETURN_CHIT_NO" parameterType="java.util.Map" >
+    	/* returnsMapper.updateRETURN_CHIT_NO */
+			UPDATE HMA14_02 SET RETURN_CHIT_NO = RETURN_CHIT_NO + 1
+    </update>
 
 
+	<insert id="insertHRE04" parameterType="java.util.Map" >
+    	/* returnsMapper.insertHRE04 */
+			INSERT INTO HRE04 VALUES(
+				#{SHOPCD}
+				, #{CHIT_NO}
+				, #{ROW_NO}
+				, #{CHIT_KBN}
+				, #{STORECD}
+				, #{GROUPCD}
+				, #{PURCHCD}
+				, #{CHIT_DATE}
+				, #{BOOKCD}
+				, #{PUBSHCD}
+				, #{RATE_KBN}
+				, #{RET_RATE}
+				, #{RET_PRICE}
+				, #{RET_COST}
+				, #{RET_COUNT}
+				, #{RET_KBN}
+				, #{RET_REMARK}
+				, #{RET_FG}
+				, #{RET_DEPTCD}
+				, #{RET_GROUPCD}
+				, #{RET_STANDCD}
+				)
 
+    </insert>
 
-
-
-
+	<select id="checkHRE03"  parameterType="java.util.Map" resultType="int">
+    	/* returnsMapper.checkHRE03*/
+			SELECT
+				NVL(RET_PLAN_COUNT, -1) AS RET_PLAN_COUNT
+			FROM HRE03
+			WHERE SHOPCD = #{SHOPCD}
+					AND BOOKCD = #{BOOKCD}
+					AND PURCHCD = #{PURCHCD}
+					AND RATE_KBN = #{RATE_KBN}
+    </select>
 
 
 

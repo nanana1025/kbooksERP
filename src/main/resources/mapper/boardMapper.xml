@@ -115,13 +115,18 @@
 	   		 INSERT INTO TN_PLM_USER_CATEGORY_VIEW
 	        (ID, USER_ID, VIEW_ID, VIEW_YN, CREATE_DT)
 	    	SELECT
-		    #{SELECT_USER_ID}||'_' ||ID, #{SELECT_USER_ID}, ID, DEFAULT_YN, NOW()
+		    #{SELECT_USER_ID}||'_' ||ID, #{SELECT_USER_ID}, ID, DEFAULT_YN, SYSDATE
 		    FROM TN_PLM_CATEGORY_VIEW WHERE ID IN
 			 			<foreach collection="LIST_ID" item="data" open=" (" close=")" separator=","> #{data}</foreach>
 	 </insert>
 
 
-
+<!--  <insert id="insertHolidayData" parameterType="java.util.Map" > -->
+<!--     	/* registerMapper.insertHolidayData */ -->
+<!-- 			INSERT ALL<foreach collection="LIST_DATA" item="item" open="" close="" separator=""> -->
+<!-- 			INTO HMA17 VALUES (#{SHOPCD}, #{item.B_DATE}, #{item.BUSINESS_FG}, #{item.WEEK_FG})</foreach> -->
+<!-- 			 SELECT * FROM DUAL -->
+<!--     </insert> -->
 
 
 

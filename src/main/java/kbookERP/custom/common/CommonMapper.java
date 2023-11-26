@@ -10,6 +10,15 @@ public interface CommonMapper {
 
 	Map<String, Object> checkPurchCd(Map<String, Object> params);
 
+	List<Map<String, Object>> getKbooksCodeList(Map<String, Object> params);
+
+	List<Map<String, Object>> getKbooksProductCodeList(Map<String, Object> params);
+
+	Map<String, Object> getRow(Map<String, Object> params);
+
+
+
+
 
 
 

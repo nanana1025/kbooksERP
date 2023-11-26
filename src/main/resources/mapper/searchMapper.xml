@@ -704,7 +704,7 @@
 
 
 			SELECT A.*
-				, (SELECT C.ORGAN_NAME FROM  HMA28 C WHERE A.PRODUCT_CD = C.PRODUCT_CD ) AS PRODUCT_NM
+				, (SELECT C.ORGAN_NAME FROM  HMA28 C WHERE A.PRODUCT_CD = C.PRODUCT_CD AND A.STANDCD = C.STANDCD) AS PRODUCT_NM
 				, (SELECT D.ORGAN_NM FROM  HMA10 D WHERE A.DEPTCD = D.DEPTCD AND D.GROUPCD = 99 ) AS DEPT_NM
 				, (SELECT E.ORGAN_NM FROM  HMA10 E WHERE A.DEPTCD = E.DEPTCD AND A.GROUPCD = E.GROUPCD AND E.STANDCD = 9999 ) AS GROUP_NM
 				, (SELECT F.ORGAN_NM FROM  HMA10 F WHERE A.DEPTCD = F.DEPTCD AND A.GROUPCD = F.GROUPCD AND A.STANDCD = F.STANDCD ) AS STAND_NM
@@ -1363,6 +1363,33 @@
 		WHERE SHOPCD = #{SHOPCD}
 				AND BOOKCD = #{BOOKCD}
 		GROUP BY SHOPCD, F_DATE
+
+    </select>
+
+    <select id="getOrderBookPurchRateKbn"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* searchMapper.getOrderBookPurchRateKbn */
+
+		SELECT
+			RATE_KBN
+		FROM HMA06
+		WHERE SHOPCD = #{SHOPCD}
+					AND BOOKCD = #{BOOKCD}
+					AND PURCHCD = #{PURCHCD}
+			<choose>
+		 		<when test='RATE_KBN != null and RATE_KBN == 1'>
+		 			AND SUBSTR(RATE_KBN,1,1) = 1
+		 		</when>
+		 		<when test='RATE_KBN != null and RATE_KBN == 2'>
+		 			AND RATE_KBN > #{RATE_KBN_S}
+					AND RATE_KBN <![CDATA[<]]> #{RATE_KBN_E}
+		 		</when>
+		 		<otherwise>
+		 			AND RATE_KBN > #{RATE_KBN_S}
+					AND RATE_KBN <![CDATA[<]]> #{RATE_KBN_E}
+		 		</otherwise>
+		 	</choose>
+
+		ORDER BY RATE ASC
 
     </select>
 

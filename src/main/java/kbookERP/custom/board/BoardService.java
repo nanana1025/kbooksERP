@@ -538,8 +538,9 @@ public class BoardService {
 
 			if(params.containsKey("SELECT_USER_ID")){
 
+				System.out.println("params = "+params);
 				newParams.put("USER_ID", params.get("SELECT_USER_ID"));
-
+				System.out.println("newParams = "+newParams);
 				Map<String, Object> userMap = boardMapper.getUser(newParams);
 
 				if(userMap != null)

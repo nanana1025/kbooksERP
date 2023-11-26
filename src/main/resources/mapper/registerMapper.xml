@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kbookERP.custom.register.RegisterMapper">
+
+
+	<select id="getNewBookCd"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getNewBookCd */
+			SELECT INSTORE_CODE FROM HMA14
+
+    </select>
+
+     <update id="updateNewBookCd" parameterType="java.util.Map" >
+    	/* registerMapper.updateNewBookCd */
+			UPDATE HMA14 SET INSTORE_CODE = INSTORE_CODE + 1
+    </update>
+
+
+
+    <select id="getBookRegistInfo"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getBookRegistInfo */
+		SELECT
+		       A.BOOKNM AS BOOKNM
+		       , A.STANDCD AS STANDCD
+		       , A.PUBSHCD AS PUBSHCD
+		       , A.PRICE AS PRICE
+		       , A.TAX_FG AS TAX_FG
+		       , A.FIRSTISSUE AS FIRSTISSUE
+		       , A.AUTHOR1 AS AUTHOR1
+		       , A.AUTHOR2 AS AUTHOR2
+		       , A.TRANS_EDITOR AS TRANS_EDITOR
+		       , A.DEPTCD AS DEPTCD
+		       , A.GROUPCD AS GROUPCD
+		       , NVL(A.STOCK,0) AS STOCK
+		       , B.PUBSHNM AS PUBSHNM
+		       , A.LD_CD AS LD_CD
+		       , A.MD_CD AS MD_CD
+		       , A.SD_CD AS SD_CD
+		       , A.ISBN_CD AS ISBN_CD
+		       , A.ADDSIGN AS ADDSIGN
+		       , A.BOARD AS BOARD
+		        ,A.BOOKSIZE AS BOOKSIZE
+		       , A.PAGE AS PAGE
+		       , A.OUT_BOOK_FG AS OUT_BOOK_FG
+		       , A.SALE_FG AS SALE_FG
+		       , A.BOARD_CH_DATE AS BOARD_CH_DATE
+		       , A.PRODUCT_NM AS PRODUCT_NM
+		       , NVL(A.PRODUCT_CD,0) AS PRODUCT_CD
+		    FROM
+		       HMA12 A, HMA11 B
+		    WHERE
+		    A.BOOKCD = #{BOOKCD} AND B.PUBSHCD =  A.PUBSHCD
+
+	</select>
+
+
+    <select id="getBookStock"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getBookStock */
+			SELECT STOCK
+			FROM HMA08
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+
+    </select>
+
+    <select id="getBookDeleteCheck"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getBookDeleteCheck */
+			SELECT BOOKCD
+			FROM ${TABLE}
+			WHERE BOOKCD = #{BOOKCD}
+
+    </select>
+
+    <delete id="deleteBookInfoHMA08"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHMA08 */
+			DELETE FROM HMA08
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+	</delete>
+
+	<delete id="deleteBookInfoHMA06"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHMA06 */
+			DELETE FROM HMA06
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+			<if test='PURCHCD != null'>AND PURCHCD = #{PURCHCD}</if>
+	</delete>
+
+	<delete id="deleteBookInfoHMA07"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHMA07 */
+			DELETE FROM HMA07
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+	</delete>
+
+	<delete id="deleteBookInfoHMA04"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHMA04 */
+			DELETE FROM HMA04
+			WHERE BOOKCD = #{BOOKCD}
+	</delete>
+
+	<delete id="deleteBookInfoHRE03"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHRE03 */
+			DELETE FROM HRE03
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+	</delete>
+
+	<delete id="deleteBookInfoHSA01"  parameterType="java.util.Map">
+    	/* registerMapper.deleteBookInfoHSA01 */
+			DELETE FROM HSA01
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+	</delete>
+
+	<select id="getOrganKINDSU"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getOrganKINDSU */
+			SELECT KINDSU
+			FROM HMA10
+			WHERE SHOPCD = #{SHOPCD}
+					AND DEPTCD = #{DEPTCD}
+					AND GROUPCD = #{GROUPCD}
+					AND STANDCD = #{STANDCD}
+    </select>
+
+    <update id="UpdateOrganKINDSU" parameterType="java.util.Map" >
+    	/* registerMapper.UpdateOrganKINDSU */
+			UPDATE HMA10 SET
+					KINDSU = #{KINDSU}
+			WHERE SHOPCD = #{SHOPCD}
+					AND DEPTCD = #{DEPTCD}
+					AND GROUPCD = #{GROUPCD}
+					AND STANDCD = #{STANDCD}
+    </update>
+
+     <select id="getBookUpdateFlag"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getBookUpdateFlag */
+			SELECT COUNT(*)
+			FROM HMA05
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+
+    </select>
+
+    <update id="updateBookInfoHMA05" parameterType="java.util.Map" >
+    	/* registerMapper.updateBookInfoHMA05 */
+			UPDATE HMA05 SET
+					UPDATEFLAG = #{UPDATEFLAG}
+					, LASTTIME = #{LASTTIME}
+					, DLLFLAG = #{DLLFLAG}
+
+					<if test='BOOKNM != null'>, BOOKNM = #{BOOKNM}</if>
+					<if test='GROUPCD != null'>, GROUPCD = #{GROUPCD}</if>
+					<if test='STANDCD != null'>, STANDCD = #{STANDCD}</if>
+					<if test='PRICE != null'>, PRICE = #{PRICE}</if>
+
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+    </update>
+
+
+    <update id="updateBookInfoHMA08" parameterType="java.util.Map" >
+    	/* registerMapper.updateBookInfoHMA08 */
+			UPDATE HMA08 SET
+					BOOKNM = #{BOOKNM}
+					, STANDCD = #{STANDCD}
+					, PUBSHCD = #{PUBSHCD}
+					, PRICE = #{PRICE}
+					, SALEFRONT = #{SALEFRONT}
+					, OUT_BOOK_FG = #{OUT_BOOK_FG}
+					, SALE_FG = #{SALE_FG}
+					, TAX_FG = #{TAX_FG}
+					, ADDSIGN = #{ADDSIGN}
+					, STAND_STOCK = #{STAND_STOCK}
+					, SPECIAL_NO = #{SPECIAL_NO}
+					, BARCODE_FG = #{BARCODE_FG}
+					, ISBN_FG = #{ISBN_FG}
+
+			WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD}
+
+    </update>
+
+    <update id="updateBookInfoHMA12" parameterType="java.util.Map" >
+    	/* registerMapper.updateBookInfoHMA12 */
+			UPDATE HMA12 SET
+					BOOKNM = #{BOOKNM}
+					, STANDCD = #{STANDCD}
+					, PUBSHCD = #{PUBSHCD}
+					, BOOK_FLAG = #{BOOK_FLAG}
+					, UP_END_FG = #{UP_END_FG}
+					, PRICE = #{PRICE}
+					, TAX_FG = #{TAX_FG}
+					, FIRSTISSUE = #{FIRSTISSUE}
+					, AUTHOR1 = #{AUTHOR1}
+					, AUTHOR2 = #{AUTHOR2}
+					, TRANS_EDITOR = #{TRANS_EDITOR}
+					, LD_CD = #{LD_CD}
+					, MD_CD = #{MD_CD}
+					, SD_CD = #{SD_CD}
+					, ISBN_CD = #{ISBN_CD}
+					, ADDSIGN = #{ADDSIGN}
+					, BOARD = #{BOARD}
+					, BOOKSIZE = #{BOOKSIZE}
+					, PAGE = #{PAGE}
+					, OUT_BOOK_FG = #{OUT_BOOK_FG}
+					, SALE_FG = #{SALE_FG}
+					, BOARD_CH_DATE = #{BOARD_CH_DATE}
+					, PRODUCT_NM = #{PRODUCT_NM}
+					, PRODUCT_CD = #{PRODUCT_CD}
+
+			WHERE BOOKCD = #{BOOKCD}
+
+    </update>
+
+	<insert id="insertBookInfoHMA06" parameterType="java.util.Map" >
+    	/* registerMapper.insertBookInfoHMA06 */
+			INSERT INTO HMA06 VALUES(
+				#{SHOPCD}
+				, #{BOOKCD}
+				, #{PURCHCD}
+				, #{RATE_KBN}
+				, #{RATE}
+				, #{COST}
+				, #{STOCK}
+				)
+
+    </insert>
+
+    <insert id="insertBookInfoHMA04" parameterType="java.util.Map" >
+    	/* registerMapper.insertBookInfoHMA04 */
+			INSERT INTO HMA04 VALUES(
+				#{AUTHORNM}
+				, #{AUTHOR_KBN}
+				, #{BOOKCD}
+				)
+    </insert>
+
+    <insert id="insertBookInfoHMA05" parameterType="java.util.Map" >
+    	/* registerMapper.insertBookInfoHMA05 */
+			INSERT INTO HMA05 VALUES(
+				#{SHOPCD}
+				, #{BOOKCD}
+				, #{BOOKNM}
+				, #{GROUPCD}
+				, #{STANDCD}
+				, #{PRICE}
+				, #{UPDATEFLAG}
+				, #{LASTTIME}
+				, #{DLLFLAG}
+				, (SELECT NVL(BOOK_POINT,1) FROM HMA08 WHERE SHOPCD = #{SHOPCD} AND BOOKCD = #{BOOKCD})
+				)
+    </insert>
+
+    <insert id="insertBookInfoHMA07" parameterType="java.util.Map" >
+    	/* registerMapper.insertBookInfoHMA07 */
+			INSERT INTO HMA07 VALUES(
+				#{SHOPCD}
+				, #{BOOKCD}
+				, #{PURCHCD}
+				, #{PUR_PROCESS}
+				, 0
+				, 0
+				, 0
+				, 0
+				, 0
+				, 0
+				, 1
+				)
+    </insert>
+
+	 <select id="selectOrganInfo"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.selectOrganInfo */
+		SELECT DEPTCD, GROUPCD FROM HMA10 WHERE STANDCD = #{STANDCD}
+    </select>
+
+	<insert id="insertBookInfoHMA08" parameterType="java.util.Map" >
+    	/* REGISTERMAPPER.INSERTBOOKINFOHMA08 */
+			INSERT INTO HMA08 VALUES(
+				#{SHOPCD}
+				, #{BOOKCD}
+				, #{BOOKNM}
+				, #{DEPTCD}
+				, #{GROUPCD}
+				, #{STANDCD}
+				, #{PRICE}
+				, #{ADDSIGN}
+				, #{FIRSTSTORE}
+				, #{LASTSTORE}
+				, #{FIRSTSALES}
+				, #{LASTSALES}
+				, #{PUBSHCD}
+				, #{SALEFRONT}
+				, #{OUT_BOOK_FG}
+				, #{SALE_FG}
+				, #{TAX_FG}
+				, #{SPECIAL_NO}
+				, #{ISBN_FG}
+
+				, #{STOCK}
+				, #{COST}
+				, #{AMOUNT}
+				, #{ACT_STOCK}
+				, #{ACT_COST}
+				, #{ACT_PRICE}
+				, #{PREV_PRICE}
+				, #{PRICE_DATE}
+				, #{STAND_STOCK}
+				, #{INP_PLAN_COUNT}
+				, #{BARCODE_FG}
+				, #{BOOK_POINT}
+				)
+    </insert>
+
+    <insert id="insertBookInfoHMA12" parameterType="java.util.Map" >
+    	/* REGISTERMAPPER.insertBookInfoHMA12 */
+			INSERT INTO HMA12 VALUES(
+				#{BOOKCD}
+				, #{BOOKNM}
+				, #{DEPTCD}
+				, #{GROUPCD}
+				, #{STANDCD}
+				, #{TRANS_EDITOR}
+				, #{PRICE}
+				, #{FIRSTSTORE}
+				, #{PUBSHCD}
+				, #{TAX_FG}
+				, #{STOCK}
+				, #{COST}
+				, #{AMOUNT}
+				, #{ACT_STOCK}
+				, #{ACT_COST}
+				, #{ACT_PRICE}
+				, #{AUTHOR1}
+				, #{AUTHOR2}
+				, #{LD_CD}
+				, #{MD_CD}
+				, #{SD_CD}
+				, #{ISBN_CD}
+				, #{ADDSIGN}
+				, #{BOARD}
+				, #{BOOKSIZE}
+				, #{PAGE}
+				, #{OUT_BOOK_FG}
+				, #{SALE_FG}
+				, #{BOARD_CH_DATE}
+				, #{PRODUCT_NM}
+				, #{PRODUCT_CD}
+				, #{BOOK_FLAG}
+				, #{UP_END_FG}
+
+				)
+    </insert>
+
+	<select id="getPurchaseInfo"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getPurchaseInfo */
+			SELECT * FROM HMA02 WHERE PURCHCD = #{PURCHCD}
+    </select>
+
+    <select id="getPublisherInfo"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getPublisherInfo */
+			SELECT * FROM HMA11 WHERE PUBSHCD = #{PUBSHCD}
+    </select>
+
+	<select id="getPurchaseCnt"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getPurchaseCnt */
+			SELECT COUNT(*) FROM HMA07 WHERE PURCHCD = #{PURCHCD}
+    </select>
+
+    <select id="getPublishCnt"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getPublishCnt */
+			SELECT COUNT(*) FROM HMA11 WHERE PUBSHCD = #{PUBSHCD}
+    </select>
+
+	<select id="getPublisherSelBookCnt"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getPublisherSelBookCnt */
+			SELECT COUNT(BOOKCD) FROM hma12 WHERE  PUBSHCD = #{PUBSHCD}
+    </select>
+
+	<delete id="deleteTableByPurchaseCd"  parameterType="java.util.Map">
+    	/* registerMapper.deleteTableByPurchaseCd */
+			DELETE FROM ${TABLE} WHERE PURCHCD = #{PURCHCD}
+	</delete>
+
+	<delete id="deleteTableByPublishCd"  parameterType="java.util.Map">
+    	/* registerMapper.deleteTableByPublishCd */
+			DELETE FROM ${TABLE} WHERE PUBSHCD = #{PUBSHCD}
+	</delete>
+
+	<insert id="insertHMA02" parameterType="java.util.Map" >
+    	/* registerMapper.insertHMA02 */
+			INSERT INTO HMA02 VALUES(
+					#{PURCHCD}
+					, #{PURCH_KBN}
+					, #{PURCHNM}
+					, #{SPECIALNM}
+					, #{REPNM}
+					, #{ENT_LOCAL}
+					, #{ENT_TYPE}
+					, #{ENT_SEQNO}
+					, #{JID_BIRTHDAY}
+					, ''
+					, #{POST_NO1}
+					, #{POST_NO2}
+					, #{ADDRESS}
+					, #{TEL_LOCAL1}
+					, #{TEL_DEPT1}
+					, #{TEL_NO1}
+					, #{TEL_LOCAL2}
+					, #{TEL_DEPT2}
+					, #{TEL_NO2}
+					, #{FAX_LOCAL}
+					, #{FAX_DEPT}
+					, #{FAX_NO}
+					, #{ORD_GROUPCD}
+					, #{PAY_DATE}
+					, #{BOOK_CONST_DAY}
+					, #{BOOK_CONST_NM1}
+					, #{BOOK_CONST_NM2}
+					, #{PAY_GRADE}
+					, #{UP_FLAG}
+					, #{BUSINESS_ITEM}
+					, #{BUSINESS_TYPE}
+					)
+    </insert>
+
+	<update id="updateHMA02" parameterType="java.util.Map" >
+    	/* registerMapper.updateHMA02 */
+			UPDATE HMA02 SET
+					PURCH_KBN = #{PURCH_KBN}
+					, PURCHNM = #{PURCHNM}
+					, SPECIALNM = #{SPECIALNM}
+					, UP_FLAG = #{UP_FLAG}
+					, REPNM = #{REPNM}
+
+					, ENT_LOCAL = #{ENT_LOCAL}
+					, ENT_TYPE = #{ENT_TYPE}
+					, ENT_SEQNO = #{ENT_SEQNO}
+					, JID_BIRTHDAY = #{JID_BIRTHDAY}
+					, POST_NO1 = #{POST_NO1}
+					, POST_NO2 = #{POST_NO2}
+					, ADDRESS = #{ADDRESS}
+
+					, TEL_LOCAL1 = #{TEL_LOCAL1}
+					, TEL_DEPT1 = #{TEL_DEPT1}
+					, TEL_NO1 = #{TEL_NO1}
+					, TEL_LOCAL2 = #{TEL_LOCAL2}
+					, TEL_DEPT2 = #{TEL_DEPT2}
+					, TEL_NO2 = #{TEL_NO2}
+					, FAX_LOCAL = #{FAX_LOCAL}
+					, FAX_DEPT = #{FAX_DEPT}
+					, FAX_NO = #{FAX_NO}
+
+					, ORD_GROUPCD = #{ORD_GROUPCD}
+					, PAY_DATE = #{PAY_DATE}
+					, BOOK_CONST_DAY = #{BOOK_CONST_DAY}
+
+					, BOOK_CONST_NM1 = #{BOOK_CONST_NM1}
+					, BOOK_CONST_NM2 = #{BOOK_CONST_NM2}
+					, PAY_GRADE = #{PAY_GRADE}
+					, BUSINESS_ITEM = #{BUSINESS_ITEM}
+					, BUSINESS_TYPE = #{BUSINESS_TYPE}
+
+			WHERE PURCHCD = #{PURCHCD}
+
+    </update>
+
+    <update id="updateHMA11" parameterType="java.util.Map" >
+    	/* registerMapper.updateHMA11 */
+			UPDATE HMA11 SET
+					PUBSHNM = #{PUBSHNM}
+					, REPNM = #{REPNM}
+					, POST_NO1 = #{POST_NO1}
+					, POST_NO2 = #{POST_NO2}
+					, ADDRESS = #{ADDRESS}
+					, TEL_LOCAL1 = #{TEL_LOCAL1}
+					, TEL_DEPT1 = #{TEL_DEPT1}
+					, TEL_NO1 = #{TEL_NO1}
+					, TEL_LOCAL2 = #{TEL_LOCAL2}
+					, TEL_DEPT2 = #{TEL_DEPT2}
+					, TEL_NO2 = #{TEL_NO2}
+					, FAX_LOCAL = #{FAX_LOCAL}
+					, FAX_DEPT = #{FAX_DEPT}
+					, FAX_NO = #{FAX_NO}
+					, SPECIALNM = #{SPECIALNM}
+					, PUBSH_KBN = #{PUBSH_KBN}
+
+			WHERE PUBSHCD = #{PUBSHCD}
+
+    </update>
+
+
+	<insert id="insertHMA11" parameterType="java.util.Map" >
+    	/* registerMapper.insertHMA11 */
+			INSERT INTO HMA11 VALUES(
+				#{PUBSHCD}
+				, #{PUBSHNM}
+				, #{REPNM}
+				, #{POST_NO1}
+				, #{POST_NO2}
+				, #{ADDRESS}
+				, #{TEL_LOCAL1}
+				, #{TEL_DEPT1}
+				, #{TEL_NO1}
+				, #{TEL_LOCAL2}
+				, #{TEL_DEPT2}
+				, #{TEL_NO2}
+				, #{FAX_LOCAL}
+				, #{FAX_DEPT}
+				, #{FAX_NO}
+				, #{SPECIALNM}
+				, #{PUBSH_KBN}
+				)
+    </insert>
+
+	<update id="updateHMA24" parameterType="java.util.Map" >
+    	/* registerMapper.updateHMA24 */
+			UPDATE HMA24  SET
+					PURCHNM = #{PURCHNM}
+			WHERE PURCHCD = #{PURCHCD} AND SHOPCD = #{SHOPCD}
+    </update>
+
+    <insert id="insertHMA24" parameterType="java.util.Map" >
+    	/* registerMapper.insertHMA24 */
+			INSERT INTO HMA24 VALUES(
+				#{SHOPCD}
+				, #{PURCHCD}
+				, #{PURCHNM}
+				)
+    </insert>
+
+	<select id="getToday"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getToday */
+			SELECT TODAY FROM HMA09 WHERE SHOPCD = #{SHOPCD}
+    </select>
+
+	<select id="getShopPerformance"  parameterType="java.util.Map" resultType="int">
+    	/* registerMapper.getShopPerformance */
+			SELECT COUNT(*) FROM HSA02 WHERE PURCHCD = #{PURCHCD} AND SHOPCD = #{SHOPCD}
+    </select>
+
+	<insert id="insertHSA02" parameterType="java.util.Map" >
+    	/* registerMapper.insertHSA02 */
+			INSERT INTO HSA02 VALUES(
+				#{SHOPCD}
+				, #{PURCHCD}
+				, #{PUR_DATE}
+				, 0
+				, 0
+				, 0
+				, 0
+				, 0
+				)
+    </insert>
+
+    <insert id="insertHSA03" parameterType="java.util.Map" >
+    	/* registerMapper.insertHSA03 */
+			INSERT INTO HSA03 VALUES(
+				#{SHOPCD}
+				, #{PURCHCD}
+				, #{PUR_DATE}
+				,0,0,0,0,0,0,0,0,0,0,0,0
+                ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+               ,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+				)
+    </insert>
+
+	<select id="getHolidayData"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getHolidayData */
+			SELECT * FROM HMA17 WHERE SHOPCD = #{SHOPCD} AND SUBSTR(B_DATE, 1, 6) = #{DATE} ORDER BY B_DATE
+    </select>
+
+	 <insert id="insertHolidayData" parameterType="java.util.Map" >
+    	/* registerMapper.insertHolidayData */
+			INSERT ALL<foreach collection="LIST_DATA" item="item" open="" close="" separator="">
+			INTO HMA17 VALUES (#{SHOPCD}, #{item.B_DATE}, #{item.BUSINESS_FG}, #{item.WEEK_FG})</foreach>
+			 SELECT * FROM DUAL
+    </insert>
+
+	<update id="updateHMA17" parameterType="java.util.Map" >
+    	/* registerMapper.updateHMA17*/
+			UPDATE HMA17 SET
+					BUSINESS_FG = #{BUSINESS_FG}
+			WHERE SHOPCD = #{SHOPCD} AND B_DATE = #{B_DATE}
+    </update>
+
+	<select id="getReturnInfo"  parameterType="java.util.Map" resultType="java.util.Map">
+    	/* registerMapper.getReturnInfo */
+			SELECT RET_NM,STD_RATE,START_DAY,STOP_DAY,FAX_FG,ONLINE_FG,BANK_NM,ONLINE_NO,RPNM
+			,TRADE_NM,PURCH_BOND, LIMIT_KBN,LIMIT_AMOUNT,LAST_RET_DATE,PURCHNM ,EL_BANK_NM,EL_ONLINE_NO
+			FROM HMA03
+			WHERE SHOPCD = #{SHOPCD} AND PURCHCD = #{PURCHCD}
+    </select>
+
+	 <update id="updateHMA03" parameterType="java.util.Map" >
+    	/* registerMapper.updateHMA03 */
+			UPDATE HMA03 SET
+					RET_NM = #{RET_NM}
+					, STD_RATE = #{STD_RATE}
+					, START_DAY = #{START_DAY}
+					, STOP_DAY = #{STOP_DAY}
+					, FAX_FG = #{FAX_FG}
+					, ONLINE_FG = #{ONLINE_FG}
+					, BANK_NM = #{BANK_NM}
+					, ONLINE_NO = #{ONLINE_NO}
+					, RPNM = #{RPNM}
+					, TRADE_NM = #{TRADE_NM}
+					, PURCH_BOND = #{PURCH_BOND}
+					, LIMIT_KBN = #{LIMIT_KBN}
+					, LIMIT_AMOUNT = #{LIMIT_AMOUNT}
+
+			WHERE SHOPCD = #{SHOPCD} AND PURCHCD = #{PURCHCD}
+
+    </update>
+
+	<insert id="insertHMA03" parameterType="java.util.Map" >
+    	/* registerMapper.insertHMA03 */
+			INSERT INTO HMA03 VALUES(
+				#{SHOPCD}
+				, #{PURCHCD}
+				, #{PURCHNM}
+				, #{RET_NM}
+				, #{STD_RATE}
+				, #{START_DAY}
+				, #{STOP_DAY}
+				, #{FAX_FG}
+				, #{ONLINE_FG}
+				, #{BANK_NM}
+				, #{ONLINE_NO}
+				, #{RPNM}
+				, #{TRADE_NM}
+				, #{PURCH_BOND}
+				, #{LIMIT_KBN}
+				, #{LIMIT_AMOUNT}
+				, #{LAST_RET_DATE}
+				, #{EL_BANK_NM}
+				, #{EL_ONLINE_NO}
+
+				)
+    </insert>
+
+	<delete id="deleteHMA03"  parameterType="java.util.Map">
+    	/* registerMapper.deleteHMA03 */
+			DELETE FROM HMA03 WHERE SHOPCD = #{SHOPCD} AND PURCHCD = #{PURCHCD}
+	</delete>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

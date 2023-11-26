@@ -364,7 +364,7 @@ public class BoardController {
     	System.out.println("BoardController.updateUserView");
     	Map<String,Object> result = new HashMap<>();
     	Util.pramsNullCheck(params);
-//    	result = boardService.updateUserView(params);
+    	result = boardService.updateUserView(params);
     	return result;
     }
 

@@ -32,11 +32,42 @@ public interface ReturnsMapper {
 
 	public List<Map<String,Object>> getReturnBookList(Map<String,Object> params);
 
+	public List<Map<String,Object>> getReturnBookListAll(Map<String,Object> params);
+
 	public int deleteReturnBook(Map<String,Object> params);
 
 	public int insertReturnBookConfirm(Map<String,Object> params);
 
 	public int deleteReturnBookAll(Map<String,Object> params);
+
+	public int getRETURN_CHIT_NO(Map<String,Object> params);
+
+	public int updateRETURN_CHIT_NO(Map<String,Object> params);
+
+	public int insertHRE04(Map<String,Object> params);
+
+	public int checkHRE03(Map<String,Object> params);
+
+	public int updateHRE03(Map<String,Object> params);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

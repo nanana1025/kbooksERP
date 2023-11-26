@@ -52,6 +52,61 @@ public class CommonService {
 		}
     }
 
+	public Map<String, Object> getKbooksCodeList(Map<String, Object> params) throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<Map<String, Object>> listSqlMap = new ArrayList<Map<String, Object>>();
+
+		try {
+
+			listSqlMap = commonMapper.getKbooksCodeList(params);
+
+			if (listSqlMap.size() > 0) {
+				resultMap.put("EXIST", true);
+				resultMap.put("DATA", listSqlMap);
+
+			} else {
+				resultMap.put("EXIST", false);
+			}
+
+			resultMap.put("SUCCESS", true);
+			return resultMap;
+
+		} catch (Exception ex) {
+			System.out.println("error: " + ex);
+			resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+			resultMap.put("SUCCESS", false);
+			return resultMap;
+		}
+    }
+
+
+	public Map<String, Object> getKbooksProductCodeList(Map<String, Object> params) throws Exception {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		List<Map<String, Object>> listSqlMap = new ArrayList<Map<String, Object>>();
+
+		try {
+
+			listSqlMap = commonMapper.getKbooksProductCodeList(params);
+
+			if (listSqlMap.size() > 0) {
+				resultMap.put("EXIST", true);
+				resultMap.put("DATA", listSqlMap);
+
+			} else {
+				resultMap.put("EXIST", false);
+			}
+
+			resultMap.put("SUCCESS", true);
+			return resultMap;
+
+		} catch (Exception ex) {
+			System.out.println("error: " + ex);
+			resultMap.put("MSG", "오류가 발생했습니다. 관리자에게 문의하세요.");
+			resultMap.put("SUCCESS", false);
+			return resultMap;
+		}
+    }
+
 	 public Map<String, Object> checkPurchCd(Map<String, Object> params) throws Exception {
 			Map<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, Object> sqlMap = new HashMap<String, Object>();
@@ -232,6 +287,7 @@ public class CommonService {
 		}
 	}
 
+
 	public Map<String, Object> queryDT(Map<String, Object> params) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> sqlMap = new HashMap<String, Object>();
@@ -266,6 +322,37 @@ public class CommonService {
 			return resultMap;
 		}
 	}
+
+	public Map<String, Object> getRow(Map<String, Object> params) {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		Map<String, Object> sqlMap = new HashMap<String, Object>();
+
+		try {
+
+			sqlMap = commonMapper.getRow(params);
+
+			if(sqlMap == null) {
+				resultMap.put("EXIST", false);
+			}else {
+				resultMap = sqlMap;
+				resultMap.put("EXIST", true);
+			}
+
+			resultMap.put("SUCCESS", true);
+			return resultMap;
+		}
+		catch(Exception ex){
+			System.out.println("error:"+ex.getMessage());
+			resultMap.put("MSG", ex.getMessage());
+			resultMap.put("SUCCESS", false);
+			return resultMap;
+		}
+	}
+
+
+
+
+
 
 
 	public synchronized String getSeq(String SEQ_NM) {

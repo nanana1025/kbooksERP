@@ -46,6 +46,7 @@ public class LoginService {
 		}
 		else {
 
+			System.out.println("params = "+params);
 			System.out.println("userMap = "+userMap);
 
 			String passwd = params.get("PASSWD").toString();
